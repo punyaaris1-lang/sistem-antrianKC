@@ -34,8 +34,11 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* === HEADER === */
-        .header { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #333; padding-bottom: 15px; }
+        /* === HEADER (Double Click Disini) === */
+        .header { 
+            text-align: center; margin-bottom: 25px; border-bottom: 2px solid #333; padding-bottom: 15px; 
+            cursor: pointer; /* Penanda bisa diklik */
+        }
         .brand-name { font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); margin: 0; }
         .brand-sub { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; }
 
@@ -101,7 +104,7 @@
 </head>
 <body>
 
-    <div class="header">
+    <div class="header" ondblclick="toggleAdmin()">
         <h1 class="brand-name">KARTIKA CHANDRA</h1>
         <div class="brand-sub">Charging Point System</div>
     </div>
@@ -181,11 +184,16 @@
         let amIInQueue = false;
         let timerInterval;
 
+        // === ADMIN SHORTCUT ===
+        window.toggleAdmin = () => {
+            const c = prompt("KODE AKSES:");
+            if(c === "1131") window.location.href = "admin.html";
+            else if(c === "090815") window.location.href = "superadmin.html";
+        };
+
         // === REALTIME & AUTO INIT DATABASE ===
         onSnapshot(mainRef, (snap) => {
-            // JIKA DATABASE KOSONG, BUAT BARU OTOMATIS
             if(!snap.exists()) {
-                console.log("Database kosong, inisialisasi...");
                 setDoc(mainRef, {
                     chargingSlots: [null, null, null, null, null],
                     waitingQueue: [],
@@ -200,19 +208,14 @@
             while(localSlots.length < 5) localSlots.push(null);
             localQueue = d.waitingQueue || [];
 
-            // === RECOVERY CHECK (SYNC) ===
-            // Cek apakah session user masih valid di database?
             if(myPlat) {
                 const inSlot = localSlots.some(s => s && s.plat === myPlat);
                 const inQueue = localQueue.some(q => q.plat === myPlat);
-                
-                // Jika user punya session lokal TAPI tidak ada di DB (misal di-kick admin), hapus session lokal
                 if (!inSlot && !inQueue) {
                     localStorage.removeItem('kc_myplat');
                     myPlat = null;
                 }
             }
-
             updateUI();
         });
 
@@ -231,7 +234,6 @@
                     const startTime = s.startTime ? new Date(s.startTime) : new Date();
                     const diff = Math.floor((new Date() - startTime) / 60000);
                     
-                    // Logic Kudeta: Jika saya antri DAN durasi slot > limit DAN itu bukan slot saya
                     let kudetaBtn = '';
                     if (amIInQueue && !isMySlot && diff >= KUDETA_MINUTES) {
                         kudetaBtn = `<button class="btn-kudeta" onclick="attemptKudeta(${i}, '${s.plat}')">⚡ AMBIL ALIH (${diff}m)</button>`;
@@ -254,7 +256,6 @@
                         </div>`;
                     if(isMySlot) startLocalTimer(i, s.startTime);
                 } else {
-                    // Logic Pilih Slot: Hanya yang sedang antri dan belum punya slot
                     const btnPilih = (amIInQueue && myActiveSlot === -1) 
                         ? `<button onclick="selectSlot(${i})" style="margin-top:5px; background:var(--success); color:#000; border:none; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">PILIH</button>` : '';
                     div.className = 'slot-card available';
@@ -268,7 +269,6 @@
                 container.appendChild(div);
             });
 
-            // Update Queue UI
             const qContainer = document.getElementById('queueListWrapper');
             qContainer.innerHTML = '';
             document.getElementById('totalQueue').innerText = localQueue.length;
@@ -282,28 +282,21 @@
                 qContainer.appendChild(div);
             });
 
-            // Main Button State
             const btn = document.getElementById('mainBtn');
             if (myActiveSlot !== -1) {
                 btn.className = "btn-main btn-stop"; btn.innerHTML = "<span>⏹</span> STOP CHARGING";
                 btn.onclick = () => stopCharging(myActiveSlot);
             } else if (amIInQueue) {
                 btn.className = "btn-main btn-wait"; btn.innerHTML = "<span>⏳</span> MENUNGGU ANTRIAN...";
-                btn.onclick = () => alert("Anda sudah dalam antrian. Tunggu slot hijau atau Ambil Alih slot > 60 menit.");
+                btn.onclick = () => alert("Anda sudah dalam antrian.");
             } else {
                 btn.className = "btn-main"; btn.innerHTML = "<span>📍</span> CEK LOKASI & DAFTAR";
                 btn.onclick = checkLocationAndRegister;
             }
         }
 
-        // === LOGIC 1 HP 1 PLAT ===
         window.checkLocationAndRegister = () => {
-            // Cek Local Storage dulu sebelum GPS
-            if (localStorage.getItem('kc_myplat')) {
-                alert("Satu HP hanya untuk 1 Plat!\nAnda terdeteksi memiliki sesi aktif atau baru saja keluar.\n\nJika ini kesalahan, Admin dapat meresetnya.");
-                return;
-            }
-
+            if (localStorage.getItem('kc_myplat')) return alert("Satu HP hanya untuk 1 Plat!");
             if(!navigator.geolocation) return alert("Browser tidak support GPS.");
             const btn = document.getElementById('mainBtn');
             const oldText = btn.innerHTML;
@@ -312,16 +305,15 @@
             navigator.geolocation.getCurrentPosition((pos) => {
                 const dist = getDist(pos.coords.latitude, pos.coords.longitude, STATION_LAT, STATION_LNG);
                 btn.innerHTML = oldText;
-                
                 if(dist > MAX_DIST_KM) {
-                    alert(`LOKASI ANDA TERLALU JAUH!\nJarak: ${(dist*1000).toFixed(0)} meter.\nMax: ${MAX_DIST_KM*1000} meter.`);
+                    alert(`LOKASI TERLALU JAUH! (${(dist*1000).toFixed(0)} m)`);
                 } else {
                     document.getElementById('loginModal').style.display = 'flex';
                     document.getElementById('inputPlat').focus();
                 }
             }, (err) => {
                 btn.innerHTML = oldText;
-                alert("GAGAL AKSES GPS: " + err.message);
+                alert("GAGAL AKSES GPS.");
             }, { enableHighAccuracy: true, timeout: 10000 });
         };
 
@@ -334,15 +326,14 @@
             return R * c;
         }
 
-        // === ACTIONS ===
         window.executeReg = async () => {
             const p = document.getElementById('inputPlat').value.toUpperCase().trim();
             const n = document.getElementById('inputNama').value.toUpperCase().trim();
-            if(p.length < 3) return alert("Plat Nomor Pendek!");
+            if(p.length < 3) return alert("Plat Pendek!");
 
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
-                if(d.chargingSlots.some(s => s && s.plat === p) || d.waitingQueue.some(q => q.plat === p)) throw "Plat sedang aktif!";
+                if(d.chargingSlots.some(s => s && s.plat === p) || d.waitingQueue.some(q => q.plat === p)) throw "Plat Aktif!";
                 
                 const todayStr = new Date().toDateString();
                 let currentTicket = d.lastTicket || 0;
@@ -352,9 +343,7 @@
                 const newUser = { plat: p, userName: n || "USER", qNo: newNo, entryTime: Date.now() };
                 t.update(mainRef, { waitingQueue: arrayUnion(newUser), lastTicket: newNo, lastResetDate: todayStr });
             }).then(() => { 
-                localStorage.setItem('kc_myplat', p); // SIMPAN SESI DI HP
-                myPlat = p; 
-                closeModal(); 
+                localStorage.setItem('kc_myplat', p); myPlat = p; closeModal(); 
             }).catch(e => alert(e));
         };
 
@@ -363,7 +352,7 @@
                 const d = (await t.get(mainRef)).data();
                 if(d.chargingSlots[idx]) throw "Slot penuh!";
                 const qIdx = d.waitingQueue.findIndex(q => q.plat === myPlat);
-                if(qIdx === -1) throw "Sesi antrian hilang.";
+                if(qIdx === -1) throw "Sesi hilang.";
                 const userData = d.waitingQueue[qIdx];
                 d.waitingQueue.splice(qIdx, 1);
                 userData.startTime = Date.now();
@@ -373,72 +362,45 @@
         };
 
         window.stopCharging = (idx) => {
-            if(!confirm("Selesai Charging?")) return;
+            if(!confirm("Selesai?")) return;
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
                 const u = d.chargingSlots[idx];
                 if(u) addDoc(histRef, { ...u, finishTime: new Date(), status: 'FINISHED' });
                 d.chargingSlots[idx] = null;
-                
                 const isQueueEmpty = d.waitingQueue.length === 0;
                 const isAllSlotsEmpty = d.chargingSlots.every(s => s === null);
-                let updateData = { chargingSlots: d.chargingSlots };
-                if(isQueueEmpty && isAllSlotsEmpty) updateData.lastTicket = 0;
-                
-                t.update(mainRef, updateData);
-            }).then(() => { 
-                localStorage.removeItem('kc_myplat'); // HAPUS SESI DARI HP
-                myPlat = null; 
-                clearInterval(timerInterval); 
-            });
+                if(isQueueEmpty && isAllSlotsEmpty) t.update(mainRef, { chargingSlots: d.chargingSlots, lastTicket: 0 });
+                else t.update(mainRef, { chargingSlots: d.chargingSlots });
+            }).then(() => { localStorage.removeItem('kc_myplat'); myPlat = null; clearInterval(timerInterval); });
         };
 
         window.cancelQueue = () => {
-            if(!confirm("Batal Antri?")) return;
+            if(!confirm("Batal?")) return;
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
                 const q = d.waitingQueue.find(x => x.plat === myPlat);
                 if(q) t.update(mainRef, { waitingQueue: arrayRemove(q) });
-            }).then(() => { 
-                localStorage.removeItem('kc_myplat'); // HAPUS SESI DARI HP
-                myPlat = null; 
-            });
+            }).then(() => { localStorage.removeItem('kc_myplat'); myPlat = null; });
         };
 
-        // === FITUR KUDETA (AMBIL ALIH) ===
         window.attemptKudeta = (idx, targetPlat) => {
-            if(!confirm(`AMBIL ALIH SLOT ${idx+1}?\nUser ${targetPlat} sudah lebih dari 60 menit.\nAnda akan menggantikannya.`)) return;
-
+            if(!confirm(`AMBIL ALIH SLOT ${idx+1}?`)) return;
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
-                
-                // 1. Validasi Target
                 const targetUser = d.chargingSlots[idx];
-                if (!targetUser || targetUser.plat !== targetPlat) throw "Slot sudah berubah!";
+                if (!targetUser || targetUser.plat !== targetPlat) throw "Slot berubah!";
                 const diff = Math.floor((Date.now() - targetUser.startTime) / 60000);
-                if (diff < KUDETA_MINUTES) throw "Belum mencapai batas waktu (60 menit)!";
-
-                // 2. Validasi Saya
+                if (diff < KUDETA_MINUTES) throw "Belum 60 menit!";
                 const qIdx = d.waitingQueue.findIndex(q => q.plat === myPlat);
-                if (qIdx === -1) throw "Anda harus dalam antrian untuk melakukan ini.";
+                if (qIdx === -1) throw "Harus antri dulu.";
                 const myData = d.waitingQueue[qIdx];
-
-                // 3. Eksekusi Tukar
-                // Buang user lama ke history
                 addDoc(histRef, { ...targetUser, finishTime: new Date(), status: `KUDETA_BY_${myPlat}` });
-                
-                // Masukkan saya ke slot
                 myData.startTime = Date.now();
                 d.chargingSlots[idx] = myData;
-                
-                // Hapus saya dari queue
                 d.waitingQueue.splice(qIdx, 1);
-
                 t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
-
-            }).then(() => {
-                alert("BERHASIL AMBIL ALIH SLOT!");
-            }).catch(e => alert("GAGAL: " + e));
+            }).then(() => alert("BERHASIL!")).catch(e => alert(e));
         };
 
         window.closeModal = () => document.getElementById('loginModal').style.display = 'none';
