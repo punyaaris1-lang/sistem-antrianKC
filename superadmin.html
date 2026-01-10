@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SUPER ADMIN - KARTIKA CHANDRA</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === VARIABLES (THEME CONFIG) === */
+        :root {
+            --bg-body: #121212;
+            --bg-card: #1e1e1e;
+            --accent: #FF9F1C; /* Amber Orange */
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --danger: #E71D36;
+            --success: #2EC4B6;
+            --border-radius: 12px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0; padding: 20px;
+        }
+
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 20px; }
+        .brand-name { font-family: 'Oswald', sans-serif; font-size: 28px; color: var(--accent); margin: 0; }
+        .brand-sub { font-size: 10px; letter-spacing: 4px; color: #fff; }
+
+        .box { background: var(--bg-card); padding: 20px; border-radius: var(--border-radius); border: 1px solid #333; margin-bottom: 20px; }
+        h3 { font-family: 'Oswald'; color: var(--accent); margin: 0 0 15px 0; border-bottom: 1px dashed #444; padding-bottom: 10px; font-size: 18px; }
+
+        /* BUTTONS */
+        button {
+            cursor: pointer; padding: 12px; border-radius: 8px; border: none;
+            font-family: 'Oswald', sans-serif; font-weight: bold; text-transform: uppercase;
+            width: 100%; transition: 0.2s;
+        }
+        button:active { transform: scale(0.98); }
+        .btn-gold { background: var(--accent); color: #000; }
+        .btn-red { background: rgba(231, 29, 54, 0.1); border: 1px solid var(--danger); color: var(--danger); }
+        .btn-blue { background: #333; color: #fff; border: 1px solid #555; }
+        .btn-mini { width: auto; padding: 5px 10px; font-size: 10px; }
+
+        /* SLOTS GRID */
+        .slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+        .slot-item { background: #000; border: 1px solid #333; padding: 10px; border-radius: 8px; text-align: center; }
+        .slot-plat { font-family: 'Oswald'; font-size: 18px; color: #fff; margin-bottom: 5px; }
+
+        /* LIST ANTRIAN */
+        .q-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #222; }
+
+        /* LOGIN OVERLAY */
+        #loginOverlay { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        input { background: #111; border: 1px solid var(--accent); color: #fff; padding: 15px; font-size: 24px; text-align: center; font-family: 'Oswald'; width: 250px; border-radius: 10px; margin-bottom: 20px; }
+
+        /* LOGS */
+        .log-box { height: 150px; overflow-y: auto; background: #000; padding: 10px; font-family: monospace; font-size: 10px; color: #aaa; border: 1px solid #333; }
+        .log-line { border-bottom: 1px solid #111; padding: 2px 0; }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay">
+        <h1 style="color:var(--accent); font-family:'Oswald'; letter-spacing:2px;">GOD MODE</h1>
+        <input type="password" id="loginPin" placeholder="PIN SUPER ADMIN">
+        <button onclick="attemptLogin()" class="btn-gold" style="width:250px;">BUKA AKSES</button>
+    </div>
+
+    <div class="header">
+        <h1 class="brand-name">SUPER ADMIN</h1>
+        <div class="brand-sub">GOD MODE - KARTIKA CHANDRA</div>
+        <button onclick="logout()" class="btn-red" style="width:auto; margin-top:15px; padding: 5px 20px;">KELUAR</button>
+    </div>
+
+    <div class="box">
+        <h3>1. LIVE EDIT SLOTS (5 SLOTS)</h3>
+        <p style="font-size:10px; color:#666;">Klik tombol "EDIT" untuk memperbaiki Typo Plat/Nama user yang sedang charging.</p>
+        <div class="slot-grid" id="slotContainer">Loading...</div>
+    </div>
+
+    <div class="box">
+        <h3>2. EDIT ANTRIAN</h3>
+        <p style="font-size:10px; color:#666;">Klik "EDIT" untuk ubah data, klik "HAPUS" untuk kick dari antrian.</p>
+        <div id="queueList" style="background:#000; border:1px solid #333; max-height:250px; overflow-y:auto;"></div>
+    </div>
+
+    <div class="box" style="border-color: var(--danger);">
+        <h3 style="color:var(--danger);">3. DANGER ZONE (RESET)</h3>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <button onclick="resetDaily()" class="btn-blue">
+                🔄 RESET NOMOR
+                <div style="font-size:9px; font-weight:normal;">Kembali ke antrian 0</div>
+            </button>
+            <button onclick="wipeTotal()" class="btn-red">
+                💀 WIPE TOTAL
+                <div style="font-size:9px; font-weight:normal;">Hapus Semua Data (0)</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="box">
+        <h3>SYSTEM LOGS</h3>
+        <div class="log-box" id="logContainer">Wait...</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, query, orderBy, limit, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
+            authDomain: "kartikachandrafc.firebaseapp.com",
+            projectId: "kartikachandrafc",
+            storageBucket: "kartikachandrafc.firebasestorage.app",
+            messagingSenderId: "677704449500",
+            appId: "1:677704449500:web:671df8ae5cf6e66d0b6319"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const mainRef = doc(db, "antrian", "utama");
+        const logRef = collection(db, "activityLog");
+
+        // AUTH
+        if(localStorage.getItem('kc_super_sess')) document.getElementById('loginOverlay').style.display = 'none';
+
+        window.attemptLogin = () => {
+            if(document.getElementById('loginPin').value === "090815") {
+                localStorage.setItem('kc_super_sess', '1');
+                document.getElementById('loginOverlay').style.display = 'none';
+                addLog("SUPER_ADMIN", "LOGIN", "God Mode Accessed");
+            } else alert("PIN SALAH!");
+        };
+
+        window.logout = () => {
+            localStorage.removeItem('kc_super_sess');
+            window.location.reload();
+        };
+
+        // REALTIME MONITOR
+        onSnapshot(mainRef, (snap) => {
+            if(!snap.exists()) return;
+            const d = snap.data();
+            const slots = d.chargingSlots || [null,null,null,null,null];
+            while(slots.length < 5) slots.push(null);
+            
+            // RENDER SLOT
+            const sDiv = document.getElementById('slotContainer');
+            sDiv.innerHTML = '';
+            slots.forEach((s, i) => {
+                if(s) {
+                    sDiv.innerHTML += `
+                    <div class="slot-item">
+                        <div style="color:var(--accent); font-size:10px;">SLOT 0${i+1}</div>
+                        <div class="slot-plat">${s.plat}</div>
+                        <div style="font-size:10px; margin-bottom:10px;">${s.userName}</div>
+                        <button onclick="editSlot(${i}, '${s.plat}', '${s.userName}')" class="btn-blue btn-mini">EDIT DATA</button>
+                    </div>`;
+                } else {
+                    sDiv.innerHTML += `
+                    <div class="slot-item" style="opacity:0.5;">
+                        <div style="color:#666; font-size:10px;">SLOT 0${i+1}</div>
+                        <div class="slot-plat">KOSONG</div>
+                    </div>`;
+                }
+            });
+
+            // RENDER QUEUE
+            const qDiv = document.getElementById('queueList');
+            qDiv.innerHTML = '';
+            (d.waitingQueue || []).forEach((q) => {
+                qDiv.innerHTML += `
+                <div class="q-item">
+                    <div>
+                        <b style="color:#fff;">${q.plat}</b>
+                        <div style="font-size:10px; color:#888;">${q.userName} (#${q.qNo})</div>
+                    </div>
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="editQueue('${q.plat}', '${q.userName}')" class="btn-blue btn-mini">EDIT</button>
+                        <button onclick="delQueue('${q.plat}')" class="btn-red btn-mini">HAPUS</button>
+                    </div>
+                </div>`;
+            });
+        });
+
+        // ACTIONS
+        window.editSlot = (idx, oldP, oldN) => {
+            const newP = prompt("Ganti Plat:", oldP);
+            if(!newP) return;
+            const newN = prompt("Ganti Nama:", oldN);
+            
+            runTransaction(db, async(t) => {
+                const d = (await t.get(mainRef)).data();
+                d.chargingSlots[idx].plat = newP.toUpperCase();
+                d.chargingSlots[idx].userName = newN.toUpperCase();
+                t.update(mainRef, { chargingSlots: d.chargingSlots });
+                addLog("SUPER", "EDIT_SLOT", `S${idx+1}: ${oldP} -> ${newP}`);
+            });
+        };
+
+        window.editQueue = (oldP, oldN) => {
+            const newP = prompt("Ganti Plat:", oldP);
+            if(!newP) return;
+            const newN = prompt("Ganti Nama:", oldN);
+
+            runTransaction(db, async(t) => {
+                const d = (await t.get(mainRef)).data();
+                const qIdx = d.waitingQueue.findIndex(x => x.plat === oldP);
+                if(qIdx > -1) {
+                    d.waitingQueue[qIdx].plat = newP.toUpperCase();
+                    d.waitingQueue[qIdx].userName = newN.toUpperCase();
+                    t.update(mainRef, { waitingQueue: d.waitingQueue });
+                    addLog("SUPER", "EDIT_QUEUE", `${oldP} -> ${newP}`);
+                }
+            });
+        };
+
+        window.delQueue = (plat) => {
+            if(!confirm("Hapus user ini dari antrian?")) return;
+            runTransaction(db, async(t) => {
+                const d = (await t.get(mainRef)).data();
+                const newData = d.waitingQueue.filter(x => x.plat !== plat);
+                t.update(mainRef, { waitingQueue: newData });
+                addLog("SUPER", "DEL_QUEUE", `Removed ${plat}`);
+            });
+        };
+
+        window.resetDaily = () => {
+            if(!confirm("Yakin reset nomor antrian jadi 0? Data user AMAN.")) return;
+            runTransaction(db, async(t) => {
+                t.update(mainRef, { lastTicket: 0, recycledNumbers: [] });
+                addLog("SUPER", "RESET_NUM", "Reset Queue Counter");
+            });
+        };
+
+        window.wipeTotal = () => {
+            const c = prompt("KETIK 'HAPUS' UNTUK MENGHAPUS SEMUA DATA (SLOT & ANTRIAN):");
+            if(c === 'HAPUS') {
+                setDoc(mainRef, {
+                    chargingSlots: [null,null,null,null,null],
+                    waitingQueue: [],
+                    lastTicket: 0,
+                    lastResetDate: new Date().toDateString()
+                });
+                addLog("SUPER", "WIPE_TOTAL", "Database Cleared");
+            }
+        };
+
+        // LOGS
+        onSnapshot(query(logRef, orderBy("timestamp", "desc"), limit(20)), (snap) => {
+            let h = '';
+            snap.forEach(d => {
+                const x = d.data();
+                const time = x.timestamp ? x.timestamp.toDate().toLocaleTimeString() : '-';
+                h += `<div class="log-line"><span style="color:var(--accent)">[${time}] ${x.actor}</span>: ${x.action} - ${x.details}</div>`;
+            });
+            document.getElementById('logContainer').innerHTML = h;
+        });
+
+        function addLog(actor, act, det) {
+            addDoc(logRef, { actor: actor, action: act, details: det, timestamp: new Date() });
+        }
+    </script>
+</body>
+</html>
