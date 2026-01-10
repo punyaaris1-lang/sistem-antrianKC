@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-        /* === VARIABLES === */
+        /* === VARIABLES (THEME KARTIKA CHANDRA) === */
         :root {
             --bg-body: #121212;
             --bg-card: #1e1e1e;
@@ -34,10 +34,10 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* === HEADER (Double Click Disini) === */
+        /* === HEADER (Double Click Admin) === */
         .header { 
             text-align: center; margin-bottom: 25px; border-bottom: 2px solid #333; padding-bottom: 15px; 
-            cursor: pointer; /* Penanda bisa diklik */
+            cursor: pointer;
         }
         .brand-name { font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); margin: 0; }
         .brand-sub { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; }
@@ -49,16 +49,20 @@
         .info-value { font-family: 'Oswald', sans-serif; font-size: 36px; margin-top: 5px; color: var(--text-main); }
         .highlight { color: var(--accent); }
 
-        /* === SLOTS === */
+        /* === SLOTS (5 SLOTS) === */
         .section-title { font-size: 14px; color: var(--text-muted); margin-bottom: 15px; display: flex; justify-content: space-between; }
         .slots-wrapper { display: flex; flex-direction: column; gap: 12px; }
+        
         .slot-card { background: var(--bg-card); border-radius: var(--border-radius); display: flex; overflow: hidden; position: relative; min-height: 85px; border: 1px solid #333; transition: transform 0.2s; }
         .slot-status-bar { width: 6px; background: #333; }
         .slot-content { flex: 1; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
+        
         .slot-id { font-size: 10px; font-weight: bold; color: var(--text-muted); margin-bottom: 4px; }
         .slot-plat { font-family: 'Oswald', sans-serif; font-size: 28px; line-height: 1; color: #fff; }
         .slot-user { font-size: 12px; color: var(--accent); margin-top: 4px; }
-        .status-badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: #333; color: #888; }
+
+        /* STATUS BADGE (TEXT ONLY - CLEAN) */
+        .status-badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: #333; color: #888; display: inline-block; }
         .timer-display { font-family: 'Oswald', sans-serif; font-size: 18px; margin-top: 5px; color: #fff; }
 
         /* STATES */
@@ -71,26 +75,16 @@
         .slot-card.charging .status-badge { background: rgba(255, 159, 28, 0.15); color: var(--accent); animation: pulse 2s infinite; }
         
         .slot-card.myslot { border: 1px solid var(--accent); }
-        .slot-card.myslot .slot-user { font-weight: bold; text-decoration: underline; }
-
-        /* KUDETA BUTTON STYLE */
-        .btn-kudeta {
-            background: rgba(231, 29, 54, 0.1); border: 1px solid var(--danger); color: var(--danger);
-            font-size: 10px; padding: 5px 10px; margin-top: 5px; cursor: pointer; border-radius: 4px;
-            font-weight: bold; width: 100%; animation: pulseRed 1s infinite;
-        }
-
-        /* === QUEUE === */
-        .queue-container { margin-top: 30px; }
-        .queue-item { background: #151515; border-bottom: 1px solid #222; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .queue-item.active { background: rgba(255, 159, 28, 0.05); border-left: 2px solid var(--accent); }
 
         /* === BUTTONS === */
         .fab-container { position: fixed; bottom: 20px; left: 20px; right: 20px; z-index: 100; }
         .btn-main { width: 100%; background: var(--accent); color: #000; font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: bold; text-transform: uppercase; padding: 18px; border: none; border-radius: 50px; box-shadow: 0 10px 20px rgba(255, 159, 28, 0.3); cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .btn-main:active { transform: scale(0.98); }
-        .btn-stop { background: rgba(231, 29, 54, 0.15); color: var(--danger); border: 1px solid var(--danger); }
-        .btn-wait { background: #333; color: #888; cursor: not-allowed; }
+        .btn-kudeta { width:100%; background: rgba(231, 29, 54, 0.1); border: 1px solid var(--danger); color: var(--danger); font-size: 10px; padding: 5px; margin-top: 5px; border-radius: 4px; font-weight: bold; animation: pulseRed 1s infinite; cursor: pointer; }
+
+        /* === QUEUE === */
+        .queue-container { margin-top: 30px; }
+        .queue-item { background: #151515; border-bottom: 1px solid #222; padding: 12px; display: flex; flex-direction: column; gap:5px; margin-bottom:5px; }
+        .queue-item.active { background: rgba(255, 159, 28, 0.05); border-left: 2px solid var(--accent); }
 
         /* === MODAL === */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
@@ -106,7 +100,7 @@
 
     <div class="header" ondblclick="toggleAdmin()">
         <h1 class="brand-name">KARTIKA CHANDRA</h1>
-        <div class="brand-sub">Charging Point System</div>
+        <div class="brand-sub">5 NOZZLES - EV CHARGING</div>
     </div>
 
     <div class="dashboard-grid">
@@ -157,11 +151,11 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, updateDoc, arrayUnion, arrayRemove, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-        // === CONFIG ===
+        // === CONFIG KARTIKA CHANDRA ===
         const STATION_LAT = -6.227226; 
         const STATION_LNG = 106.818741;
-        const MAX_DIST_KM = 0.2; // Radius 200 meter
-        const KUDETA_MINUTES = 60; // Waktu minimum untuk bisa dikudeta
+        const MAX_DIST_KM = 0.2; // 200 Meter
+        const KUDETA_MINUTES = 60; 
 
         const firebaseConfig = {
             apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
@@ -184,37 +178,30 @@
         let amIInQueue = false;
         let timerInterval;
 
-        // === ADMIN SHORTCUT ===
+        // === SHORTCUT ADMIN ===
         window.toggleAdmin = () => {
             const c = prompt("KODE AKSES:");
             if(c === "1131") window.location.href = "admin.html";
             else if(c === "090815") window.location.href = "superadmin.html";
         };
 
-        // === REALTIME & AUTO INIT DATABASE ===
+        // === REALTIME MONITOR ===
         onSnapshot(mainRef, (snap) => {
             if(!snap.exists()) {
-                setDoc(mainRef, {
-                    chargingSlots: [null, null, null, null, null],
-                    waitingQueue: [],
-                    lastTicket: 0,
-                    lastResetDate: new Date().toDateString()
-                });
+                // Auto Init jika kosong
+                setDoc(mainRef, { chargingSlots:[null,null,null,null,null], waitingQueue:[], lastTicket:0, lastResetDate: new Date().toDateString() });
                 return;
             }
-
             const d = snap.data();
             localSlots = d.chargingSlots || [null,null,null,null,null];
             while(localSlots.length < 5) localSlots.push(null);
             localQueue = d.waitingQueue || [];
 
+            // Cek Session
             if(myPlat) {
                 const inSlot = localSlots.some(s => s && s.plat === myPlat);
                 const inQueue = localQueue.some(q => q.plat === myPlat);
-                if (!inSlot && !inQueue) {
-                    localStorage.removeItem('kc_myplat');
-                    myPlat = null;
-                }
+                if (!inSlot && !inQueue) { localStorage.removeItem('kc_myplat'); myPlat = null; }
             }
             updateUI();
         });
@@ -243,14 +230,14 @@
                     div.innerHTML = `
                         <div class="slot-status-bar"></div>
                         <div class="slot-content">
-                            <div style="width:100%;">
+                            <div style="width:100%">
                                 <div class="slot-id">SLOT 0${i+1} ${isMySlot ? '(ANDA)' : ''}</div>
                                 <div class="slot-plat">${s.plat}</div>
                                 <div class="slot-user">${s.userName}</div>
                                 ${kudetaBtn}
                             </div>
                             <div style="text-align:right;">
-                                <div class="status-badge" style="color:var(--accent); background:rgba(255,159,28,0.1);">CHARGING</div>
+                                <div class="status-badge">CHARGING</div>
                                 <div class="timer-display" id="timer-${i}">${diff} m</div>
                             </div>
                         </div>`;
@@ -269,6 +256,7 @@
                 container.appendChild(div);
             });
 
+            // Queue
             const qContainer = document.getElementById('queueListWrapper');
             qContainer.innerHTML = '';
             document.getElementById('totalQueue').innerText = localQueue.length;
@@ -278,25 +266,39 @@
                 const isMe = q.plat === myPlat;
                 const div = document.createElement('div');
                 div.className = `queue-item ${isMe ? 'active' : ''}`;
-                div.innerHTML = `<div><span style="color:var(--accent); font-weight:bold; font-size:16px; margin-right:10px;">#${q.qNo}</span><span style="color:#fff;">${q.plat}</span><div style="font-size:10px; color:#666;">${q.userName}</div></div>${isMe ? '<button onclick="cancelQueue()" style="background:transparent; border:1px solid #555; color:red; font-size:10px; padding:2px 6px;">BATAL</button>' : ''}`;
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <span style="color:var(--accent); font-weight:bold; font-size:16px; margin-right:10px;">#${q.qNo}</span>
+                            <span style="color:#fff;">${q.plat}</span>
+                            <div style="font-size:10px; color:#666;">${q.userName}</div>
+                        </div>
+                        ${isMe ? '<button onclick="cancelQueue()" style="background:transparent; border:1px solid #555; color:red; font-size:10px; padding:2px 6px;">BATAL</button>' : ''}
+                    </div>
+                `;
                 qContainer.appendChild(div);
             });
 
+            // Button
             const btn = document.getElementById('mainBtn');
             if (myActiveSlot !== -1) {
-                btn.className = "btn-main btn-stop"; btn.innerHTML = "<span>⏹</span> STOP CHARGING";
+                btn.className = "btn-main"; btn.style.background = "var(--danger)";
+                btn.innerHTML = "<span>⏹</span> STOP CHARGING";
                 btn.onclick = () => stopCharging(myActiveSlot);
             } else if (amIInQueue) {
-                btn.className = "btn-main btn-wait"; btn.innerHTML = "<span>⏳</span> MENUNGGU ANTRIAN...";
+                btn.className = "btn-main"; btn.style.background = "#333";
+                btn.innerHTML = "<span>⏳</span> MENUNGGU ANTRIAN...";
                 btn.onclick = () => alert("Anda sudah dalam antrian.");
             } else {
-                btn.className = "btn-main"; btn.innerHTML = "<span>📍</span> CEK LOKASI & DAFTAR";
+                btn.className = "btn-main"; btn.style.background = "var(--accent)";
+                btn.innerHTML = "<span>📍</span> CEK LOKASI & DAFTAR";
                 btn.onclick = checkLocationAndRegister;
             }
         }
 
+        // === ACTIONS ===
         window.checkLocationAndRegister = () => {
-            if (localStorage.getItem('kc_myplat')) return alert("Satu HP hanya untuk 1 Plat!");
+            if (localStorage.getItem('kc_myplat')) return alert("Satu HP = 1 Plat!");
             if(!navigator.geolocation) return alert("Browser tidak support GPS.");
             const btn = document.getElementById('mainBtn');
             const oldText = btn.innerHTML;
@@ -305,16 +307,12 @@
             navigator.geolocation.getCurrentPosition((pos) => {
                 const dist = getDist(pos.coords.latitude, pos.coords.longitude, STATION_LAT, STATION_LNG);
                 btn.innerHTML = oldText;
-                if(dist > MAX_DIST_KM) {
-                    alert(`LOKASI TERLALU JAUH! (${(dist*1000).toFixed(0)} m)`);
-                } else {
+                if(dist > MAX_DIST_KM) alert(`LOKASI TERLALU JAUH! (${(dist*1000).toFixed(0)} m)`);
+                else {
                     document.getElementById('loginModal').style.display = 'flex';
                     document.getElementById('inputPlat').focus();
                 }
-            }, (err) => {
-                btn.innerHTML = oldText;
-                alert("GAGAL AKSES GPS.");
-            }, { enableHighAccuracy: true, timeout: 10000 });
+            }, () => { btn.innerHTML = oldText; alert("GAGAL AKSES GPS."); }, { enableHighAccuracy: true });
         };
 
         function getDist(lat1,lon1,lat2,lon2) {
@@ -334,29 +332,24 @@
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
                 if(d.chargingSlots.some(s => s && s.plat === p) || d.waitingQueue.some(q => q.plat === p)) throw "Plat Aktif!";
-                
                 const todayStr = new Date().toDateString();
                 let currentTicket = d.lastTicket || 0;
                 if((d.lastResetDate || "") !== todayStr) currentTicket = 0;
-                
                 const newNo = currentTicket + 1;
-                const newUser = { plat: p, userName: n || "USER", qNo: newNo, entryTime: Date.now() };
-                t.update(mainRef, { waitingQueue: arrayUnion(newUser), lastTicket: newNo, lastResetDate: todayStr });
-            }).then(() => { 
-                localStorage.setItem('kc_myplat', p); myPlat = p; closeModal(); 
-            }).catch(e => alert(e));
+                t.update(mainRef, { waitingQueue: arrayUnion({ plat: p, userName: n||"USER", qNo: newNo, entryTime: Date.now() }), lastTicket: newNo, lastResetDate: todayStr });
+            }).then(() => { localStorage.setItem('kc_myplat', p); myPlat = p; closeModal(); }).catch(e => alert(e));
         };
 
         window.selectSlot = (idx) => {
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
-                if(d.chargingSlots[idx]) throw "Slot penuh!";
+                if(d.chargingSlots[idx]) throw "Penuh!";
                 const qIdx = d.waitingQueue.findIndex(q => q.plat === myPlat);
-                if(qIdx === -1) throw "Sesi hilang.";
-                const userData = d.waitingQueue[qIdx];
+                if(qIdx === -1) throw "Error";
+                const u = d.waitingQueue[qIdx];
                 d.waitingQueue.splice(qIdx, 1);
-                userData.startTime = Date.now();
-                d.chargingSlots[idx] = userData;
+                u.startTime = Date.now();
+                d.chargingSlots[idx] = u;
                 t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
             }).catch(e => alert(e));
         };
@@ -368,9 +361,9 @@
                 const u = d.chargingSlots[idx];
                 if(u) addDoc(histRef, { ...u, finishTime: new Date(), status: 'FINISHED' });
                 d.chargingSlots[idx] = null;
-                const isQueueEmpty = d.waitingQueue.length === 0;
-                const isAllSlotsEmpty = d.chargingSlots.every(s => s === null);
-                if(isQueueEmpty && isAllSlotsEmpty) t.update(mainRef, { chargingSlots: d.chargingSlots, lastTicket: 0 });
+                const isQ = d.waitingQueue.length === 0;
+                const isS = d.chargingSlots.every(s => s === null);
+                if(isQ && isS) t.update(mainRef, { chargingSlots: d.chargingSlots, lastTicket: 0 });
                 else t.update(mainRef, { chargingSlots: d.chargingSlots });
             }).then(() => { localStorage.removeItem('kc_myplat'); myPlat = null; clearInterval(timerInterval); });
         };
@@ -388,16 +381,16 @@
             if(!confirm(`AMBIL ALIH SLOT ${idx+1}?`)) return;
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
-                const targetUser = d.chargingSlots[idx];
-                if (!targetUser || targetUser.plat !== targetPlat) throw "Slot berubah!";
-                const diff = Math.floor((Date.now() - targetUser.startTime) / 60000);
+                const u = d.chargingSlots[idx];
+                if (!u || u.plat !== targetPlat) throw "Slot berubah!";
+                const diff = Math.floor((Date.now() - u.startTime) / 60000);
                 if (diff < KUDETA_MINUTES) throw "Belum 60 menit!";
                 const qIdx = d.waitingQueue.findIndex(q => q.plat === myPlat);
-                if (qIdx === -1) throw "Harus antri dulu.";
-                const myData = d.waitingQueue[qIdx];
-                addDoc(histRef, { ...targetUser, finishTime: new Date(), status: `KUDETA_BY_${myPlat}` });
-                myData.startTime = Date.now();
-                d.chargingSlots[idx] = myData;
+                if (qIdx === -1) throw "Harus antri.";
+                const me = d.waitingQueue[qIdx];
+                addDoc(histRef, { ...u, finishTime: new Date(), status: `KUDETA_BY_${myPlat}` });
+                me.startTime = Date.now();
+                d.chargingSlots[idx] = me;
                 d.waitingQueue.splice(qIdx, 1);
                 t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
             }).then(() => alert("BERHASIL!")).catch(e => alert(e));

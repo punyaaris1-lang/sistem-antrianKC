@@ -17,7 +17,7 @@
             --accent-glow: rgba(255, 159, 28, 0.4);
             --text-main: #ffffff;
             --text-muted: #888888;
-            --success: #2EC4B6; /* Teal Green */
+            --success: #2EC4B6;
             --danger: #E71D36;
             --border-radius: 12px;
         }
@@ -36,7 +36,6 @@
 
         /* === HEADER === */
         .header {
-            text-align: center;
             margin-bottom: 20px;
             border-bottom: 1px solid #333;
             padding-bottom: 15px;
@@ -46,6 +45,13 @@
         }
         .brand-name { font-family: 'Oswald', sans-serif; font-size: 24px; letter-spacing: 1px; color: var(--text-main); margin: 0; }
         .brand-sub { font-size: 10px; color: var(--accent); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; }
+
+        .header-actions {
+            display: flex;
+            gap: 5px;
+            align-items: flex-end;
+            flex-direction: column;
+        }
 
         /* === CARDS & BOXES === */
         .box {
@@ -79,6 +85,7 @@
         .btn-red { background: rgba(231, 29, 54, 0.1); color: var(--danger); border: 1px solid var(--danger); }
         .btn-red-fill { background: var(--danger); color: #fff; }
         .btn-green { background: rgba(46, 196, 182, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .btn-blue { background: #333; color: #fff; border: 1px solid #555; }
         .btn-mini { padding: 4px 8px; font-size: 10px; margin: 2px; }
         .btn-outline { background: transparent; border: 1px solid #555; color: #aaa; }
 
@@ -170,10 +177,11 @@
         <div>
             <h1 class="brand-name">KARTIKA CHANDRA</h1>
             <div class="brand-sub">ADMINISTRATION PANEL</div>
+            <div id="displayAdminName" style="color:#666; font-size:10px; margin-top:5px;">User: -</div>
         </div>
-        <div>
-            <div id="displayAdminName" style="color:#666; font-size:10px; text-align:right;">User: -</div>
-            <button onclick="logout()" class="btn-red-fill" style="padding: 5px 10px; font-size:10px; margin-top:5px;">KELUAR</button>
+        <div class="header-actions">
+            <button onclick="window.location.href='antrian.html'" class="btn-blue" style="padding: 6px 10px;">👁️ LIHAT DEPAN</button>
+            <button onclick="logout()" class="btn-red-fill" style="padding: 6px 10px;">KELUAR</button>
         </div>
     </div>
 
@@ -198,13 +206,18 @@
             </div>
 
         <div style="background:#111; padding:10px; border-radius:8px; border:1px solid #333;">
-            <div style="color:#888; margin-bottom:5px; font-size:10px;">INPUT MANUAL (TANPA SCAN):</div>
+            <div style="color:var(--accent); margin-bottom:5px; font-size:11px; font-weight:bold;">
+                ⚡ INPUT MANUAL (BYPASS GPS / JARAK JAUH)
+            </div>
+            <div style="color:#666; font-size:10px; margin-bottom:10px;">
+                Gunakan fitur ini untuk mendaftarkan member tanpa batasan lokasi.
+            </div>
             <div style="display:flex; gap:5px;">
                 <input id="newPlat" placeholder="PLAT (CONTOH: B 1234)" style="flex:1; text-transform:uppercase;">
                 <input id="newName" placeholder="NAMA USER" style="flex:1; text-transform:uppercase;">
             </div>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-top:5px;">
-                <button onclick="askConfirm('Tambah ke Antrian?', () => manualAdd('queue'))" class="btn-green">+ ANTRIAN</button>
+                <button onclick="askConfirm('Tambah ke Antrian (Bypass GPS)?', () => manualAdd('queue'))" class="btn-green">+ ANTRIAN</button>
                 <div style="display:grid; grid-template-columns: repeat(5, 1fr); gap:2px;">
                     <button onclick="askConfirm('Force Masuk Slot 1?', () => manualAdd(0))" class="btn-main btn-mini">S1</button>
                     <button onclick="askConfirm('Force Masuk Slot 2?', () => manualAdd(1))" class="btn-main btn-mini">S2</button>
@@ -241,7 +254,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, query, orderBy, limit, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-        // CONFIG BARU (KARTIKA CHANDRA)
+        // CONFIG KARTIKA CHANDRA
         const firebaseConfig = {
             apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
             authDomain: "kartikachandrafc.firebaseapp.com",
@@ -300,14 +313,12 @@
         // === REALTIME MONITOR ===
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) {
-                // Inisialisasi jika DB kosong (Auto Setup 5 Slot)
                 setDoc(mainRef, { chargingSlots:[null,null,null,null,null], waitingQueue:[], recycledNumbers:[], lastTicket:0 });
                 return;
             }
             const d = snap.data();
-            // Ensure 5 slots logic
             cachedSlots = d.chargingSlots || [null,null,null,null,null];
-            while(cachedSlots.length < 5) cachedSlots.push(null); // Safety fill
+            while(cachedSlots.length < 5) cachedSlots.push(null);
 
             cachedQueue = d.waitingQueue || [];
             
@@ -322,7 +333,6 @@
             cachedSlots.forEach((s, i) => {
                 const div = document.createElement('div');
                 if(s) {
-                    // Ada User
                     let badge = s.role ? `<span class="role-badge">${s.role}</span>` : '';
                     div.className = 'slot-card active';
                     div.innerHTML = `
@@ -337,7 +347,6 @@
                         </div>
                     `;
                 } else {
-                    // Kosong
                     div.className = 'slot-card';
                     div.innerHTML = `
                         <div style="opacity:0.5;">
@@ -355,7 +364,7 @@
 
         window.manualFillFocus = (i) => {
             document.getElementById('newPlat').focus();
-            alert(`Silakan isi kolom Input Manual di bawah, lalu tekan tombol 'S${i+1}' kecil.`);
+            alert(`Silakan isi kolom Input Manual (Bypass GPS) di bawah, lalu tekan tombol 'S${i+1}' kecil.`);
         };
 
         function renderQueue() {
@@ -389,7 +398,7 @@
             tbl.innerHTML = h + `</table>`;
         }
 
-        // === LOGIC ACTIONS ===
+        // === LOGIC ACTIONS (BYPASS GPS & MANUAL) ===
 
         window.manualAdd = async (target) => {
             const p = document.getElementById('newPlat').value.toUpperCase().trim();
@@ -405,7 +414,11 @@
                 // Cek duplikat
                 if([...slots, ...(d.waitingQueue||[])].some(u => u && u.plat === p)) throw "Plat Sudah Ada di System!";
 
-                let newNo = (d.recycledNumbers||[]).length > 0 ? d.recycledNumbers.sort((a,b)=>a-b).shift() : (d.lastTicket||0)+1;
+                // Reset logic harian
+                const todayStr = new Date().toDateString();
+                let currentTicket = d.lastTicket || 0;
+                if((d.lastResetDate || "") !== todayStr) currentTicket = 0;
+                let newNo = currentTicket + 1;
 
                 const u = { plat:p, userName:n || "USER", qNo:newNo, entryTime:Date.now(), role: "ADMIN_INPUT" };
 
@@ -423,10 +436,11 @@
                     waitingQueue: d.waitingQueue || [], 
                     chargingSlots: slots, 
                     recycledNumbers: d.recycledNumbers||[], 
-                    lastTicket: Math.max(d.lastTicket||0, newNo) 
+                    lastTicket: Math.max(d.lastTicket||0, newNo),
+                    lastResetDate: todayStr
                 }, {merge:true});
 
-                addLog("ADMIN", "MANUAL_INPUT", `Added ${p} to ${target==='queue'?'Queue':'Slot '+(target+1)}`);
+                addLog("ADMIN", "MANUAL_INPUT", `Added ${p} (Bypass GPS)`);
             }).then(() => {
                 document.getElementById('newPlat').value='';
                 document.getElementById('newName').value='';
@@ -437,20 +451,14 @@
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
                 let slots = d.chargingSlots || [null,null,null,null,null];
-                while(slots.length < 5) slots.push(null);
-
                 if(slots[sIdx]) throw "Slot Penuh";
-                
                 const i = d.waitingQueue.findIndex(x => x.plat === p);
                 if(i<0) throw "Data Hilang";
-                
                 const u = d.waitingQueue.splice(i,1)[0];
                 u.startTime = Date.now();
                 slots[sIdx] = u;
-
                 t.set(snapshotRef, { ...d, chargingSlots:slots, backupTime: new Date() });
                 t.update(mainRef, { waitingQueue:d.waitingQueue, chargingSlots:slots });
-                
                 addLog("ADMIN", "PUSH_SLOT", `${p} -> Slot ${sIdx+1}`);
             }).catch(e=>alert(e));
         };
@@ -476,7 +484,7 @@
                 if(!u) return;
                 d.chargingSlots[i] = null;
                 delete u.startTime;
-                d.waitingQueue.unshift(u); // Taruh paling depan
+                d.waitingQueue.unshift(u);
                 t.set(snapshotRef, { ...d, backupTime: new Date() });
                 t.update(mainRef, { chargingSlots:d.chargingSlots, waitingQueue:d.waitingQueue });
                 addLog("ADMIN", "KICK_QUEUE", `Moved ${u.plat} from S${i+1} to Queue`);
@@ -487,15 +495,12 @@
             const s1 = parseInt(document.getElementById('moveSrc').value);
             const s2 = parseInt(document.getElementById('moveDest').value);
             if(s1 === s2) return alert("Slot Asal & Tujuan Sama");
-
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
                 const slots = d.chargingSlots;
-                // Swap
                 const temp = slots[s1];
                 slots[s1] = slots[s2];
                 slots[s2] = temp;
-                
                 t.set(snapshotRef, { ...d, backupTime: new Date() });
                 t.update(mainRef, { chargingSlots: slots });
                 addLog("ADMIN", "SWAP", `Swapped S${s1+1} <-> S${s2+1}`);
@@ -507,11 +512,9 @@
                 const d = (await t.get(mainRef)).data();
                 const i = d.waitingQueue.findIndex(x => x.plat === p);
                 if(i > -1) {
-                    const u = d.waitingQueue.splice(i, 1)[0];
-                    let r = d.recycledNumbers || [];
-                    r.push(u.qNo);
+                    d.waitingQueue.splice(i, 1);
                     t.set(snapshotRef, { ...d, backupTime: new Date() });
-                    t.update(mainRef, { waitingQueue: d.waitingQueue, recycledNumbers: r });
+                    t.update(mainRef, { waitingQueue: d.waitingQueue });
                     addLog("ADMIN", "DELETE", `Deleted ${p} from Queue`);
                 }
             });
@@ -553,7 +556,8 @@
                 chargingSlots: snapshotData.chargingSlots || [null,null,null,null,null],
                 waitingQueue: snapshotData.waitingQueue || [],
                 lastTicket: snapshotData.lastTicket || 0,
-                recycledNumbers: snapshotData.recycledNumbers || []
+                recycledNumbers: snapshotData.recycledNumbers || [],
+                lastResetDate: snapshotData.lastResetDate || new Date().toDateString()
             });
             alert("DATA PULIH!");
             document.getElementById('recoveryPanel').style.display = 'none';
@@ -565,7 +569,6 @@
             let h = '';
             snap.forEach(d => {
                 const x = d.data();
-                const actor = (localStorage.getItem(SESSION_KEY) || 'ADMIN').toUpperCase();
                 const time = x.timestamp ? x.timestamp.toDate().toLocaleTimeString() : '';
                 h += `<div class="log-line"><span class="actor-adm">[${x.actor}]</span> ${x.action} - ${x.details} <span style="float:right; opacity:0.5;">${time}</span></div>`;
             });
@@ -576,7 +579,6 @@
             const realActor = localStorage.getItem(SESSION_KEY) || actor;
             addDoc(logRef, { actor: realActor, action: act, details: det, timestamp: new Date() });
         }
-
     </script>
 </body>
 </html>
