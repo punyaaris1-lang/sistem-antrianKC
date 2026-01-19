@@ -3,410 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KARTIKA CHANDRA - EV STATION</title>
+    <title>LIVE MONITOR - FC KARTIKA CHANDRA</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Teko:wght@400;600&family=Rajdhani:wght@600;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
     
     <style>
-        /* === VARIABLES (THEME KARTIKA CHANDRA) === */
-        :root {
-            --bg-body: #121212;
-            --bg-card: #1e1e1e;
-            --bg-card-active: #252525;
-            --accent: #FF9F1C; /* Amber Orange */
-            --accent-glow: rgba(255, 159, 28, 0.4);
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --success: #2EC4B6;
-            --danger: #E71D36;
-            --border-radius: 12px;
+        :root { 
+            --bg: #050505;
+            --gold: #FFD700; 
+            --gold-glow: rgba(255, 215, 0, 0.6);
+            --white-glow: rgba(255, 255, 255, 0.3);
+            --cyan: #00F0FF; /* Aksen sesuai petir di logo */
+        }
+        
+        * { box-sizing: border-box; outline: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Rajdhani', sans-serif; 
+            background: #000;
+            background-image: radial-gradient(circle at center, #151515 0%, #000 100%);
+            color: #fff; margin: 0; padding: 20px; 
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; user-select: none; }
+        .header-container { margin-top: 40px; margin-bottom: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .logo-img { width: 130px; height: 130px; object-fit: contain; filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.2)); animation: floatLogo 4s infinite ease-in-out; margin-bottom: 20px; }
+        @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
+
+        .live-tag { background: rgba(0, 240, 255, 0.1); border: 1px solid var(--cyan); color: var(--cyan); padding: 5px 15px; border-radius: 20px; font-size: 11px; font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
+        .live-dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 8px var(--cyan); animation: blink 1s infinite; }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+        /* Added Cursor Pointer to indicate clickable area implicitly */
+        .main-title { font-family: 'Black Ops One'; font-size: 8vw; max-font-size: 42px; color: #eee; text-transform: uppercase; letter-spacing: 1px; text-align: center; line-height: 1; margin-bottom: 5px; text-shadow: 0 0 20px rgba(255,255,255,0.2); white-space: nowrap; cursor: pointer; }
+        @media (min-width: 450px) { .main-title { font-size: 48px; } }
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
-            padding-bottom: 100px;
-            display: flex; flex-direction: column; min-height: 100vh;
-        }
+        .sub-title { font-size: 14px; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; font-weight: 800; margin-bottom: 40px; text-shadow: 0 0 15px var(--gold-glow); }
 
-        /* === HEADER (Double Click Admin) === */
-        .header { 
-            text-align: center; margin-bottom: 25px; border-bottom: 2px solid #333; padding-bottom: 15px; 
-            cursor: pointer;
-        }
-        .brand-name { font-family: 'Oswald', sans-serif; font-size: 32px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-main); margin: 0; }
-        .brand-sub { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: 4px; text-transform: uppercase; margin-top: 5px; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 450px; margin-bottom: 60px; }
+        .stat-card { background: linear-gradient(160deg, #151515, #050505); border: 1px solid #333; border-radius: 12px; padding: 25px 5px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stat-label { font-size: 11px; color: #888; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
+        .stat-value { font-family: 'Teko'; font-size: 80px; line-height: 0.8; color: #fff; text-shadow: 0 0 25px var(--white-glow); font-weight: 400; }
+        .stat-sub { font-size: 10px; color: #666; font-weight: bold; text-transform: uppercase; margin-top: 10px;}
 
-        /* === INFO DASHBOARD === */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .info-card { background: var(--bg-card); padding: 15px; border-radius: var(--border-radius); text-align: center; border: 1px solid #333; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .info-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-        .info-value { font-family: 'Oswald', sans-serif; font-size: 36px; margin-top: 5px; color: var(--text-main); }
-        .highlight { color: var(--accent); }
-
-        /* === SLOTS (5 SLOTS) === */
-        .section-title { font-size: 14px; color: var(--text-muted); margin-bottom: 15px; display: flex; justify-content: space-between; }
-        .slots-wrapper { display: flex; flex-direction: column; gap: 12px; }
-        
-        .slot-card { background: var(--bg-card); border-radius: var(--border-radius); display: flex; overflow: hidden; position: relative; min-height: 85px; border: 1px solid #333; transition: transform 0.2s; }
-        .slot-status-bar { width: 6px; background: #333; }
-        .slot-content { flex: 1; padding: 15px; display: flex; justify-content: space-between; align-items: center; }
-        
-        .slot-id { font-size: 10px; font-weight: bold; color: var(--text-muted); margin-bottom: 4px; }
-        .slot-plat { font-family: 'Oswald', sans-serif; font-size: 28px; line-height: 1; color: #fff; }
-        .slot-user { font-size: 12px; color: var(--accent); margin-top: 4px; }
-
-        /* STATUS BADGE (TEXT ONLY - CLEAN) */
-        .status-badge { font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: #333; color: #888; display: inline-block; }
-        .timer-display { font-family: 'Oswald', sans-serif; font-size: 18px; margin-top: 5px; color: #fff; }
-
-        /* STATES */
-        .slot-card.available .slot-status-bar { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .slot-card.available .slot-plat { color: #444; font-size: 24px; letter-spacing: 2px; }
-        .slot-card.available .status-badge { background: rgba(46, 196, 182, 0.1); color: var(--success); }
-        
-        .slot-card.charging { background: var(--bg-card-active); border-color: #444; }
-        .slot-card.charging .slot-status-bar { background: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-        .slot-card.charging .status-badge { background: rgba(255, 159, 28, 0.15); color: var(--accent); animation: pulse 2s infinite; }
-        
-        .slot-card.myslot { border: 1px solid var(--accent); }
-
-        /* === BUTTONS === */
-        .fab-container { position: fixed; bottom: 20px; left: 20px; right: 20px; z-index: 100; }
-        .btn-main { width: 100%; background: var(--accent); color: #000; font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: bold; text-transform: uppercase; padding: 18px; border: none; border-radius: 50px; box-shadow: 0 10px 20px rgba(255, 159, 28, 0.3); cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .btn-kudeta { width:100%; background: rgba(231, 29, 54, 0.1); border: 1px solid var(--danger); color: var(--danger); font-size: 10px; padding: 5px; margin-top: 5px; border-radius: 4px; font-weight: bold; animation: pulseRed 1s infinite; cursor: pointer; }
-
-        /* === QUEUE === */
-        .queue-container { margin-top: 30px; }
-        .queue-item { background: #151515; border-bottom: 1px solid #222; padding: 12px; display: flex; flex-direction: column; gap:5px; margin-bottom:5px; }
-        .queue-item.active { background: rgba(255, 159, 28, 0.05); border-left: 2px solid var(--accent); }
-
-        /* === MODAL === */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-box { background: var(--bg-card); width: 85%; max-width: 320px; padding: 25px; border-radius: 15px; border: 1px solid var(--accent); text-align: center; }
-        input { background: transparent; border: none; border-bottom: 2px solid #333; width: 100%; color: #fff; font-family: 'Oswald'; font-size: 32px; text-align: center; margin: 20px 0; text-transform: uppercase; }
-        input:focus { border-color: var(--accent); }
-
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-        @keyframes pulseRed { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .btn-register-glow { width: 100%; max-width: 400px; background: linear-gradient(90deg, #FFD700, #B8860B); color: #000; border: none; padding: 20px 0; font-family: 'Black Ops One'; font-size: 24px; letter-spacing: 2px; border-radius: 50px; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); transition: transform 0.2s; animation: pulseBtn 2s infinite; }
+        .btn-register-glow:active { transform: scale(0.95); }
+        .btn-register-glow::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0.4) 0%, transparent 50%, transparent 100%); transform: rotate(45deg); transition: 0.5s; }
+        @keyframes pulseBtn { 0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); transform: scale(1); } 50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.7); transform: scale(1.02); } 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); transform: scale(1); } }
     </style>
 </head>
 <body>
 
-    <div class="header" ondblclick="toggleAdmin()">
-        <h1 class="brand-name">KARTIKA CHANDRA</h1>
-        <div class="brand-sub">5 NOZZLES - EV CHARGING</div>
+    <div class="header-container">
+        <img src="logo.png" alt="LOGO" class="logo-img">
+        <div class="live-tag"><div class="live-dot"></div> LIVE STATUS</div>
+        
+        <div class="main-title" ondblclick="toggleAdmin()">FC KARTIKA CHANDRA</div>
+        
+        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
     </div>
 
     <div class="dashboard-grid">
-        <div class="info-card">
-            <div class="info-label">Total Antrian</div>
-            <div class="info-value" id="totalQueue">0</div>
+        <div class="stat-card">
+            <div class="stat-label">STATUS SLOT</div>
+            <div class="stat-value" id="slotVal">0/5</div>
+            <div class="stat-sub">TERPAKAI / TOTAL</div>
         </div>
-        <div class="info-card">
-            <div class="info-label">Selanjutnya</div>
-            <div class="info-value highlight" id="nextQueue" style="font-size: 24px;">-</div>
-        </div>
-    </div>
-
-    <div class="section-title">
-        <span>LIVE STATUS</span>
-        <span style="font-size:10px; background:#333; padding:2px 6px; border-radius:4px;">5 SLOTS</span>
-    </div>
-
-    <div class="slots-wrapper" id="slotsContainer">
-        <div style="text-align:center; padding:20px; color:#555;">Connecting...</div>
-    </div>
-
-    <div class="queue-container">
-        <div class="section-title">DAFTAR TUNGGU</div>
-        <div id="queueListWrapper"></div>
-    </div>
-
-    <div class="fab-container">
-        <button id="mainBtn" class="btn-main" onclick="checkLocationAndRegister()">
-            <span>📍</span> CEK LOKASI & DAFTAR
-        </button>
-    </div>
-
-    <div id="loginModal" class="modal-overlay">
-        <div class="modal-box">
-            <div style="font-size:12px; color:var(--accent);">REGISTRASI</div>
-            <h2 style="font-family:'Oswald'; margin:5px 0 20px;">INPUT PLAT NOMOR</h2>
-            <input type="text" id="inputPlat" placeholder="B 1234 XYZ">
-            <input type="text" id="inputNama" placeholder="NAMA ANDA" style="font-size:18px; margin-top:0;">
-            <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="closeModal()" style="flex:1; background:transparent; border:1px solid #555; color:#aaa; padding:10px; border-radius:8px;">BATAL</button>
-                <button onclick="executeReg()" style="flex:1; background:var(--accent); color:#000; border:none; padding:10px; border-radius:8px; font-weight:bold;">DAFTAR</button>
-            </div>
+        <div class="stat-card">
+            <div class="stat-label">TOTAL ANTRIAN</div>
+            <div class="stat-value" id="queueVal">0</div>
+            <div class="stat-sub">MOTOR MENUNGGU</div>
         </div>
     </div>
+
+    <button class="btn-register-glow" onclick="goToSystem()">
+        DAFTAR SEKARANG
+    </button>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, updateDoc, arrayUnion, arrayRemove, setDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // === AUTO REDIRECT IF ALREADY REGISTERED ===
+        if(localStorage.getItem('myPlat')) {
+            window.location.href = "system.html";
+        }
 
         // === CONFIG KARTIKA CHANDRA ===
-        const STATION_LAT = -6.227226; 
-        const STATION_LNG = 106.818741;
-        const MAX_DIST_KM = 50.2; // 200 Meter
-        const KUDETA_MINUTES = 60; 
-
         const firebaseConfig = {
-            apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
-            authDomain: "kartikachandrafc.firebaseapp.com",
-            projectId: "kartikachandrafc",
-            storageBucket: "kartikachandrafc.firebasestorage.app",
-            messagingSenderId: "677704449500",
-            appId: "1:677704449500:web:671df8ae5cf6e66d0b6319"
+          apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
+          authDomain: "kartikachandrafc.firebaseapp.com",
+          projectId: "kartikachandrafc",
+          storageBucket: "kartikachandrafc.firebasestorage.app",
+          messagingSenderId: "677704449500",
+          appId: "1:677704449500:web:671df8ae5cf6e66d0b6319"
         };
-
+        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const mainRef = doc(db, "antrian", "utama");
-        const histRef = collection(db, "riwayatCharging");
+        const TOTAL_SLOTS = 5; // UPDATED TO 5
 
-        let localSlots = [null, null, null, null, null];
-        let localQueue = [];
-        let myPlat = localStorage.getItem('kc_myplat'); 
-        let myActiveSlot = -1;
-        let amIInQueue = false;
-        let timerInterval;
-
-        // === SHORTCUT ADMIN ===
+        // === FITUR ADMIN DOUBLE CLICK ===
         window.toggleAdmin = () => {
-            const c = prompt("KODE AKSES:");
-            if(c === "1131") window.location.href = "admin.html";
-            else if(c === "090815") window.location.href = "superadmin.html";
+            const pass = prompt("MASUKKAN KODE ADMIN:");
+            // Password Admin: 5678
+            if(pass === "5678") {
+                window.location.href = "admin.html";
+            } else if (pass !== null && pass !== "") {
+                alert("PASSWORD SALAH!");
+            }
         };
 
-        // === REALTIME MONITOR ===
         onSnapshot(mainRef, (snap) => {
-            if(!snap.exists()) {
-                // Auto Init jika kosong
-                setDoc(mainRef, { chargingSlots:[null,null,null,null,null], waitingQueue:[], lastTicket:0, lastResetDate: new Date().toDateString() });
-                return;
-            }
+            if (!snap.exists()) return;
             const d = snap.data();
-            localSlots = d.chargingSlots || [null,null,null,null,null];
-            while(localSlots.length < 5) localSlots.push(null);
-            localQueue = d.waitingQueue || [];
+            // Ensure array has 5 items
+            const slots = d.chargingSlots || [null, null, null, null, null];
+            const usedCount = slots.filter(s => s !== null).length;
+            const queue = d.waitingQueue || [];
+            
+            document.getElementById('slotVal').innerText = `${usedCount}/${TOTAL_SLOTS}`;
+            document.getElementById('queueVal').innerText = queue.length;
 
-            // Cek Session
-            if(myPlat) {
-                const inSlot = localSlots.some(s => s && s.plat === myPlat);
-                const inQueue = localQueue.some(q => q.plat === myPlat);
-                if (!inSlot && !inQueue) { localStorage.removeItem('kc_myplat'); myPlat = null; }
+            const slotEl = document.getElementById('slotVal');
+            if(usedCount === TOTAL_SLOTS) {
+                slotEl.style.color = "#FFD700"; slotEl.style.textShadow = "0 0 30px rgba(255, 215, 0, 0.5)";
+            } else {
+                slotEl.style.color = "#fff"; slotEl.style.textShadow = "0 0 25px rgba(255, 255, 255, 0.3)";
             }
-            updateUI();
         });
 
-        function updateUI() {
-            const container = document.getElementById('slotsContainer');
-            container.innerHTML = '';
-            myActiveSlot = -1;
-            amIInQueue = localQueue.some(q => q.plat === myPlat);
-
-            localSlots.forEach((s, i) => {
-                const div = document.createElement('div');
-                const isMySlot = (s && s.plat === myPlat);
-                if(isMySlot) myActiveSlot = i;
-
-                if (s) {
-                    const startTime = s.startTime ? new Date(s.startTime) : new Date();
-                    const diff = Math.floor((new Date() - startTime) / 60000);
-                    
-                    let kudetaBtn = '';
-                    if (amIInQueue && !isMySlot && diff >= KUDETA_MINUTES) {
-                        kudetaBtn = `<button class="btn-kudeta" onclick="attemptKudeta(${i}, '${s.plat}')">⚡ AMBIL ALIH (${diff}m)</button>`;
-                    }
-
-                    div.className = `slot-card charging ${isMySlot ? 'myslot' : ''}`;
-                    div.innerHTML = `
-                        <div class="slot-status-bar"></div>
-                        <div class="slot-content">
-                            <div style="width:100%">
-                                <div class="slot-id">SLOT 0${i+1} ${isMySlot ? '(ANDA)' : ''}</div>
-                                <div class="slot-plat">${s.plat}</div>
-                                <div class="slot-user">${s.userName}</div>
-                                ${kudetaBtn}
-                            </div>
-                            <div style="text-align:right;">
-                                <div class="status-badge">CHARGING</div>
-                                <div class="timer-display" id="timer-${i}">${diff} m</div>
-                            </div>
-                        </div>`;
-                    if(isMySlot) startLocalTimer(i, s.startTime);
-                } else {
-                    const btnPilih = (amIInQueue && myActiveSlot === -1) 
-                        ? `<button onclick="selectSlot(${i})" style="margin-top:5px; background:var(--success); color:#000; border:none; padding:4px 10px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:10px;">PILIH</button>` : '';
-                    div.className = 'slot-card available';
-                    div.innerHTML = `
-                        <div class="slot-status-bar"></div>
-                        <div class="slot-content">
-                            <div><div class="slot-id">SLOT 0${i+1}</div><div class="slot-plat">AVAILABLE</div></div>
-                            <div style="text-align:right;"><div class="status-badge" style="color:var(--success); background:rgba(46,196,182,0.1);">OPEN</div>${btnPilih}</div>
-                        </div>`;
-                }
-                container.appendChild(div);
-            });
-
-            // Queue
-            const qContainer = document.getElementById('queueListWrapper');
-            qContainer.innerHTML = '';
-            document.getElementById('totalQueue').innerText = localQueue.length;
-            document.getElementById('nextQueue').innerText = localQueue.length > 0 ? `#${localQueue[0].qNo} ${localQueue[0].plat}` : '-';
-
-            localQueue.forEach(q => {
-                const isMe = q.plat === myPlat;
-                const div = document.createElement('div');
-                div.className = `queue-item ${isMe ? 'active' : ''}`;
-                div.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div>
-                            <span style="color:var(--accent); font-weight:bold; font-size:16px; margin-right:10px;">#${q.qNo}</span>
-                            <span style="color:#fff;">${q.plat}</span>
-                            <div style="font-size:10px; color:#666;">${q.userName}</div>
-                        </div>
-                        ${isMe ? '<button onclick="cancelQueue()" style="background:transparent; border:1px solid #555; color:red; font-size:10px; padding:2px 6px;">BATAL</button>' : ''}
-                    </div>
-                `;
-                qContainer.appendChild(div);
-            });
-
-            // Button
-            const btn = document.getElementById('mainBtn');
-            if (myActiveSlot !== -1) {
-                btn.className = "btn-main"; btn.style.background = "var(--danger)";
-                btn.innerHTML = "<span>⏹</span> STOP CHARGING";
-                btn.onclick = () => stopCharging(myActiveSlot);
-            } else if (amIInQueue) {
-                btn.className = "btn-main"; btn.style.background = "#333";
-                btn.innerHTML = "<span>⏳</span> MENUNGGU ANTRIAN...";
-                btn.onclick = () => alert("Anda sudah dalam antrian.");
-            } else {
-                btn.className = "btn-main"; btn.style.background = "var(--accent)";
-                btn.innerHTML = "<span>📍</span> CEK LOKASI & DAFTAR";
-                btn.onclick = checkLocationAndRegister;
-            }
-        }
-
-        // === ACTIONS ===
-        window.checkLocationAndRegister = () => {
-            if (localStorage.getItem('kc_myplat')) return alert("Satu HP = 1 Plat!");
-            if(!navigator.geolocation) return alert("Browser tidak support GPS.");
-            const btn = document.getElementById('mainBtn');
-            const oldText = btn.innerHTML;
-            btn.innerHTML = "<span>🛰</span> MENCARI SINYAL...";
-            
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const dist = getDist(pos.coords.latitude, pos.coords.longitude, STATION_LAT, STATION_LNG);
-                btn.innerHTML = oldText;
-                if(dist > MAX_DIST_KM) alert(`LOKASI TERLALU JAUH! (${(dist*1000).toFixed(0)} m)`);
-                else {
-                    document.getElementById('loginModal').style.display = 'flex';
-                    document.getElementById('inputPlat').focus();
-                }
-            }, () => { btn.innerHTML = oldText; alert("GAGAL AKSES GPS."); }, { enableHighAccuracy: true });
+        window.goToSystem = () => {
+            window.location.href = "system.html?action=register"; 
         };
-
-        function getDist(lat1,lon1,lat2,lon2) {
-            const R = 6371; 
-            const dLat = (lat2-lat1)*Math.PI/180;
-            const dLon = (lon2-lon1)*Math.PI/180; 
-            const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2); 
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            return R * c;
-        }
-
-        window.executeReg = async () => {
-            const p = document.getElementById('inputPlat').value.toUpperCase().trim();
-            const n = document.getElementById('inputNama').value.toUpperCase().trim();
-            if(p.length < 3) return alert("Plat Pendek!");
-
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                if(d.chargingSlots.some(s => s && s.plat === p) || d.waitingQueue.some(q => q.plat === p)) throw "Plat Aktif!";
-                const todayStr = new Date().toDateString();
-                let currentTicket = d.lastTicket || 0;
-                if((d.lastResetDate || "") !== todayStr) currentTicket = 0;
-                const newNo = currentTicket + 1;
-                t.update(mainRef, { waitingQueue: arrayUnion({ plat: p, userName: n||"USER", qNo: newNo, entryTime: Date.now() }), lastTicket: newNo, lastResetDate: todayStr });
-            }).then(() => { localStorage.setItem('kc_myplat', p); myPlat = p; closeModal(); }).catch(e => alert(e));
-        };
-
-        window.selectSlot = (idx) => {
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                if(d.chargingSlots[idx]) throw "Penuh!";
-                const qIdx = d.waitingQueue.findIndex(q => q.plat === myPlat);
-                if(qIdx === -1) throw "Error";
-                const u = d.waitingQueue[qIdx];
-                d.waitingQueue.splice(qIdx, 1);
-                u.startTime = Date.now();
-                d.chargingSlots[idx] = u;
-                t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
-            }).catch(e => alert(e));
-        };
-
-        window.stopCharging = (idx) => {
-            if(!confirm("Selesai?")) return;
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                const u = d.chargingSlots[idx];
-                if(u) addDoc(histRef, { ...u, finishTime: new Date(), status: 'FINISHED' });
-                d.chargingSlots[idx] = null;
-                const isQ = d.waitingQueue.length === 0;
-                const isS = d.chargingSlots.every(s => s === null);
-                if(isQ && isS) t.update(mainRef, { chargingSlots: d.chargingSlots, lastTicket: 0 });
-                else t.update(mainRef, { chargingSlots: d.chargingSlots });
-            }).then(() => { localStorage.removeItem('kc_myplat'); myPlat = null; clearInterval(timerInterval); });
-        };
-
-        window.cancelQueue = () => {
-            if(!confirm("Batal?")) return;
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                const q = d.waitingQueue.find(x => x.plat === myPlat);
-                if(q) t.update(mainRef, { waitingQueue: arrayRemove(q) });
-            }).then(() => { localStorage.removeItem('kc_myplat'); myPlat = null; });
-        };
-
-        window.attemptKudeta = (idx, targetPlat) => {
-            if(!confirm(`AMBIL ALIH SLOT ${idx+1}?`)) return;
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                const u = d.chargingSlots[idx];
-                if (!u || u.plat !== targetPlat) throw "Slot berubah!";
-                const diff = Math.floor((Date.now() - u.startTime) / 60000);
-                if (diff < KUDETA_MINUTES) throw "Belum 60 menit!";
-                const qIdx = d.waitingQueue.findIndex(q => q.plat === myPlat);
-                if (qIdx === -1) throw "Harus antri.";
-                const me = d.waitingQueue[qIdx];
-                addDoc(histRef, { ...u, finishTime: new Date(), status: `KUDETA_BY_${myPlat}` });
-                me.startTime = Date.now();
-                d.chargingSlots[idx] = me;
-                d.waitingQueue.splice(qIdx, 1);
-                t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
-            }).then(() => alert("BERHASIL!")).catch(e => alert(e));
-        };
-
-        window.closeModal = () => document.getElementById('loginModal').style.display = 'none';
-        function startLocalTimer(idx, startTime) {
-            if(timerInterval) clearInterval(timerInterval);
-            const el = document.getElementById(`timer-${idx}`);
-            if(!el) return;
-            timerInterval = setInterval(() => {
-                const s = startTime ? new Date(startTime) : new Date();
-                const diff = Math.floor((new Date() - s) / 60000);
-                el.innerText = diff + " m";
-            }, 1000);
-        }
     </script>
 </body>
 </html>
