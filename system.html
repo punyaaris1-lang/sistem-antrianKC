@@ -14,7 +14,6 @@
     <style>
         :root { 
             --bg: #050505; 
-            /* WARNA EMAS BARU (LEBIH LUX, TIDAK KUNING) */
             --primary: #D4AF37; 
             --primary-dim: rgba(212, 175, 55, 0.15);
             --accent: #FF003C;        
@@ -30,7 +29,6 @@
         body { 
             font-family: var(--font-tech); 
             background: #020205;
-            /* Update background gradient dengan emas baru */
             background-image: 
                 linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
@@ -39,26 +37,21 @@
             min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* --- LOADING & BLOCKER --- */
         #gate-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-        /* --- HEADER (ICON INFO SUDAH DIHAPUS) --- */
         .header { text-align: center; margin-bottom: 30px; margin-top: 10px; cursor: pointer; position: relative; z-index: 5; } 
         .main-title { font-family: var(--font-tech); font-weight: 900; font-size: 42px; line-height: 0.9; color: #fff; text-shadow: 0 0 25px var(--primary-dim); letter-spacing: 2px; text-transform: uppercase; }
         .sub-title { font-family: var(--font-head); font-size: 10px; color: var(--primary); letter-spacing: 4px; font-weight: 800; text-transform: uppercase; margin-top: 10px; background: rgba(212, 175, 55, 0.1); padding: 4px 15px; display: inline-block; }
 
-        /* --- QUEUE BAR --- */
         .queue-bar-wrapper { width: 100%; margin-bottom: 25px; cursor: pointer; }
         .queue-bar { background: linear-gradient(90deg, rgba(30, 25, 0, 0.9), rgba(0,0,0,0.9)); clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); border-left: 6px solid var(--primary); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .qb-lbl { font-size: 11px; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; font-weight: 800; font-family: var(--font-head); }
         .qb-val { font-family: var(--font-tech); font-weight:700; font-size: 24px; color: #fff; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.5); text-transform: uppercase; }
         .qb-tot { font-family: var(--font-tech); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
 
-        /* --- SLOT CONTAINER --- */
         .slot-container { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .armor-card { width: 100%; min-height: 95px; position: relative; background: linear-gradient(135deg, #0a1015 0%, #000 100%); clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); margin-bottom: 2px; transition: all 0.3s; }
         .armor-card::before { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px #333; pointer-events: none; z-index: 1; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
-        /* Update warna aktif dengan emas baru */
         .armor-card.active { background: linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, #0a0805 100%); }
         .armor-card.active::before { box-shadow: inset 0 0 0 2px var(--primary); }
         .armor-inner { display: flex; align-items: center; height: 100%; width: 100%; padding: 0; position: relative; z-index: 2; }
@@ -67,10 +60,9 @@
         .armor-info { flex: 1; padding: 0 12px; display: flex; flex-direction: column; justify-content: center; min-width: 0; }
         .info-name { font-family: var(--font-head); font-weight: 700; font-size: 10px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .info-plat { font-family: var(--font-num); font-size: 32px; line-height: 0.9; color: #fff; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
         .armor-badge { width: 100px; flex-shrink: 0; height: 100%; display: flex; align-items: center; justify-content: center; padding-right: 15px; }
 
-        /* --- TACTICAL BADGE SYSTEM --- */
+        /* --- TACTICAL BADGE SYSTEM (KC EDITION) --- */
         .badge-container { display: flex; align-items: center; justify-content: flex-end; width: 100px; }
         .tactical-badge { display: flex; align-items: center; width: 90px; height: 38px; background: rgba(0,0,0,0.8); border: 1px solid #333; position: relative; overflow: hidden; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); }
         .tb-icon { width: 30px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #000; clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%); margin-right: -2px; z-index: 2; position: relative; }
@@ -78,29 +70,22 @@
         .tb-label { font-size: 6px; letter-spacing: 1px; color: #aaa; text-transform: uppercase; font-family: var(--font-head); line-height: 1; margin-bottom: 2px; }
         .tb-role { font-size: 9px; font-weight: 800; text-transform: uppercase; line-height: 0.9; font-family: var(--font-tech); letter-spacing: 0.5px; }
 
-        /* BADGE VARIANTS - UPDATE GOLD */
-        .b-platinum { border-color: #E5E4E2; } .b-platinum .tb-icon { background: linear-gradient(135deg, #E5E4E2, #708090); color: #000; } .b-platinum .tb-role { color: #E5E4E2; }
-        .b-gold { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); } .b-gold .tb-icon { background: linear-gradient(135deg, var(--gold), #B8860B); color: #000; } .b-gold .tb-role { color: var(--gold); } .b-gold::after { content:''; position:absolute; top:-50%; left:-100%; width:20px; height:200%; background:rgba(255,255,255,0.5); transform:rotate(25deg); animation:shinePass 3s infinite; }
-        .b-cyan { border-color: #00F0FF; } .b-cyan .tb-icon { background: linear-gradient(135deg, #00F0FF, #0088AA); color: #000; } .b-cyan .tb-role { color: #00F0FF; }
-        .b-red { border-color: #FF003C; } .b-red .tb-icon { background: repeating-linear-gradient(45deg, #FF003C, #FF003C 5px, #900 5px, #900 10px); color: #fff; } .b-red .tb-role { color: #FF003C; }
-        .b-blue { border-color: #1E90FF; } .b-blue .tb-icon { background: #1E90FF; color: #fff; } .b-blue .tb-role { color: #1E90FF; }
-        .b-tech { border-color: #39FF14; } .b-tech .tb-icon { background: #39FF14; color: #000; } .b-tech .tb-role { color: #39FF14; }
+        /* BADGE VARIANTS KC */
+        .b-kc-member { border-color: #A67C00; } .b-kc-member .tb-icon { background: linear-gradient(135deg, #A67C00, #594300); color: #fff; } .b-kc-member .tb-role { color: #D4AF37; }
+        .b-gold { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); } .b-gold .tb-icon { background: linear-gradient(135deg, var(--gold), #8B6508); color: #000; } .b-gold .tb-role { color: var(--gold); } .b-gold::after { content:''; position:absolute; top:-50%; left:-100%; width:20px; height:200%; background:rgba(255,255,255,0.5); transform:rotate(25deg); animation:shinePass 3s infinite; }
         .b-vip { border-color: #9932CC; box-shadow: 0 0 15px rgba(153, 50, 204, 0.3); } .b-vip .tb-icon { background: linear-gradient(135deg, #DA70D6, #800080); color: #fff; } .b-vip .tb-role { color: #DA70D6; }
         .b-donatur { border-color: #00FF7F; } .b-donatur .tb-icon { background: linear-gradient(135deg, #00FF7F, #006400); color: #000; } .b-donatur .tb-role { color: #00FF7F; }
-        .b-family { border-color: #fff; box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); } .b-family .tb-icon { background: linear-gradient(135deg, #ffffff 0%, #bdc3c7 100%); color: #D80027; } .b-family .tb-icon i { animation: heartBeat 1.5s infinite ease-in-out; } .b-family .tb-role { color: #fff; }
         
         .b-ninja { border-color: #333; background: #000; position: relative; overflow: hidden; box-shadow: 0 0 8px rgba(0,0,0,0.8); }
         .b-ninja::after { content: ''; position: absolute; top: 0; left: -150%; width: 20px; height: 100%; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px #fff; transform: skewX(-30deg); animation: slashKill 3s infinite ease-in; z-index: 5; }
-        .b-ninja .tb-icon { background: #111; color: #ccc; z-index: 2; border-right: 1px solid #333; }
-        .b-ninja .tb-icon i { animation: ninjaShunpo 3s infinite linear; text-shadow: 0 0 5px #fff; }
+        .b-ninja .tb-icon { background: #111; color: var(--gold); z-index: 2; border-right: 1px solid #333; }
+        .b-ninja .tb-icon i { animation: ninjaShunpo 3s infinite linear; text-shadow: 0 0 5px var(--gold); }
         .b-ninja .tb-role { color: #aaa; font-family: var(--font-head); letter-spacing: 2px; z-index: 2; font-weight: 900; font-size: 8px; }
 
-        /* --- ACTIONS --- */
         .bottom-action-area { flex: 1; min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px;}
         .btn-kudeta { position: absolute; right: 5px; top: 5px; background: rgba(255,0,0,0.9); border: 2px solid #fff; color: #fff; font-size: 9px; padding: 4px 8px; font-weight: 900; cursor: pointer; transform: skewX(-10deg); font-family: var(--font-tech); letter-spacing: 1px; box-shadow: 0 0 15px #ff0000; animation: blinkKudeta 0.5s infinite; z-index: 20; }
         .mini-timer { position: absolute; bottom: 5px; right: 10px; font-size: 10px; color: #888; font-family: var(--font-head); letter-spacing: 1px; font-weight: 600; }
 
-        /* --- MODALS --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal-box { width: 90%; max-width: 380px; background: #020508; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); padding: 30px; text-align: center; position: relative; }
         .modal-box::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 2px var(--primary); pointer-events: none; z-index: 1; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
@@ -111,10 +96,7 @@
         .btn-yes { background: var(--primary); color: #000; }
         .btn-no { background: #222; color: var(--accent); border: 1px solid var(--accent); }
         
-        /* TOMBOL CANCEL (BESAR & JELAS) */
-        .btn-cancel-q { 
-            margin-top: 15px; background: rgba(255, 0, 60, 0.15); border: 2px solid var(--accent); color: var(--accent); padding: 15px 30px; font-family: var(--font-head); font-size: 14px; font-weight: 900; cursor: pointer; letter-spacing: 2px; display: none; box-shadow: 0 0 15px rgba(255, 0, 60, 0.2); clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); width: 100%;
-        }
+        .btn-cancel-q { margin-top: 15px; background: rgba(255, 0, 60, 0.15); border: 2px solid var(--accent); color: var(--accent); padding: 15px 30px; font-family: var(--font-head); font-size: 14px; font-weight: 900; cursor: pointer; letter-spacing: 2px; display: none; box-shadow: 0 0 15px rgba(255, 0, 60, 0.2); clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); width: 100%; }
         .btn-cancel-q:active { transform: scale(0.98); background: var(--accent); color: #000; }
 
         .queue-list-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; flex-direction: column; padding: 20px; backdrop-filter: blur(5px); align-items: center; justify-content: center; }
@@ -124,7 +106,6 @@
         .btn-close-mini { width: 100%; padding: 10px; background: rgba(255,0,0,0.1); color: var(--accent); border: none; border-top: 1px solid var(--accent); font-family: var(--font-head); font-size: 12px; font-weight: 800; letter-spacing: 2px; cursor: pointer; transition: 0.2s; }
         .btn-close-mini:active { background: var(--accent); color: #000; }
 
-        /* DOCK NAV */
         body { padding-bottom: 90px; } 
         .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(2, 5, 8, 0.98); border-top: 2px solid var(--primary); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 99999; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; transition: 0.3s; height: 100%; cursor: pointer; }
@@ -135,17 +116,12 @@
         .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
         .nav-text { font-family: var(--font-head); font-size: 10px; letter-spacing: 2px; font-weight: 700; margin-top: 5px; }
 
-        /* ANIMATIONS */
         @keyframes shinePass { 0% {left:-100%; opacity:0;} 50% {left:150%; opacity:1;} 100% {left:150%; opacity:0;} }
-        @keyframes pulseCyan { 0%,100% {box-shadow: inset 0 0 5px var(--primary);} 50% {box-shadow: inset 0 0 20px var(--primary);} }
-        @keyframes pulseRed { 0%,100% {box-shadow: inset 0 0 5px var(--accent);} 50% {box-shadow: inset 0 0 15px var(--accent);} }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulseText { 0%,100% {opacity: 1;} 50% {opacity: 0.5;} }
         @keyframes blinkKudeta { 0%, 100% { opacity: 1; transform: skewX(-10deg) scale(1); box-shadow: 0 0 20px #ff0000; } 50% { opacity: 0.6; transform: skewX(-10deg) scale(0.95); box-shadow: 0 0 5px #ff0000; } }
-        @keyframes heartBeat { 0% {transform:scale(1);} 14% {transform:scale(1.15);} 28% {transform:scale(1);} 42% {transform:scale(1.15);} 70% {transform:scale(1);} }
         @keyframes slashKill { 0%, 70% { left: -50%; opacity: 0; } 75% { opacity: 1; } 80% { left: 150%; opacity: 0; } 100% { left: 150%; opacity: 0; } }
         @keyframes ninjaShunpo { 0%, 75% { opacity: 1; transform: scale(1); filter: blur(0); } 78% { opacity: 0; transform: scale(1.2) translateX(20px); filter: blur(5px); } 85% { opacity: 0; transform: translateX(-20px); } 90% { opacity: 1; transform: scale(1) translateX(0); filter: blur(0); } 100% { opacity: 1; } }
-        @keyframes pulseIcon { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
     </style>
 </head>
 <body>
@@ -223,7 +199,6 @@
           appId: "1:677704449500:web:671df8ae5cf6e66d0b6319"
         };
         
-        // KOORDINAT KARTIKA CHANDRA
         const STATION_LAT = -6.2285953; 
         const STATION_LNG = 106.819502; 
         const MAX_DIST_KM = 0.2; 
@@ -234,10 +209,9 @@
         const historyRef = collection(db, "riwayatCharging");
         const logRef = collection(db, "activityLog");
 
-        const TOTAL_SLOTS = 5; // <--- SLOT JADI 5
+        const TOTAL_SLOTS = 5; 
         const $ = (id) => document.getElementById(id);
         
-        // ARRAY DEFAULT 5 SLOT
         let localSlots = [null, null, null, null, null]; 
         let localQueue = []; 
 
@@ -246,19 +220,17 @@
         function addUserLog(action, details) { addDoc(logRef, { actor: myPlat || "GUEST", action: action, details: details, timestamp: new Date() }).catch(e=>{}); }
         function calculateDist(lat1, lon1, lat2, lon2) { const R = 6371; const dLat = (lat2-lat1)*Math.PI/180; const dLon = (lon2-lon1)*Math.PI/180; const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2; return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); }
 
-        // --- GATEKEEPER ---
         const myPlat = localStorage.getItem('myPlat');
         const isSuperAdmin = localStorage.getItem('sa_sess');
 
         if(!myPlat && !isSuperAdmin) {
-            window.location.href = 'index.html'; // Balik ke halaman depan
+            window.location.href = 'index.html'; 
         } else {
             setTimeout(() => { 
                 const g = document.getElementById('gate-screen'); 
                 if(g) g.style.display = 'none'; 
             }, 1000);
             
-            // AUTO FIX BADGE
             if(myPlat && !isSuperAdmin) {
                 setTimeout(() => { checkAndFixMyRole(myPlat); }, 2000);
             }
@@ -276,7 +248,6 @@
             }
         }
 
-        // --- FUNGSI AUTO FIX BADGE ---
         async function checkAndFixMyRole(plat) {
             try {
                 const cleanPlat = plat.replace(/[^A-Z0-9]/g, '');
@@ -293,13 +264,12 @@
                         if (d.chargingSlots) {
                             d.chargingSlots.forEach(s => { if (s && cleanStr(s.plat) === cleanStr(plat) && s.role !== correctRole) { s.role = correctRole; updated = true; } });
                         }
-                        if (updated) { t.update(mainRef, { waitingQueue: d.waitingQueue, chargingSlots: d.chargingSlots }); console.log("BADGE FIXED"); }
+                        if (updated) { t.update(mainRef, { waitingQueue: d.waitingQueue, chargingSlots: d.chargingSlots }); }
                     });
                 }
             } catch (e) { console.log(e); }
         }
 
-        // PASSWORD ADMIN 5588
         window.toggleAdmin = () => { 
             const pass = prompt("ADMIN CODE:"); 
             if(pass === "5588") window.location.href = "admin.html"; 
@@ -311,17 +281,11 @@
         window.closeCustomModal = () => { $('customModal').style.display = 'none'; };
         window.closeModal = (id) => { $(id).style.display = 'none'; };
 
-        // FIREBASE LISTENER UTAMA
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) return; 
             const d = snap.data(); 
-            // Pastikan mengambil 5 slot dari database atau array kosong 5 biji
             localSlots = d.chargingSlots || [null, null, null, null, null]; 
             localQueue = d.waitingQueue || []; 
-            
-            // CATATAN: Fungsi localStorage.removeItem("myPlat") ("Validasi Hantu") sudah dihapus!
-            // Jadi sesi akan awet walaupun user keluar browser lalu buka lagi.
-
             updateUI();
         });
 
@@ -382,20 +346,25 @@
             $('nextQDisplay').innerText = localQueue.length > 0 ? localQueue[0].userName : "--";
         }
 
+        // --- SISTEM BADGE UPDATE: HILANGKAN "KELUARGA" ---
         function getBadgeHTML(r) {
             if (!r || r === "GUEST") return ""; 
             if (r.includes("SENYAP") || r.includes("NINJA")) {
                 return `<div class="badge-container"><div class="tactical-badge b-ninja"><div class="tb-icon"><i class="fas fa-user-ninja"></i></div><div class="tb-text"><div class="tb-role" style="font-size:8px;">PASUKAN SENYAP</div></div></div></div>`;
             }
-            if (r.includes("KELUARGA") || r === "MEMBER") {
-                return `<div class="badge-container"><div class="tactical-badge b-family"><div class="tb-icon"><i class="fas fa-heart"></i></div><div class="tb-text"><div class="tb-role">KELUARGA MLU</div></div></div></div>`;
-            }
-            let css = "b-platinum"; let icon = "fa-user"; let label = "MEMBER"; let roleTxt = r;
-            if (r.includes("PEMBINA")) { css="b-platinum"; icon="fa-star"; label="SENIOR"; roleTxt="PEMBINA"; }
+            
+            // SEMUA MEMBER / KELUARGA DIANGGAP SEBAGAI "MEMBER KC" DI SINI
+            let css = "b-kc-member"; let icon = "fa-user"; let label = "MEMBER KC"; let roleTxt = r;
+            
+            // JIKA NAMA ROLENYA "KELUARGA" ATAU "MEMBER", OVERRIDE TEKSNYA JADI "MEMBER" SAJA
+            if (r === "MEMBER" || r.includes("KELUARGA")) { roleTxt = "MEMBER"; }
+            
+            if (r.includes("PEMBINA")) { css="b-gold"; icon="fa-star"; label="SENIOR"; roleTxt="PEMBINA"; }
             else if (r.includes("WAKETUM")) { css="b-gold"; icon="fa-chess-king"; label="CO-LEAD"; roleTxt="WAKETUM"; } 
             else if (r.includes("KETUM")) { css="b-gold"; icon="fa-crown"; label="LEADER"; roleTxt="KETUM"; }
             else if (r.includes("VIP")) { css="b-vip"; icon="fa-gem"; label="GUEST"; roleTxt="VIP"; }
             else if (r.includes("DONATUR")) { css="b-donatur"; icon="fa-hand-holding-usd"; label="SPONSOR"; roleTxt="DONATUR"; }
+            
             return `<div class="badge-container"><div class="tactical-badge ${css}"><div class="tb-icon"><i class="fas ${icon}"></i></div><div class="tb-text">${label ? `<div class="tb-label">${label}</div>` : ''}<div class="tb-role">${roleTxt}</div></div></div></div>`;
         }
 
@@ -416,16 +385,13 @@
         
         window.resetApp = () => showConfirm("RESET APLIKASI?", () => { localStorage.clear(); location.reload(); });
 
-        // --- SCREENSAVER LOGIC (3 MENIT IDLE) ---
         let idleTime = 0;
         window.onclick = () => { idleTime = 0; };
         window.ontouchstart = () => { idleTime = 0; };
         window.onmousemove = () => { idleTime = 0; };
 
-        // Cek setiap detik
         setInterval(() => { 
             idleTime++; 
-            // Jika diam 180 detik (3 menit), pindah ke screensaver FOTO LAMA
             if (idleTime > 180) { 
                 window.location.href = 'screensaver.html'; 
             } 
