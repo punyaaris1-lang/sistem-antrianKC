@@ -1,53 +1,18 @@
-const CACHE_NAME = "fckc-cache-v4"; // Naik ke v4
-const urlsToCache = [
-  "/antrian.html",
-  "/system.html",
-  "/admin.html",
-  "/logo1.png",
-  "/logo2.png"
-];
-
-self.addEventListener("install", event => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      // Menyimpan cache satu per satu agar kalau ada 1 file hilang, aplikasi tetap jalan
-      return Promise.allSettled(
-        urlsToCache.map(url => cache.add(url).catch(err => console.log('Lewati cache:', url)))
-      );
-    })
-  );
+self.addEventListener('install', (e) => {
+  self.skipWaiting(); // Paksa langsung aktif saat itu juga
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName); // Hapus semua cache hantu versi lama
-          }
-        })
-      );
+self.addEventListener('activate', (e) => {
+  // HAPUS SEMUA CACHE LAMA TANPA SISA
+  e.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(keyList.map((key) => caches.delete(key)));
     })
   );
-  self.clients.claim();
+  self.clients.claim(); // Ambil alih kontrol halaman saat ini juga
 });
 
-// LOGIKA SAKTI: NETWORK FIRST, FALLBACK TO CACHE
-self.addEventListener("fetch", event => {
-  event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        // Kalau berhasil tembus internet, simpan data terbaru ke cache
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, networkResponse.clone());
-          return networkResponse;
-        });
-      })
-      .catch(() => {
-        // Kalau internet mati, baru pakai cache memori HP
-        return caches.match(event.request);
-      })
-  );
+self.addEventListener('fetch', (e) => {
+  // 100% BYPASS CACHE - SELALU MINTA KE SERVER (INTERNET)
+  e.respondWith(fetch(e.request));
 });
