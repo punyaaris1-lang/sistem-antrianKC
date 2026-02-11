@@ -513,10 +513,17 @@
         if(batInput) batInput.addEventListener('input', function(e) { let v = this.value.replace(/[^0-9]/g, ''); if(parseInt(v) > 100) v = "100"; this.value = v; });
     </script>
     
-    <script>
+        <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    // Paksa HP untuk selalu mengecek versi terbaru di server
+                    reg.update();
+                    console.log('PWA Siap & Terupdate!');
+                }).catch(err => console.log('PWA Gagal:', err));
+            });
         }
     </script>
+
 </body>
 </html>
