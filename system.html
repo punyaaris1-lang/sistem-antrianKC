@@ -198,7 +198,7 @@
         
         const STATION_LAT = -6.2285953; 
         const STATION_LNG = 106.819502; 
-        const MAX_DIST_KM = 0.2; 
+        const MAX_DIST_KM = 20.2; 
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -232,7 +232,7 @@
                 setTimeout(() => { checkAndFixMyRole(myPlat); }, 2000);
             }
 
-            const AUTO_KICK_KM = 0.3;
+            const AUTO_KICK_KM = 20.3;
             if(navigator.geolocation && !isSuperAdmin) {
                 navigator.geolocation.watchPosition((pos) => {
                     const dist = calculateDist(STATION_LAT, STATION_LNG, pos.coords.latitude, pos.coords.longitude);
