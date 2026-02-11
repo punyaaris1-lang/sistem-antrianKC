@@ -16,7 +16,7 @@
             --bg: #050505; 
             --primary: #D4AF37; 
             --primary-dim: rgba(212, 175, 55, 0.15);
-            --neon: #DFFF00; /* Kuning Stabilo */
+            --neon: #DFFF00; 
             --accent: #FF003C;        
             --gold: #D4AF37;
             
@@ -30,16 +30,11 @@
         body { 
             font-family: var(--font-tech); 
             background: #020205;
-            background-image: 
-                linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            color: #fff; margin: 0; padding: 15px 20px 40px 20px; 
-            min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
+            background-image: linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px; color: #fff; margin: 0; padding: 15px 20px 40px 20px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
 
         #gate-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-
         .header { text-align: center; margin-bottom: 20px; margin-top: 10px; cursor: pointer; position: relative; z-index: 5; } 
         .main-title { font-family: var(--font-tech); font-weight: 900; font-size: 42px; line-height: 0.9; color: #fff; text-shadow: 0 0 25px var(--primary-dim); letter-spacing: 2px; text-transform: uppercase; }
         .sub-title { font-family: var(--font-head); font-size: 10px; color: var(--primary); letter-spacing: 4px; font-weight: 800; text-transform: uppercase; margin-top: 10px; background: rgba(212, 175, 55, 0.1); padding: 4px 15px; display: inline-block; }
@@ -50,26 +45,15 @@
         .qb-val { font-family: var(--font-tech); font-weight:700; font-size: 24px; color: #fff; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,255,255,0.5); text-transform: uppercase; }
         .qb-tot { font-family: var(--font-tech); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
 
-        /* --- GRID SYSTEM 2 KOLOM UNTUK 5 SLOT --- */
         .slot-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
         .slot-container > div:nth-child(5) { grid-column: 1 / -1; }
 
-        .armor-card { 
-            width: 100%; min-height: 140px; position: relative; 
-            background: #050505; 
-            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); 
-            transition: all 0.3s; 
-        }
+        .armor-card { width: 100%; min-height: 140px; position: relative; background: #050505; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s; }
         .armor-card::before { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px #333; pointer-events: none; z-index: 3; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
         .armor-card.active::before { box-shadow: inset 0 0 0 2px var(--gold); }
         .armor-card.empty:hover::before { box-shadow: inset 0 0 0 1px var(--neon); }
 
-        /* PUZZLE LOGO BACKGROUND */
-        .armor-card::after {
-            content: ''; position: absolute; inset: 0;
-            background-image: url('logo1.png'); background-repeat: no-repeat;
-            z-index: 1; pointer-events: none; opacity: 0.15; filter: grayscale(100%); transition: all 0.6s ease-in-out;
-        }
+        .armor-card::after { content: ''; position: absolute; inset: 0; background-image: url('logo1.png'); background-repeat: no-repeat; z-index: 1; pointer-events: none; opacity: 0.15; filter: grayscale(100%); transition: all 0.6s ease-in-out; }
         .armor-card.active::after { opacity: 0.45; filter: grayscale(0%) drop-shadow(0 0 10px rgba(212,175,55,0.5)); }
 
         .slot-container > div:nth-child(1)::after { background-position: 0% 0%; background-size: 200% 300%; }
@@ -80,7 +64,6 @@
 
         .armor-inner { display: flex; flex-direction: column; align-items: center; height: 100%; width: 100%; padding: 15px 12px; position: relative; z-index: 4; text-align: center; }
 
-        /* --- TACTICAL BADGE SYSTEM --- */
         .badge-container { display: flex; align-items: center; justify-content: center; width: 100%; margin-bottom: 5px; }
         .tactical-badge { display: flex; align-items: center; width: 100%; max-width: 120px; height: 32px; background: rgba(0,0,0,0.9); border: 1px solid #444; position: relative; overflow: hidden; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); }
         .tb-icon { width: 30px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #000; clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%); margin-right: -2px; z-index: 2; position: relative; }
@@ -88,28 +71,21 @@
         .tb-label { font-size: 6px; letter-spacing: 1px; color: #aaa; text-transform: uppercase; font-family: var(--font-head); line-height: 1; margin-bottom: 2px; }
         .tb-role { font-size: 9px; font-weight: 800; text-transform: uppercase; line-height: 0.9; font-family: var(--font-tech); letter-spacing: 0.5px; }
 
-        /* BADGE VARIANTS (LENGKAP) */
+        /* WARNA JABATAN PENGURUS */
         .b-platinum { border-color: #E5E4E2; } .b-platinum .tb-icon { background: linear-gradient(135deg, #E5E4E2, #708090); color: #000; } .b-platinum .tb-role { color: #E5E4E2; }
         .b-red { border-color: #FF003C; } .b-red .tb-icon { background: repeating-linear-gradient(45deg, #FF003C, #FF003C 5px, #900 5px, #900 10px); color: #fff; } .b-red .tb-role { color: #FF003C; }
         .b-cyan { border-color: #00F0FF; } .b-cyan .tb-icon { background: linear-gradient(135deg, #00F0FF, #0088AA); color: #000; } .b-cyan .tb-role { color: #00F0FF; }
-        
         .b-kc-member { border-color: #A67C00; } .b-kc-member .tb-icon { background: linear-gradient(135deg, #A67C00, #594300); color: #fff; } .b-kc-member .tb-role { color: #D4AF37; }
         .b-gold { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); } .b-gold .tb-icon { background: linear-gradient(135deg, var(--gold), #8B6508); color: #000; } .b-gold .tb-role { color: var(--gold); } .b-gold::after { content:''; position:absolute; top:-50%; left:-100%; width:20px; height:200%; background:rgba(255,255,255,0.5); transform:rotate(25deg); animation:shinePass 3s infinite; }
         .b-vip { border-color: #9932CC; box-shadow: 0 0 15px rgba(153, 50, 204, 0.3); } .b-vip .tb-icon { background: linear-gradient(135deg, #DA70D6, #800080); color: #fff; } .b-vip .tb-role { color: #DA70D6; }
         .b-donatur { border-color: #00FF7F; } .b-donatur .tb-icon { background: linear-gradient(135deg, #00FF7F, #006400); color: #000; } .b-donatur .tb-role { color: #00FF7F; }
-        
-        .b-ninja { border-color: #333; background: #000; position: relative; overflow: hidden; box-shadow: 0 0 8px rgba(0,0,0,0.8); }
-        .b-ninja::after { content: ''; position: absolute; top: 0; left: -150%; width: 20px; height: 100%; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px #fff; transform: skewX(-30deg); animation: slashKill 3s infinite ease-in; z-index: 5; }
-        .b-ninja .tb-icon { background: #111; color: var(--gold); z-index: 2; border-right: 1px solid #333; }
-        .b-ninja .tb-icon i { animation: ninjaShunpo 3s infinite linear; text-shadow: 0 0 5px var(--gold); }
-        .b-ninja .tb-role { color: #aaa; font-family: var(--font-head); letter-spacing: 2px; z-index: 2; font-weight: 900; font-size: 8px; }
+        .b-ninja { border-color: #333; background: #000; position: relative; overflow: hidden; box-shadow: 0 0 8px rgba(0,0,0,0.8); } .b-ninja::after { content: ''; position: absolute; top: 0; left: -150%; width: 20px; height: 100%; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px #fff; transform: skewX(-30deg); animation: slashKill 3s infinite ease-in; z-index: 5; } .b-ninja .tb-icon { background: #111; color: var(--gold); z-index: 2; border-right: 1px solid #333; } .b-ninja .tb-icon i { animation: ninjaShunpo 3s infinite linear; text-shadow: 0 0 5px var(--gold); } .b-ninja .tb-role { color: #aaa; font-family: var(--font-head); letter-spacing: 2px; z-index: 2; font-weight: 900; font-size: 8px; }
 
         .btn-kudeta { width: 100%; margin-top: 10px; background: rgba(255,0,0,0.9); border: 1px solid #fff; color: #fff; font-size: 10px; padding: 6px 0; font-weight: 900; cursor: pointer; transform: skewX(-5deg); font-family: var(--font-tech); letter-spacing: 1px; box-shadow: 0 0 15px #ff0000; animation: blinkKudeta 0.5s infinite; }
         .btn-pilih { width: 100%; padding: 10px 0; margin-top: auto; background: linear-gradient(135deg, var(--neon), #AACC00); color: #000; border: none; border-radius: 4px; font-family: 'Rajdhani'; font-weight: 900; font-size: 14px; box-shadow: 0 0 15px rgba(223, 255, 0, 0.3); cursor: pointer; transition: 0.2s; position: relative; z-index: 5; }
         .btn-pilih:active { transform: scale(0.95); }
 
         .bottom-action-area { flex: 1; min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 20px;}
-        
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
         .modal-box { width: 90%; max-width: 380px; background: #020508; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); padding: 30px; text-align: center; position: relative; }
         .modal-box::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 2px var(--primary); pointer-events: none; z-index: 1; clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px); }
@@ -119,10 +95,8 @@
         .btn-modal { flex: 1; padding: 12px; font-family: var(--font-head); font-size: 14px; border: none; cursor: pointer; font-weight: bold; letter-spacing: 1px; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); }
         .btn-yes { background: var(--primary); color: #000; }
         .btn-no { background: #222; color: var(--accent); border: 1px solid var(--accent); }
-        
         .btn-cancel-q { margin-top: 15px; background: rgba(255, 0, 60, 0.15); border: 2px solid var(--accent); color: var(--accent); padding: 15px 30px; font-family: var(--font-head); font-size: 14px; font-weight: 900; cursor: pointer; letter-spacing: 2px; display: none; box-shadow: 0 0 15px rgba(255, 0, 60, 0.2); clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); width: 100%; }
         .btn-cancel-q:active { transform: scale(0.98); background: var(--accent); color: #000; }
-
         .queue-list-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 9999; flex-direction: column; padding: 20px; backdrop-filter: blur(5px); align-items: center; justify-content: center; }
         .ql-card { background: #050a10; border: 1px solid var(--primary); width: 100%; max-width: 400px; margin: auto; overflow: hidden; display: flex; flex-direction: column; height: 70vh; box-shadow: 0 0 40px rgba(212, 175, 55, 0.15); position: relative; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
         .ql-card::after { content:''; position:absolute; inset:0; box-shadow: inset 0 0 0 1px var(--primary); pointer-events:none; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
@@ -198,7 +172,7 @@
         
         const STATION_LAT = -6.2285953; 
         const STATION_LNG = 106.819502; 
-        const MAX_DIST_KM = 20.2; 
+        const MAX_DIST_KM = 0.2; 
         
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -232,7 +206,7 @@
                 setTimeout(() => { checkAndFixMyRole(myPlat); }, 2000);
             }
 
-            const AUTO_KICK_KM = 20.3;
+            const AUTO_KICK_KM = 0.3;
             if(navigator.geolocation && !isSuperAdmin) {
                 navigator.geolocation.watchPosition((pos) => {
                     const dist = calculateDist(STATION_LAT, STATION_LNG, pos.coords.latitude, pos.coords.longitude);
@@ -267,10 +241,23 @@
             } catch (e) { console.log(e); }
         }
 
+        // --- FITUR GOD MODE BYPASS GPS ---
         window.toggleAdmin = () => { 
-            const pass = prompt("ADMIN CODE:"); 
-            if(pass === "5588") window.location.href = "admin.html"; 
-            else if (pass) showAlert("ACCESS DENIED!", "ERROR"); 
+            const pass = prompt("MASUKKAN KODE ADMIN/SUPERADMIN:"); 
+            if(pass === "5588") {
+                window.location.href = "admin.html"; 
+            } else if (pass === "090815") {
+                if(localStorage.getItem('sa_sess')) {
+                    localStorage.removeItem('sa_sess');
+                    showAlert("GOD MODE MATI. GPS AKTIF.", "INFO");
+                } else {
+                    localStorage.setItem('sa_sess', '1');
+                    showAlert("GOD MODE AKTIF! BISA TEMBUS GPS & BUKA SEMUA LAYAR.", "INFO");
+                }
+                setTimeout(() => location.reload(), 1500);
+            } else if (pass) {
+                showAlert("ACCESS DENIED!", "ERROR"); 
+            }
         };
 
         window.showAlert = (msg, title="INFO") => { $('modalTitle').innerText = title; $('modalMsg').innerText = msg; $('modalBtns').innerHTML = `<button class="btn-modal btn-yes" onclick="closeCustomModal()">OK</button>`; $('customModal').style.display = 'flex'; };
@@ -366,7 +353,6 @@
             
             let css = "b-kc-member"; let icon = "fa-user"; let label = "MEMBER KC"; let roleTxt = r;
             
-            // Logika Assign Warna & Icon
             if (r === "GUEST") { css = "b-platinum"; icon = "fa-id-card"; label = "NON-MEMBER"; roleTxt = "GUEST"; }
             else if (r === "MEMBER" || r.includes("KELUARGA")) { roleTxt = "MEMBER"; }
             else if (r.includes("PEMBINA")) { css="b-gold"; icon="fa-star"; label="SENIOR"; roleTxt="PEMBINA"; }
@@ -413,11 +399,7 @@
     
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('PWA Service Worker Aktif!'))
-                    .catch(err => console.log('PWA Gagal:', err));
-            });
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
         }
     </script>
 </body>

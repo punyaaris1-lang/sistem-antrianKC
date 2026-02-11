@@ -10,10 +10,9 @@
 
     <style>
         :root {
-            /* KOMBISANI EMAS (LOGO 1) DAN NEON (LOGO 2) */
             --gold: #D4AF37;       
             --gold-dark: #AA8C27;
-            --neon: #DFFF00; /* Kuning Stabilo Logo 2 */
+            --neon: #DFFF00; 
             --neon-dark: #AACC00;
             --bg-dark: #050505;
             --glass-panel: rgba(12, 12, 15, 0.85);
@@ -22,160 +21,51 @@
             --off-white: #e0e0e0; 
         }
 
-        html, body {
-            height: 100%; margin: 0; padding: 0;
-            background: radial-gradient(circle at top center, #1a1a1a 0%, #000000 100%);
-            color: var(--white);
-            font-family: 'Inter', sans-serif;
-            overflow: hidden; 
-            display: flex; flex-direction: column;
-        }
+        html, body { height: 100%; margin: 0; padding: 0; background: radial-gradient(circle at top center, #1a1a1a 0%, #000000 100%); color: var(--white); font-family: 'Inter', sans-serif; overflow: hidden; display: flex; flex-direction: column; }
 
-        /* --- LOADING SCREEN (PAKAI LOGO 1) --- */
-        #loading-screen { 
-            position: fixed; inset: 0; background: #000; z-index: 50000; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            transition: opacity 0.5s ease-out; 
-        }
+        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 50000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
         .load-logo { width: 120px; margin-bottom: 20px; animation: pulseText 1.5s infinite; filter: drop-shadow(0 0 15px var(--gold)); }
         .loader-text { font-family: 'Rajdhani'; font-weight:900; color: var(--gold); font-size: 16px; letter-spacing: 3px; animation: pulseText 1s infinite; }
 
-        /* --- BAGIAN ATAS (LOGO 2) --- */
-        .top-area {
-            height: 35vh; /* Ruang dikecilkan agar tombol bawah naik */
-            width: 100%;
-            display: flex; align-items: center; justify-content: center;
-            position: relative; z-index: 1;
-            padding-top: 15px; /* Jarak aman dari atas layar */
-        }
-
-        /* Logo 2 Container (Tanpa Lingkaran, Bebas Memanjang) */
-        .logo-main-box {
-            width: 80%; max-width: 280px; /* Ukuran disesuaikan agar proporsional */
-            display: flex; align-items: center; justify-content: center;
-            animation: float 4s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(223, 255, 0, 0.3)); /* Glow Neon */
-        }
+        .top-area { height: 40vh; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
+        .logo-main-box { width: 85%; max-width: 320px; display: flex; align-items: center; justify-content: center; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(223, 255, 0, 0.3)); }
         .logo-img-main { width: 100%; height: auto; object-fit: contain; }
 
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
         @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* --- PANEL BAWAH --- */
-        .bottom-panel {
-            flex: 1; /* Mengisi sisa layar dengan pintar */
-            width: 100%;
-            background: var(--glass-panel);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(223, 255, 0, 0.4);
-            border-radius: 40px 40px 0 0;
-            padding: 35px 25px 20px 25px; /* Padding disesuaikan */
-            box-sizing: border-box;
-            display: flex; flex-direction: column; 
-            gap: 20px; /* Gap dikurangi agar padat ke atas */
-            box-shadow: 0 -15px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1);
-            position: relative; z-index: 2;
-        }
+        .bottom-panel { height: 60vh; width: 100%; background: var(--glass-panel); backdrop-filter: blur(15px); border-top: 1px solid rgba(223, 255, 0, 0.4); border-radius: 40px 40px 0 0; padding: 40px 25px; box-sizing: border-box; display: flex; flex-direction: column; gap: 25px; box-shadow: 0 -15px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; z-index: 2; }
+        .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
+        .live-tag { display: inline-block; background: rgba(223, 255, 0, 0.1); border: 1px solid rgba(223, 255, 0, 0.5); padding: 6px 16px; border-radius: 20px; color: var(--neon); font-family: 'Rajdhani'; font-weight: 800; font-size: 14px; margin-bottom: 12px; box-shadow: 0 0 10px rgba(223, 255, 0, 0.1); }
+        h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(34px, 5vh, 46px); font-weight: 900; margin: 0; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: pointer; pointer-events: auto; user-select: none; letter-spacing: 1px; }
+        .sub-text { color: var(--gold); font-size: 14px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
 
-        .header-section { text-align: center; margin-bottom: 0px; position: relative; z-index: 20; }
-        
-        .live-tag {
-            display: inline-block; background: rgba(223, 255, 0, 0.1); 
-            border: 1px solid rgba(223, 255, 0, 0.5); padding: 5px 14px; border-radius: 20px;
-            color: var(--neon); font-family: 'Rajdhani'; font-weight: 800; font-size: 13px; margin-bottom: 10px;
-            box-shadow: 0 0 10px rgba(223, 255, 0, 0.1);
-        }
-
-        h1 {
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: clamp(30px, 4.5vh, 42px); 
-            font-weight: 900; margin: 0; line-height: 1;
-            color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5);
-            cursor: pointer; pointer-events: auto; user-select: none;
-            letter-spacing: 1px;
-        }
-        .sub-text {
-            color: var(--gold); font-size: 13px; font-weight: 800; letter-spacing: 3px;
-            text-transform: uppercase; margin-top: 8px; 
-        }
-
-        /* GRID STATISTIK */
-        .stats-container { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;
-        }
-        
-        .stat-btn {
-            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%);
-            border: 1px solid var(--border-color); border-radius: 20px;
-            padding: 15px 10px; cursor: pointer; position: relative;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .stat-btn { background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px 15px; cursor: pointer; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .stat-btn:active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); transform: scale(0.98); }
-        
         .st-label { font-size: 12px; color: #aaa; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
-        
-        .st-val {
-            font-family: 'Rajdhani', sans-serif; 
-            font-size: clamp(45px, 7vh, 55px); 
-            font-weight: 900; 
-            color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2);
-        }
-        .st-hint { font-size: 11px; color: var(--gold); margin-top: 5px; font-weight: 700; letter-spacing: 1px; }
+        .st-val { font-family: 'Rajdhani', sans-serif; font-size: clamp(50px, 8vh, 65px); font-weight: 900; color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .st-hint { font-size: 11px; color: var(--gold); margin-top: 8px; font-weight: 700; letter-spacing: 1px; }
 
-        /* TOMBOL UTAMA LUX (Warna NEON) */
-        .btn-main {
-            background: linear-gradient(135deg, var(--neon) 0%, var(--neon-dark) 100%);
-            color: #000; width: 100%; padding: 20px; 
-            border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
-            font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; 
-            text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: all 0.3s ease; 
-            margin-top: 5px; /* Jarak aman dari kotak stats */
-            margin-bottom: 10px; /* Jarak aman dari frame HP bawah */
-        }
+        .btn-main { background: linear-gradient(135deg, var(--neon) 0%, var(--neon-dark) 100%); color: #000; width: 100%; padding: 22px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2); display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease; margin-top: auto; }
         .btn-main:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(223, 255, 0, 0.4); }
 
-        /* --- OVERLAY SCAN POPUP (LOGO 1) --- */
-        .scan-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 60000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .scan-logo-box {
-            width: 180px; height: 180px; border-radius: 50%;
-            background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--gold), var(--gold-dark)) border-box;
-            border: 3px solid transparent; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); position: relative; overflow: hidden;
-        }
-        .scan-logo-img {
-            width: 80%; height: 80%; object-fit: contain;
-            filter: grayscale(100%) brightness(0.5); /* Hitam Putih Awal */
-            transition: all 0.5s ease;
-        }
-        .scan-line {
-            position: absolute; top: -10%; left: 0; width: 100%; height: 5px;
-            background: var(--neon); box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon);
-            opacity: 1; animation: scanMove 1.5s linear infinite; z-index: 10;
-        }
-        .scan-text {
-            margin-top: 30px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 900;
-            color: var(--neon); letter-spacing: 2px; animation: pulseText 1s infinite; text-align: center;
-        }
-        
-        /* State Success */
+        /* SCAN OVERLAY */
+        .scan-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 60000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .scan-logo-box { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--gold), var(--gold-dark)) border-box; border: 3px solid transparent; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); position: relative; overflow: hidden; }
+        .scan-logo-img { width: 80%; height: 80%; object-fit: contain; filter: grayscale(100%) brightness(0.5); transition: all 0.5s ease; }
+        .scan-line { position: absolute; top: -10%; left: 0; width: 100%; height: 5px; background: var(--neon); box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon); opacity: 1; animation: scanMove 1.5s linear infinite; z-index: 10; }
+        .scan-text { margin-top: 30px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 900; color: var(--neon); letter-spacing: 2px; animation: pulseText 1s infinite; text-align: center; }
         .scan-logo-box.success { border-color: #00ff00; box-shadow: 0 0 60px rgba(0,255,0,0.6); }
         .scan-logo-box.success .scan-logo-img { filter: grayscale(0%) brightness(1); drop-shadow: 0 0 15px var(--gold); animation: none; }
         .scan-logo-box.success .scan-line { display: none; }
 
         @keyframes scanMove { 0% { top: -10%; } 100% { top: 110%; } }
 
-        /* MODAL & FORM */
+        /* MODAL */
         .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 30000; display: none; align-items: center; justify-content: center; }
         .modal-wrap.open { display: flex; animation: zoomIn 0.2s; }
         @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
-        
         .modal-panel { background: #0a0a0a; border: 2px solid var(--gold); width: 85%; max-width: 400px; padding: 25px; border-radius: 25px; box-shadow: 0 0 60px rgba(212, 175, 55, 0.15); max-height: 90vh; display: flex; flex-direction: column; }
         .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         .modal-h-title { font-family: 'Rajdhani'; font-size: 28px; font-weight: 900; color: #fff; }
@@ -203,11 +93,8 @@
         .inp-label { color: var(--gold); font-size: 14px; font-weight: 800; margin-bottom: 8px; display: block; }
         .inp-box { width: 100%; padding: 16px; background: #222; border: 2px solid #444; color: #fff; font-family: 'Rajdhani'; font-size: 24px; font-weight: 700; border-radius: 12px; margin-bottom: 20px; box-sizing: border-box; }
         .inp-box:focus { border-color: var(--neon); outline: none; background: #000; }
-
         .btn-kirim { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--neon), var(--neon-dark)); border: none; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 900; font-size: 22px; cursor: pointer; margin-bottom: 12px; color: #000;}
         .btn-batal { width: 100%; padding: 15px; background: transparent; border: 2px solid #500; color: #f55; border-radius: 12px; font-weight: 800; font-size: 18px; cursor: pointer; }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -232,7 +119,6 @@
     </div>
 
     <div class="bottom-panel">
-        
         <div class="header-section">
             <div class="live-tag"><i class="fas fa-circle" style="font-size:8px; vertical-align:middle; margin-right:5px;"></i> <span id="liveClock">ONLINE</span></div>
             <h1 ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
@@ -255,7 +141,6 @@
         <button id="btnDaftar" class="btn-main" onclick="checkLocationAndOpenForm()">
             DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>
         </button>
-
     </div>
 
     <div id="detailModal" class="modal-wrap">
@@ -294,14 +179,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // === AUTO REDIRECT RECOVERY ===
-        if(localStorage.getItem('myPlat')) {
+        // Mencegah auto-redirect kalau dia sedang aktif Mode SuperAdmin
+        if(localStorage.getItem('myPlat') && !localStorage.getItem('sa_sess')) {
             window.location.href = "system.html";
         }
 
         const STATION_LAT = -6.2285953; 
         const STATION_LNG = 106.819502; 
-        const MAX_DIST_KM = 20.2; 
+        const MAX_DIST_KM = 0.2; 
         
         const firebaseConfig = {
           apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
@@ -320,10 +205,23 @@
         let globalSlots = [null, null, null, null, null];
         let globalQueue = [];
 
+        // FITUR SUPERADMIN 
         window.toggleAdmin = () => { 
-            const pass = prompt("MASUKKAN KODE ADMIN:"); 
-            if(pass === "5588") window.location.href = "admin.html"; 
-            else if(pass) alert("KODE SALAH!"); 
+            const pass = prompt("MASUKKAN KODE ADMIN / SUPERADMIN:"); 
+            if(pass === "5588") {
+                window.location.href = "admin.html"; 
+            } else if (pass === "090815") {
+                if(localStorage.getItem('sa_sess')) {
+                    localStorage.removeItem('sa_sess');
+                    alert("GOD MODE MATI. GPS AKTIF.");
+                } else {
+                    localStorage.setItem('sa_sess', '1');
+                    alert("GOD MODE AKTIF! BISA TEMBUS GPS & BUKA SEMUA LAYAR.");
+                }
+                location.reload();
+            } else if(pass) {
+                alert("KODE SALAH!"); 
+            }
         };
 
         window.openModal = (type) => {
@@ -334,57 +232,24 @@
             if(type === 'slot') {
                 title.innerText = "STATUS SLOT";
                 content.className = "slot-list-box"; 
-                
                 globalSlots.forEach((s, i) => {
                     let html;
                     if (s) {
-                        let timeText = "WAIT";
-                        let timeColor = "var(--gold)"; 
-                        if (s.startTime) {
-                            const diff = Math.floor((Date.now() - s.startTime) / 60000);
-                            timeText = `${diff} MNT`;
-                        }
-                        html = `
-                        <div class="slot-row active">
-                            <div class="sr-left">
-                                <span class="sr-plat">${s.plat}</span>
-                                <span class="sr-name">${s.userName}</span>
-                            </div>
-                            <div class="sr-right">
-                                <span class="sr-time" style="color:${timeColor}">${timeText}</span>
-                                <span class="sr-batt">BAT: ${s.batreSisa}%</span>
-                            </div>
-                        </div>`;
+                        let timeText = "WAIT"; let timeColor = "var(--gold)"; 
+                        if (s.startTime) { const diff = Math.floor((Date.now() - s.startTime) / 60000); timeText = `${diff} MNT`; }
+                        html = `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-right"><span class="sr-time" style="color:${timeColor}">${timeText}</span><span class="sr-batt">BAT: ${s.batreSisa}%</span></div></div>`;
                     } else {
-                        html = `
-                        <div class="slot-row empty" onclick="window.selectSlot(${i})">
-                            <div class="sr-left">
-                                <span class="sr-plat" style="color:var(--neon)">SLOT ${i+1}</span>
-                                <span class="sr-name" style="color:#fff">TERSEDIA</span>
-                            </div>
-                            <div class="sr-right">
-                                <span class="sr-time" style="color:var(--neon)">OPEN</span>
-                            </div>
-                        </div>`;
+                        html = `<div class="slot-row empty" onclick="window.selectSlot(${i})"><div class="sr-left"><span class="sr-plat" style="color:var(--neon)">SLOT ${i+1}</span><span class="sr-name" style="color:#fff">TERSEDIA</span></div><div class="sr-right"><span class="sr-time" style="color:var(--neon)">OPEN</span></div></div>`;
                     }
                     content.innerHTML += html;
                 });
             } else {
                 title.innerText = "DAFTAR ANTRIAN";
                 content.className = "queue-table"; 
-
                 if(globalQueue.length === 0) content.innerHTML = "<div style='text-align:center;padding:20px;color:#fff;font-size:18px;'>TIDAK ADA ANTRIAN</div>";
                 else {
                     globalQueue.forEach((q, i) => {
-                        content.innerHTML += `
-                        <div class="q-row">
-                            <div class="q-num">#${i+1}</div>
-                            <div class="q-data">
-                                <span class="q-plat">${q.plat}</span>
-                                <span class="q-name">${q.userName}</span>
-                            </div>
-                            <div class="q-batt">${q.batreSisa}%</div>
-                        </div>`;
+                        content.innerHTML += `<div class="q-row"><div class="q-num">#${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div><div class="q-batt">${q.batreSisa}%</div></div>`;
                     });
                 }
             }
@@ -392,47 +257,44 @@
             document.getElementById('detailModal').style.display = 'flex';
         };
 
-        window.closeModal = (id) => { 
-            document.getElementById(id).classList.remove('open'); 
-            setTimeout(() => document.getElementById(id).style.display = 'none', 200); 
-        };
+        window.closeModal = (id) => { document.getElementById(id).classList.remove('open'); setTimeout(() => document.getElementById(id).style.display = 'none', 200); };
 
         window.checkLocationAndOpenForm = () => {
             const btn = document.getElementById('btnDaftar');
-            if(btn.innerHTML.includes('SYSTEM')) {
-                window.location.href = 'system.html';
+            if(localStorage.getItem('myPlat')) {
+                window.location.href = 'system.html'; return;
+            }
+
+            // BYPASS GPS UNTUK SUPERADMIN
+            if(localStorage.getItem('sa_sess')) {
+                document.getElementById('formModal').classList.add('open'); 
+                document.getElementById('formModal').style.display = 'flex';
                 return;
             }
 
             if (!navigator.geolocation) { alert("GPS WAJIB AKTIF!"); return; }
-            const ori = btn.innerHTML;
-            btn.innerHTML = 'CEK LOKASI...';
+            const ori = btn.innerHTML; btn.innerHTML = 'CEK LOKASI...';
             
             navigator.geolocation.getCurrentPosition((pos) => {
                 const dist = calculateDistance(STATION_LAT, STATION_LNG, pos.coords.latitude, pos.coords.longitude);
                 btn.innerHTML = ori;
                 if (dist <= MAX_DIST_KM) { 
-                    document.getElementById('formModal').classList.add('open'); 
-                    document.getElementById('formModal').style.display = 'flex';
+                    document.getElementById('formModal').classList.add('open'); document.getElementById('formModal').style.display = 'flex';
                 } else { alert(`AKSES DITOLAK!\nJarak: ${(dist*1000).toFixed(0)}m (Max 200m)`); }
             }, () => { btn.innerHTML = ori; alert("GAGAL LOKASI"); }, { enableHighAccuracy: true });
         };
 
-        // --- SISTEM SCANNING POPUP ---
         window.submitData = async () => {
             const nama = document.getElementById('inpNama').value.toUpperCase();
             const plat = document.getElementById('inpPlat').value.toUpperCase();
             const batre = document.getElementById('inpBatre').value;
             
-            if(!nama) return alert("NAMA HARUS DIISI!");
-            if(!plat) return alert("PLAT NOMOR HARUS DIISI!");
-            if(!batre) return alert("BATERAI WAJIB DIISI!");
-            if(parseInt(batre) > 100) return alert("BATERAI MAKSIMAL 100%!");
+            if(!nama) return alert("NAMA HARUS DIISI!"); if(!plat) return alert("PLAT NOMOR HARUS DIISI!"); if(!batre) return alert("BATERAI WAJIB DIISI!"); if(parseInt(batre) > 100) return alert("BATERAI MAKSIMAL 100%!");
             
-            // Tutup Form Modal
+            const btnSubmit = document.getElementById('btnSubmitForm');
+            btnSubmit.innerText = "MEMPROSES..."; btnSubmit.disabled = true;
+
             closeModal('formModal');
-            
-            // Tampilkan Overlay Scan
             const scanOverlay = document.getElementById('scanOverlay');
             const scanBox = document.getElementById('scanLogoBox');
             const scanText = document.getElementById('scanText');
@@ -442,7 +304,6 @@
             scanText.innerText = 'SCANNING DATA...';
             scanText.style.color = 'var(--neon)';
 
-            // Tunda 3 detik untuk animasi
             setTimeout(async () => {
                 try {
                     const memberRef = doc(db, "members", plat.replace(/[^A-Z0-9]/g, ''));
@@ -460,27 +321,17 @@
                         
                         localStorage.setItem('myPlat', plat);
                         
-                        // Ubah tampilan Sukses
                         scanBox.classList.add('success');
                         scanText.innerText = 'VERIFIED! ACCESS GRANTED.';
                         scanText.style.color = '#00ff00';
                         
-                        // Redirect ke System setelah 1.5 detik
-                        setTimeout(() => {
-                            window.location.href = 'system.html'; 
-                        }, 1500);
+                        setTimeout(() => { window.location.href = 'system.html'; }, 1500);
                     }
-                } catch(e) { 
-                    alert("ERROR: " + e); 
-                    scanOverlay.style.display = 'none';
-                }
+                } catch(e) { alert("ERROR: " + e); scanOverlay.style.display = 'none'; }
             }, 3000); 
         };
 
-        window.selectSlot = async (index) => {
-           alert("SILAKAN LOGIN / DAFTAR DULU UNTUK MEMILIH SLOT.");
-        };
-
+        window.selectSlot = async (index) => { alert("SILAKAN LOGIN / DAFTAR DULU UNTUK MEMILIH SLOT."); };
         function calculateDistance(lat1, lon1, lat2, lon2) { const p = 0.017453292519943295; const c = Math.cos; const a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2; return 12742 * Math.asin(Math.sqrt(a)); }
 
         function checkMyTicketState() {
@@ -495,15 +346,11 @@
                 btn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>';
             }
         }
-
         checkMyTicketState();
 
         onSnapshot(mainRef, (snap) => {
             const l = document.getElementById('loading-screen'); 
-            if(l) {
-                l.style.opacity = '0';
-                setTimeout(() => { l.style.display = 'none'; }, 500); 
-            }
+            if(l) { l.style.opacity = '0'; setTimeout(() => { l.style.display = 'none'; }, 500); }
 
             if (!snap.exists()) return;
             const d = snap.data();
@@ -521,9 +368,7 @@
         });
 
         setInterval(() => {
-            const d = new Date();
-            const days = ['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU'];
-            const months = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+            const d = new Date(); const days = ['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU']; const months = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
             const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
             document.getElementById('liveClock').innerText = `LIVE | ${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${time}`;
         }, 1000);
@@ -531,27 +376,21 @@
         const platInput = document.getElementById('inpPlat');
         if(platInput) {
             platInput.addEventListener('input', function(e) {
-                let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                let formatted = "";
+                let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); let formatted = "";
                 if (v.length > 0) {
                     let match = v.match(/^([A-Z]{1,2})(\d{0,4})([A-Z]*)$/);
-                    if (match) {
-                        formatted = match[1];
-                        if (match[2]) formatted += " " + match[2];
-                        if (match[3]) formatted += " " + match[3];
-                    } else { formatted = v; } 
+                    if (match) { formatted = match[1]; if (match[2]) formatted += " " + match[2]; if (match[3]) formatted += " " + match[3]; } else { formatted = v; } 
                 }
                 this.value = formatted;
             });
         }
-
         const batInput = document.getElementById('inpBatre');
-        if(batInput) {
-            batInput.addEventListener('input', function(e) {
-                let v = this.value.replace(/[^0-9]/g, '');
-                if(parseInt(v) > 100) v = "100";
-                this.value = v;
-            });
+        if(batInput) batInput.addEventListener('input', function(e) { let v = this.value.replace(/[^0-9]/g, ''); if(parseInt(v) > 100) v = "100"; this.value = v; });
+    </script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
         }
     </script>
 </body>
