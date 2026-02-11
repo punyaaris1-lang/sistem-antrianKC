@@ -10,9 +10,11 @@
 
     <style>
         :root {
-            /* WARNA EMAS LUX (SAMA DENGAN SYSTEM) */
-            --primary: #D4AF37;       
-            --primary-dark: #AA8C27;
+            /* KOMBISANI EMAS (LOGO 1) DAN NEON (LOGO 2) */
+            --gold: #D4AF37;       
+            --gold-dark: #AA8C27;
+            --neon: #DFFF00; /* Kuning Stabilo Logo 2 */
+            --neon-dark: #AACC00;
             --bg-dark: #050505;
             --glass-panel: rgba(12, 12, 15, 0.85);
             --border-color: rgba(212, 175, 55, 0.2);
@@ -29,59 +31,41 @@
             display: flex; flex-direction: column;
         }
 
-        /* --- BAGIAN ATAS (LOGO) --- */
+        /* --- LOADING SCREEN (PAKAI LOGO 1) --- */
+        #loading-screen { 
+            position: fixed; inset: 0; background: #000; z-index: 50000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            transition: opacity 0.5s ease-out; 
+        }
+        .load-logo { width: 120px; margin-bottom: 20px; animation: pulseText 1.5s infinite; filter: drop-shadow(0 0 15px var(--gold)); }
+        .loader-text { font-family: 'Rajdhani'; font-weight:900; color: var(--gold); font-size: 16px; letter-spacing: 3px; animation: pulseText 1s infinite; }
+
+        /* --- BAGIAN ATAS (LOGO 2) --- */
         .top-area {
-            height: 35vh; 
+            height: 40vh; /* Dibikin lega karena nav bawah hilang */
             width: 100%;
             display: flex; align-items: center; justify-content: center;
             position: relative; z-index: 1;
         }
 
-        /* Logo Diperbesar & Animasi Lux */
-        .logo-glow {
-            width: 160px; height: 160px; 
-            border-radius: 50%; padding: 5px;
-            background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--primary), var(--primary-dark)) border-box;
-            border: 2px solid transparent;
+        /* Logo 2 Container (Tanpa Lingkaran, Bebas Memanjang) */
+        .logo-main-box {
+            width: 85%; max-width: 320px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 60px rgba(212, 175, 55, 0.2);
-            position: relative; overflow: hidden;
             animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(223, 255, 0, 0.3)); /* Glow Neon */
         }
-        
-        /* Gambar Start Berwarna (Full Color + Glow) */
-        .logo-img { 
-            width: 85%; height: 85%; object-fit: contain; 
-            filter: drop-shadow(0 0 8px var(--primary)); 
-            transition: all 1s ease;
-        }
+        .logo-img-main { width: 100%; height: auto; object-fit: contain; }
 
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-
-        /* Garis Scan */
-        .scan-line {
-            position: absolute; top: -100%; left: 0; width: 100%; height: 5px;
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary), 0 0 30px var(--primary);
-            opacity: 0; z-index: 10;
-        }
-        
-        .logo-glow.scanning .scan-line { opacity: 1; animation: scanMove 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
-        .logo-glow.scanning .logo-img { animation: flicker 0.2s infinite; }
-        
-        /* Sukses: Glow Emas berubah jadi Glow Hijau */
-        .logo-glow.success { border-color: #00ff00; box-shadow: 0 0 50px rgba(0,255,0,0.5); }
-        .logo-glow.success .logo-img { filter: drop-shadow(0 0 15px #00ff00); }
-
-        @keyframes scanMove { 0% { top: -10%; } 100% { top: 110%; } }
-        @keyframes flicker { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
         /* --- PANEL BAWAH --- */
         .bottom-panel {
-            height: 65vh; width: 100%;
+            height: 60vh; width: 100%;
             background: var(--glass-panel);
             backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(212, 175, 55, 0.4);
+            border-top: 1px solid rgba(223, 255, 0, 0.4);
             border-radius: 40px 40px 0 0;
             padding: 40px 25px; box-sizing: border-box;
             display: flex; flex-direction: column; 
@@ -93,10 +77,10 @@
         .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
         
         .live-tag {
-            display: inline-block; background: rgba(0, 255, 0, 0.1); 
-            border: 1px solid rgba(0,255,0,0.5); padding: 6px 16px; border-radius: 20px;
-            color: #00ff00; font-family: 'Rajdhani'; font-weight: 800; font-size: 14px; margin-bottom: 12px;
-            box-shadow: 0 0 10px rgba(0,255,0,0.1);
+            display: inline-block; background: rgba(223, 255, 0, 0.1); 
+            border: 1px solid rgba(223, 255, 0, 0.5); padding: 6px 16px; border-radius: 20px;
+            color: var(--neon); font-family: 'Rajdhani'; font-weight: 800; font-size: 14px; margin-bottom: 12px;
+            box-shadow: 0 0 10px rgba(223, 255, 0, 0.1);
         }
 
         h1 {
@@ -108,7 +92,7 @@
             letter-spacing: 1px;
         }
         .sub-text {
-            color: var(--primary); font-size: 14px; font-weight: 800; letter-spacing: 3px;
+            color: var(--gold); font-size: 14px; font-weight: 800; letter-spacing: 3px;
             text-transform: uppercase; margin-top: 8px; 
         }
 
@@ -124,7 +108,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .stat-btn:active { background: rgba(212, 175, 55, 0.1); border-color: var(--primary); transform: scale(0.98); }
+        .stat-btn:active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); transform: scale(0.98); }
         
         .st-label { font-size: 12px; color: #aaa; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
         
@@ -134,89 +118,111 @@
             font-weight: 900; 
             color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
-        .st-hint { font-size: 11px; color: var(--primary); margin-top: 8px; font-weight: 700; letter-spacing: 1px; }
+        .st-hint { font-size: 11px; color: var(--gold); margin-top: 8px; font-weight: 700; letter-spacing: 1px; }
 
-        /* TOMBOL UTAMA LUX */
+        /* TOMBOL UTAMA LUX (Warna NEON) */
         .btn-main {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            background: linear-gradient(135deg, var(--neon) 0%, var(--neon-dark) 100%);
             color: #000; width: 100%; padding: 22px; 
             border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
             font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 900; 
             text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+            box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2);
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; margin-top: auto; /* Dorong ke bawah */
         }
-        .btn-main:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
+        .btn-main:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(223, 255, 0, 0.4); }
+
+        /* --- OVERLAY SCAN POPUP (LOGO 1) --- */
+        .scan-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 60000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .scan-logo-box {
+            width: 180px; height: 180px; border-radius: 50%;
+            background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--gold), var(--gold-dark)) border-box;
+            border: 3px solid transparent; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); position: relative; overflow: hidden;
+        }
+        .scan-logo-img {
+            width: 80%; height: 80%; object-fit: contain;
+            filter: grayscale(100%) brightness(0.5); /* Hitam Putih Awal */
+            transition: all 0.5s ease;
+        }
+        .scan-line {
+            position: absolute; top: -10%; left: 0; width: 100%; height: 5px;
+            background: var(--neon); box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon);
+            opacity: 1; animation: scanMove 1.5s linear infinite; z-index: 10;
+        }
+        .scan-text {
+            margin-top: 30px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 900;
+            color: var(--neon); letter-spacing: 2px; animation: pulseText 1s infinite; text-align: center;
+        }
+        
+        /* State Success */
+        .scan-logo-box.success { border-color: #00ff00; box-shadow: 0 0 60px rgba(0,255,0,0.6); }
+        .scan-logo-box.success .scan-logo-img { filter: grayscale(0%) brightness(1); drop-shadow: 0 0 15px var(--gold); animation: none; }
+        .scan-logo-box.success .scan-line { display: none; }
+
+        @keyframes scanMove { 0% { top: -10%; } 100% { top: 110%; } }
 
         /* MODAL & FORM */
-        .modal-wrap {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); backdrop-filter: blur(8px);
-            z-index: 30000; display: none; align-items: center; justify-content: center;
-        }
+        .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 30000; display: none; align-items: center; justify-content: center; }
         .modal-wrap.open { display: flex; animation: zoomIn 0.2s; }
         @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
         
-        .modal-panel {
-            background: #0a0a0a; border: 2px solid var(--primary);
-            width: 85%; max-width: 400px; padding: 25px; border-radius: 25px;
-            box-shadow: 0 0 60px rgba(212, 175, 55, 0.15);
-            max-height: 90vh; display: flex; flex-direction: column;
-        }
-        .modal-head { 
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px;
-        }
+        .modal-panel { background: #0a0a0a; border: 2px solid var(--gold); width: 85%; max-width: 400px; padding: 25px; border-radius: 25px; box-shadow: 0 0 60px rgba(212, 175, 55, 0.15); max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         .modal-h-title { font-family: 'Rajdhani'; font-size: 28px; font-weight: 900; color: #fff; }
         .close-x { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; font-weight: bold; }
 
         .slot-list-box { display: flex; flex-direction: column; gap: 12px; }
         .slot-row { background: #151515; border-left: 5px solid #444; padding: 15px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .slot-row.active { border-left-color: var(--primary); background: linear-gradient(90deg, rgba(212, 175, 55, 0.1), transparent); }
-        .slot-row.empty { border-left-color: #00ff00; cursor: pointer; }
+        .slot-row.active { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent); }
+        .slot-row.empty { border-left-color: var(--neon); cursor: pointer; }
         .sr-left { display: flex; flex-direction: column; gap: 4px; }
         .sr-plat { font-family: 'Rajdhani'; font-size: 24px; font-weight: 900; color: #fff; }
         .sr-name { font-size: 14px; color: var(--off-white); font-weight: 600; text-transform: uppercase; } 
         .sr-right { text-align: right; display: flex; flex-direction: column; gap: 4px;}
-        .sr-time { font-family: 'Rajdhani'; font-size: 22px; font-weight: 800; color: var(--primary); }
+        .sr-time { font-family: 'Rajdhani'; font-size: 22px; font-weight: 800; color: var(--gold); }
         .sr-batt { font-size: 12px; color: #000; background: #fff; padding: 3px 8px; border-radius: 4px; display: inline-block; font-weight: 800;}
 
         .queue-table { display: flex; flex-direction: column; gap: 5px; }
         .q-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #333; }
-        .q-num { width: 40px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 800; color: var(--primary); text-align: center; }
+        .q-num { width: 40px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 800; color: var(--neon); text-align: center; }
         .q-data { flex: 1; padding-left: 15px; display: flex; flex-direction: column; gap: 2px; }
         .q-plat { font-family: 'Rajdhani'; font-size: 22px; font-weight: 800; color: #fff; display: block; }
         .q-name { font-size: 14px; color: var(--off-white); font-weight: 600; text-transform: uppercase; } 
         .q-batt { font-family: 'Rajdhani'; font-size: 20px; font-weight: 800; color: #fff; }
 
-        .inp-label { color: var(--primary); font-size: 14px; font-weight: 800; margin-bottom: 8px; display: block; }
+        .inp-label { color: var(--gold); font-size: 14px; font-weight: 800; margin-bottom: 8px; display: block; }
         .inp-box { width: 100%; padding: 16px; background: #222; border: 2px solid #444; color: #fff; font-family: 'Rajdhani'; font-size: 24px; font-weight: 700; border-radius: 12px; margin-bottom: 20px; box-sizing: border-box; }
-        .inp-box:focus { border-color: var(--primary); outline: none; background: #000; }
+        .inp-box:focus { border-color: var(--neon); outline: none; background: #000; }
 
-        .btn-kirim { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border: none; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 900; font-size: 22px; cursor: pointer; margin-bottom: 12px; color: #000;}
+        .btn-kirim { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--neon), var(--neon-dark)); border: none; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 900; font-size: 22px; cursor: pointer; margin-bottom: 12px; color: #000;}
         .btn-batal { width: 100%; padding: 15px; background: transparent; border: 2px solid #500; color: #f55; border-radius: 12px; font-weight: 800; font-size: 18px; cursor: pointer; }
 
-        /* LOADING */
-        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 50000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
-        .loader-spinner { width: 50px; height: 50px; border: 3px solid #111; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; box-shadow: 0 0 20px var(--primary); }
-        .loader-text { font-family: 'Rajdhani'; font-weight:900; color: var(--primary); font-size: 16px; letter-spacing: 3px; animation: pulseText 1s infinite; }
-        
-        @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
-        <div class="loader-spinner"></div>
+        <img src="logo1.png" class="load-logo" alt="Loading">
         <div class="loader-text">SCANNING SYSTEM...</div>
     </div>
 
-    <div class="top-area">
-        <div class="logo-glow" id="mainLogo">
+    <div id="scanOverlay" class="scan-overlay">
+        <div class="scan-logo-box" id="scanLogoBox">
             <div class="scan-line"></div>
-            <img src="logo2.png" alt="Logo" class="logo-img" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-crown\' style=\'font-size:60px; color:var(--primary)\'></i>'">
+            <img src="logo1.png" class="scan-logo-img" id="scanLogoImg">
+        </div>
+        <div class="scan-text" id="scanText">MEMVERIFIKASI DATA...</div>
+    </div>
+
+    <div class="top-area">
+        <div class="logo-main-box">
+            <img src="logo2.png" alt="Maka Lintas KC" class="logo-img-main">
         </div>
     </div>
 
@@ -283,17 +289,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // === AUTO REDIRECT IF ALREADY REGISTERED (RECOVERY) ===
+        // === AUTO REDIRECT RECOVERY ===
         if(localStorage.getItem('myPlat')) {
             window.location.href = "system.html";
         }
 
-        // KOORDINAT BARU
         const STATION_LAT = -6.2285953; 
         const STATION_LNG = 106.819502; 
         const MAX_DIST_KM = 0.2; 
         
-        // FIREBASE KARTIKA CHANDRA
         const firebaseConfig = {
           apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
           authDomain: "kartikachandrafc.firebaseapp.com",
@@ -311,7 +315,6 @@
         let globalSlots = [null, null, null, null, null];
         let globalQueue = [];
 
-        // PASSWORD ADMIN 5588
         window.toggleAdmin = () => { 
             const pass = prompt("MASUKKAN KODE ADMIN:"); 
             if(pass === "5588") window.location.href = "admin.html"; 
@@ -331,7 +334,7 @@
                     let html;
                     if (s) {
                         let timeText = "WAIT";
-                        let timeColor = "var(--primary)"; 
+                        let timeColor = "var(--gold)"; 
                         if (s.startTime) {
                             const diff = Math.floor((Date.now() - s.startTime) / 60000);
                             timeText = `${diff} MNT`;
@@ -351,11 +354,11 @@
                         html = `
                         <div class="slot-row empty" onclick="window.selectSlot(${i})">
                             <div class="sr-left">
-                                <span class="sr-plat" style="color:#0f0">SLOT ${i+1}</span>
+                                <span class="sr-plat" style="color:var(--neon)">SLOT ${i+1}</span>
                                 <span class="sr-name" style="color:#fff">TERSEDIA</span>
                             </div>
                             <div class="sr-right">
-                                <span class="sr-time" style="color:#0f0">OPEN</span>
+                                <span class="sr-time" style="color:var(--neon)">OPEN</span>
                             </div>
                         </div>`;
                     }
@@ -410,7 +413,7 @@
             }, () => { btn.innerHTML = ori; alert("GAGAL LOKASI"); }, { enableHighAccuracy: true });
         };
 
-        // --- SISTEM SCANNING MEWAH SAAT DAFTAR ---
+        // --- SISTEM SCANNING POPUP ---
         window.submitData = async () => {
             const nama = document.getElementById('inpNama').value.toUpperCase();
             const plat = document.getElementById('inpPlat').value.toUpperCase();
@@ -421,23 +424,21 @@
             if(!batre) return alert("BATERAI WAJIB DIISI!");
             if(parseInt(batre) > 100) return alert("BATERAI MAKSIMAL 100%!");
             
-            const btnSubmit = document.getElementById('btnSubmitForm');
-            btnSubmit.innerText = "MEMPROSES...";
-            btnSubmit.disabled = true;
-
-            // 1. TUTUP MODAL FORM BIAR BISA LIHAT LOGO
+            // Tutup Form Modal
             closeModal('formModal');
             
-            // 2. NYALAKAN ANIMASI SCANNING DI LOGO UTAMA
-            const logoMain = document.getElementById('mainLogo');
-            const mainBtn = document.getElementById('btnDaftar');
+            // Tampilkan Overlay Scan
+            const scanOverlay = document.getElementById('scanOverlay');
+            const scanBox = document.getElementById('scanLogoBox');
+            const scanText = document.getElementById('scanText');
             
-            mainBtn.innerHTML = 'SCANNING DATA... <i class="fas fa-spinner fa-spin"></i>';
-            logoMain.classList.add('scanning'); 
+            scanOverlay.style.display = 'flex';
+            scanBox.classList.remove('success');
+            scanText.innerText = 'SCANNING DATA...';
+            scanText.style.color = 'var(--neon)';
 
-            // 3. TUNGGU 3 DETIK BARU PROSES FIREBASE (Efek Lux)
+            // Tunda 3 detik untuk animasi
             setTimeout(async () => {
-                logoMain.classList.remove('scanning');
                 try {
                     const memberRef = doc(db, "members", plat.replace(/[^A-Z0-9]/g, ''));
                     const memberSnap = await getDoc(memberRef);
@@ -454,24 +455,21 @@
                         
                         localStorage.setItem('myPlat', plat);
                         
-                        // 4. ANIMASI SUKSES LOGO JADI BERWARNA + GLOW HIJAU
-                        logoMain.classList.add('success');
-                        mainBtn.innerHTML = 'SUKSES! <i class="fas fa-check"></i>';
-                        mainBtn.style.background = "#00ff00";
-                        mainBtn.style.color = "#000";
+                        // Ubah tampilan Sukses
+                        scanBox.classList.add('success');
+                        scanText.innerText = 'VERIFIED! ACCESS GRANTED.';
+                        scanText.style.color = '#00ff00';
                         
-                        // 5. REDIRECT KE SYSTEM
+                        // Redirect ke System setelah 1.5 detik
                         setTimeout(() => {
                             window.location.href = 'system.html'; 
                         }, 1500);
                     }
                 } catch(e) { 
                     alert("ERROR: " + e); 
-                    btnSubmit.innerText = "AMBIL TIKET"; 
-                    btnSubmit.disabled = false;
-                    mainBtn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>';
+                    scanOverlay.style.display = 'none';
                 }
-            }, 3000); // 3 Detik durasi scanning
+            }, 3000); 
         };
 
         window.selectSlot = async (index) => {
@@ -486,7 +484,7 @@
             
             if(myPlat) {
                 btn.innerHTML = 'KEMBALI KE SYSTEM <i class="fas fa-undo"></i>';
-                btn.style.background = "#fff";
+                btn.style.background = "linear-gradient(135deg, #fff, #ddd)";
                 btn.style.color = "#000";
             } else {
                 btn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>';
@@ -504,7 +502,7 @@
 
             if (!snap.exists()) return;
             const d = snap.data();
-            globalSlots = d.chargingSlots || [null, null, null, null, null]; // 5 SLOTS
+            globalSlots = d.chargingSlots || [null, null, null, null, null]; 
             globalQueue = d.waitingQueue || [];
 
             const usedCount = globalSlots.filter(s => s !== null).length;
