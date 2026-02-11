@@ -48,7 +48,7 @@
         /* BADGE LABEL DI ADMIN */
         .adm-badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; display: inline-block; margin-top: 3px; }
         .bg-pea { background: var(--purple); color: #fff; }
-        .bg-gold { background: var(--blue); color: #fff; } /* Member warna Biru di Admin agar kontras */
+        .bg-gold { background: var(--blue); color: #fff; } 
         .bg-red { background: var(--red); color: #fff; }
         .bg-green { background: var(--green); color: #000; }
         .bg-cyan { background: var(--cyan); color: #000; }
@@ -58,6 +58,7 @@
         .log-line { margin-bottom: 4px; border-bottom: 1px solid #111; padding-bottom: 2px; }
         
         .adm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .nav-buttons { display: flex; gap: 5px; }
 
         /* MODAL */
         #customModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
@@ -75,7 +76,10 @@
             <div style="font-family:'Black Ops One'; font-size:20px; color:#fff;">ADMIN PANEL</div>
             <div style="font-size:10px; color:#666;">FC KARTIKA CHANDRA</div>
         </div>
-        <button onclick="window.location.href='system.html'" class="btn-blue" style="font-size:12px;">KE LAYAR DEPAN</button>
+        <div class="nav-buttons">
+            <button onclick="window.location.href='antrian.html'" class="btn-blue" style="font-size:12px;">LAYAR DEPAN</button>
+            <button onclick="window.location.href='system.html'" class="btn-gold" style="font-size:12px;">DASHBOARD</button>
+        </div>
     </div>
 
     <div class="box" style="border-top: 2px solid var(--gold);">
@@ -185,15 +189,15 @@
         let cachedQueue = [];
         let snapshotData = null;
 
-        // AUTH SIMPLE (PIN: 5678)
+        // AUTH SIMPLE (PIN: 5588 SESUAI INSTRUKSI)
         if(localStorage.getItem('adm_sess')) {} 
         else { 
             let p = prompt("PIN ADMIN (KARTIKA CHANDRA):"); 
-            if(p==="5678") localStorage.setItem('adm_sess','1'); 
-            else { alert("Salah!"); location.href = 'antrian.html'; } 
+            if(p==="5588") localStorage.setItem('adm_sess','1'); 
+            else { alert("Salah!"); location.href = 'index.html'; } 
         }
 
-        // MODAL
+        // MODAL LOGIC
         let currentCallback = null;
         window.askConfirm = (text, callback) => {
             document.getElementById('modalText').innerText = text;
@@ -207,21 +211,22 @@
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) return;
             const d = snap.data();
+            
             // Ensure 5 slots logic
             cachedSlots = d.chargingSlots || [null, null, null, null, null];
-            while(cachedSlots.length < 5) cachedSlots.push(null); // Safety fill
+            while(cachedSlots.length < 5) cachedSlots.push(null);
 
             cachedQueue = d.waitingQueue || [];
             updateMonitor();
         });
 
         function updateMonitor() {
-            // UPDATE SLOT
+            // UPDATE SLOT (S1 - S5)
             cachedSlots.forEach((s, i) => {
                 const el = document.getElementById(`slot${i+1}`);
                 if(s) {
                     let badgeClass = "bg-guest"; let roleText = s.role || "GUEST";
-                    if(roleText === "MEMBER" || roleText.includes("KELUARGA") || roleText.includes("KETUA")) { badgeClass = "bg-gold"; }
+                    if(roleText === "MEMBER" || roleText.includes("KELUARGA") || roleText.includes("KETUA") || roleText.includes("WAKETUM") || roleText.includes("PEMBINA")) { badgeClass = "bg-gold"; }
                     else if(roleText.includes("PEA")) { badgeClass = "bg-pea"; }
                     else if(roleText.includes("SATGAS")) { badgeClass = "bg-red"; }
                     else if(roleText.includes("TURTLE")) { badgeClass = "bg-green"; }
@@ -246,13 +251,13 @@
                 }
             });
 
-            // UPDATE QUEUE TABLE
+            // UPDATE QUEUE TABLE (DENGAN 5 TOMBOL FORCE SLOT)
             let h = `<table><tr><th width="20">#</th><th>PLAT / NAMA</th><th width="120">PINDAH KE</th><th width="40">AKSI</th></tr>`;
             if(cachedQueue.length === 0) h += `<tr><td colspan="4" style="text-align:center; padding:10px; color:#444;">TIDAK ADA ANTRIAN</td></tr>`;
             
             cachedQueue.forEach((q, idx) => {
                 let badgeClass = "bg-guest"; let roleText = q.role || "GUEST";
-                if(roleText === "MEMBER" || roleText.includes("KELUARGA")) badgeClass = "bg-gold";
+                if(roleText === "MEMBER" || roleText.includes("KELUARGA") || roleText.includes("KETUA") || roleText.includes("WAKETUM") || roleText.includes("PEMBINA")) badgeClass = "bg-gold";
                 
                 h += `<tr>
                     <td style="font-size:14px; font-weight:bold; color:var(--cyan)">${q.qNo}</td>
@@ -278,15 +283,26 @@
             document.getElementById('queueTable').innerHTML = h + `</table>`;
         }
 
-        // === FITUR BARU: RESET NOMOR (RE-INDEX) ===
+        // === FITUR BARU: RESET NOMOR ANTRIAN SAJA ===
         window.resetTicketNumbers = () => {
             runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
+                const docSnap = await t.get(mainRef);
+                if (!docSnap.exists()) return;
+                const d = docSnap.data();
+                
                 let queue = d.waitingQueue || [];
-                queue.forEach((q, index) => { q.qNo = index + 1; });
-                t.update(mainRef, { waitingQueue: queue, lastTicket: queue.length });
-                addLog("ADMIN", "RESET_NUMBER", `Re-indexed ${queue.length} users`);
-            }).then(() => alert("Nomor berhasil diurutkan ulang dari 1!")).catch(e => alert("Gagal: " + e));
+                // Mengubah nomor tiket qNo berurutan dari 1
+                queue.forEach((q, index) => { 
+                    q.qNo = index + 1; 
+                });
+                
+                // Update database: Antrian tersusun ulang, dan tiket terakhir di-reset ke jumlah orang yang antri
+                t.update(mainRef, { 
+                    waitingQueue: queue, 
+                    lastTicket: queue.length 
+                });
+                addLog("ADMIN", "RESET_NUMBER", `Urutan di-reset dari 1 untuk ${queue.length} orang`);
+            }).catch(e => alert("Gagal Reset: " + e));
         };
 
         // === INPUT MANUAL (FORCE) ===
@@ -295,7 +311,7 @@
             const n = document.getElementById('newNama').value.trim().toUpperCase();
             if(!p) return alert("Plat Nomor Wajib Diisi!");
 
-            // Cek Role dari DB
+            // Cek Role dari DB Members
             let userRole = "GUEST";
             const cleanID = p.replace(/[^A-Z0-9]/g, '');
             try {
@@ -305,10 +321,10 @@
 
             runTransaction(db, async(t) => {
                 const docSnap = await t.get(mainRef);
-                let d = docSnap.data();
+                let d = docSnap.data() || {};
                 
-                // Init 5 slot if not exists
                 if(!d.chargingSlots) d.chargingSlots = [null,null,null,null,null];
+                if(!d.waitingQueue) d.waitingQueue = [];
                 
                 if([...d.chargingSlots, ...d.waitingQueue].some(u => u && u.plat === p)) throw "User sudah ada!";
 
@@ -321,9 +337,15 @@
                     u.startTime = Date.now(); d.chargingSlots[target] = u; 
                 }
 
-                // SIMPAN SNAPSHOT OTOMATIS
+                // BACKUP SNAPSHOT OTOMATIS SAAT INPUT MANUAL
                 t.set(snapshotRef, { ...d, backupTime: new Date() });
-                t.update(mainRef, { waitingQueue:d.waitingQueue, chargingSlots:d.chargingSlots, lastTicket:newNo });
+                
+                t.set(mainRef, { 
+                    waitingQueue: d.waitingQueue, 
+                    chargingSlots: d.chargingSlots, 
+                    lastTicket: newNo 
+                }, { merge: true });
+                
                 addLog("ADMIN", "MANUAL_INPUT", `Add ${p} (${userRole})`);
             }).then(() => {
                 document.getElementById('newPlat').value = '';
@@ -335,15 +357,16 @@
         window.forceToSlot = (plat, slotIdx) => {
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
-                // Safety check
                 if(!d.chargingSlots) d.chargingSlots = [null,null,null,null,null];
 
                 if(d.chargingSlots[slotIdx]) throw "SLOT TERISI!";
                 const qIdx = d.waitingQueue.findIndex(x => x.plat === plat);
                 if(qIdx === -1) throw "User hilang.";
+                
                 const user = d.waitingQueue.splice(qIdx, 1)[0];
                 user.startTime = Date.now();
                 d.chargingSlots[slotIdx] = user;
+                
                 t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
                 addLog("ADMIN", "FORCE_SLOT", `${plat} -> S${slotIdx+1}`);
             }).catch(e => alert(e));
@@ -415,7 +438,6 @@
         window.executeRestore = () => {
             if(!snapshotData) return;
             runTransaction(db, async(t) => {
-                // Restore 5 slots default if corrupted
                 let rSlots = snapshotData.chargingSlots || [null,null,null,null,null];
                 while(rSlots.length < 5) rSlots.push(null);
 
@@ -432,7 +454,6 @@
 
         window.hardReset = () => {
             runTransaction(db, async(t) => {
-                // RESET TO 5 SLOTS
                 t.set(mainRef, { chargingSlots: [null,null,null,null,null], waitingQueue: [], lastTicket: 0 });
                 addLog("ADMIN", "HARD_RESET", "Wiped All Data");
             });
