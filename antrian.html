@@ -3,92 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LIVE MONITOR - FC KARTIKA CHANDRA</title>
+    <title>KARTIKA CHANDRA - DASHBOARD</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Teko:wght@400;600&family=Rajdhani:wght@600;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        :root { 
-            --bg: #050505;
-            --gold: #FFD700; 
-            --gold-glow: rgba(255, 215, 0, 0.6);
-            --white-glow: rgba(255, 255, 255, 0.3);
-            --cyan: #00F0FF; /* Aksen sesuai petir di logo */
+        :root {
+            --primary: #FFD700;       
+            --primary-dark: #B8860B;
+            --bg-dark: #050505;
+            --glass-panel: rgba(12, 12, 15, 0.85);
+            --border-color: rgba(255, 215, 0, 0.2);
+            --white: #ffffff;
+            --off-white: #e0e0e0; 
+        }
+
+        html, body {
+            height: 100%; margin: 0; padding: 0;
+            /* Background lux radial gradient */
+            background: radial-gradient(circle at top center, #1a1a1a 0%, #000000 100%);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; 
+            display: flex; flex-direction: column;
+        }
+
+        /* --- BAGIAN ATAS (LOGO) --- */
+        .top-area {
+            height: 30vh; width: 100%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 1;
+        }
+
+        /* Logo Diperbesar & Animasi Lux */
+        .logo-glow {
+            width: 150px; height: 150px; 
+            border-radius: 50%; padding: 5px;
+            background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--primary), var(--primary-dark)) border-box;
+            border: 2px solid transparent;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+            position: relative; overflow: hidden;
+            animation: float 4s ease-in-out infinite;
         }
         
-        * { box-sizing: border-box; outline: none; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { 
+        /* Gambar Start Hitam Putih */
+        .logo-img { 
+            width: 85%; height: 85%; object-fit: contain; 
+            filter: grayscale(100%) brightness(0.6); 
+            transition: all 1s ease;
+        }
+
+        /* Animasi Mengambang */
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+        /* Garis Scan */
+        .scan-line {
+            position: absolute; top: -100%; left: 0; width: 100%; height: 5px;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary), 0 0 30px var(--primary);
+            opacity: 0; z-index: 10;
+        }
+        
+        .logo-glow.scanning .scan-line { opacity: 1; animation: scanMove 1.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite; }
+        .logo-glow.scanning .logo-img { animation: flicker 0.2s infinite; }
+        .logo-glow.success { border-color: #00ff00; box-shadow: 0 0 50px rgba(0,255,0,0.5); }
+        .logo-glow.success .logo-img { filter: grayscale(0%) brightness(1); }
+
+        @keyframes scanMove { 0% { top: -10%; } 100% { top: 110%; } }
+        @keyframes flicker { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+
+        /* --- PANEL BAWAH --- */
+        .bottom-panel {
+            height: 70vh; width: 100%;
+            background: var(--glass-panel);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255, 215, 0, 0.4);
+            border-radius: 40px 40px 0 0;
+            padding: 35px 25px; box-sizing: border-box;
+            display: flex; flex-direction: column; 
+            gap: 20px; /* Jarak Diperlebar agar tidak rapet */
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative; z-index: 2;
+        }
+
+        .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
+        
+        .live-tag {
+            display: inline-block; background: rgba(0, 255, 0, 0.1); 
+            border: 1px solid rgba(0,255,0,0.5); padding: 6px 16px; border-radius: 20px;
+            color: #00ff00; font-family: 'Rajdhani'; font-weight: 800; font-size: 14px; margin-bottom: 12px;
+            box-shadow: 0 0 10px rgba(0,255,0,0.1);
+        }
+
+        h1 {
             font-family: 'Rajdhani', sans-serif; 
-            background: #000;
-            background-image: radial-gradient(circle at center, #151515 0%, #000 100%);
-            color: #fff; margin: 0; padding: 20px; 
-            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: clamp(34px, 5vh, 46px); 
+            font-weight: 900; margin: 0; line-height: 1;
+            color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: pointer; pointer-events: auto; user-select: none;
+            letter-spacing: 1px;
+        }
+        .sub-text {
+            color: var(--primary); font-size: 14px; font-weight: 800; letter-spacing: 3px;
+            text-transform: uppercase; margin-top: 8px; 
         }
 
-        .header-container { margin-top: 40px; margin-bottom: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
-        .logo-img { width: 130px; height: 130px; object-fit: contain; filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.2)); animation: floatLogo 4s infinite ease-in-out; margin-bottom: 20px; }
-        @keyframes floatLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-10px);} }
-
-        .live-tag { background: rgba(0, 240, 255, 0.1); border: 1px solid var(--cyan); color: var(--cyan); padding: 5px 15px; border-radius: 20px; font-size: 11px; font-family: 'Orbitron'; letter-spacing: 2px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
-        .live-dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 8px var(--cyan); animation: blink 1s infinite; }
-        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-        /* Added Cursor Pointer to indicate clickable area implicitly */
-        .main-title { font-family: 'Black Ops One'; font-size: 8vw; max-font-size: 42px; color: #eee; text-transform: uppercase; letter-spacing: 1px; text-align: center; line-height: 1; margin-bottom: 5px; text-shadow: 0 0 20px rgba(255,255,255,0.2); white-space: nowrap; cursor: pointer; }
-        @media (min-width: 450px) { .main-title { font-size: 48px; } }
+        /* GRID STATISTIK */
+        .stats-container { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%;
+        }
         
-        .sub-title { font-size: 14px; color: var(--gold); text-transform: uppercase; letter-spacing: 3px; font-weight: 800; margin-bottom: 40px; text-shadow: 0 0 15px var(--gold-glow); }
+        .stat-btn {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 20px 15px; cursor: pointer; position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .stat-btn:active { background: rgba(255, 215, 0, 0.1); border-color: var(--primary); transform: scale(0.98); }
+        
+        .st-label { font-size: 12px; color: #aaa; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
+        
+        .st-val {
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: clamp(50px, 8vh, 65px); 
+            font-weight: 900; 
+            color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .st-hint { font-size: 11px; color: var(--primary); margin-top: 8px; font-weight: 700; letter-spacing: 1px; }
 
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 450px; margin-bottom: 60px; }
-        .stat-card { background: linear-gradient(160deg, #151515, #050505); border: 1px solid #333; border-radius: 12px; padding: 25px 5px; text-align: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .stat-label { font-size: 11px; color: #888; letter-spacing: 1px; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
-        .stat-value { font-family: 'Teko'; font-size: 80px; line-height: 0.8; color: #fff; text-shadow: 0 0 25px var(--white-glow); font-weight: 400; }
-        .stat-sub { font-size: 10px; color: #666; font-weight: bold; text-transform: uppercase; margin-top: 10px;}
+        /* TOMBOL UTAMA LUX */
+        .btn-main {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #000; width: 100%; padding: 22px; 
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
+            font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 900; 
+            text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.2);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn-main:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); }
 
-        .btn-register-glow { width: 100%; max-width: 400px; background: linear-gradient(90deg, #FFD700, #B8860B); color: #000; border: none; padding: 20px 0; font-family: 'Black Ops One'; font-size: 24px; letter-spacing: 2px; border-radius: 50px; cursor: pointer; position: relative; overflow: hidden; box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); transition: transform 0.2s; animation: pulseBtn 2s infinite; }
-        .btn-register-glow:active { transform: scale(0.95); }
-        .btn-register-glow::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0.4) 0%, transparent 50%, transparent 100%); transform: rotate(45deg); transition: 0.5s; }
-        @keyframes pulseBtn { 0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); transform: scale(1); } 50% { box-shadow: 0 0 50px rgba(255, 215, 0, 0.7); transform: scale(1.02); } 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); transform: scale(1); } }
+        /* MENU BAWAH (SISA 2 BIAR LEGA) */
+        .nav-bar { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; 
+            margin-top: auto; max-width: 350px; width: 100%; align-self: center;
+        }
+        .nav-item {
+            background: rgba(255,255,255,0.03); border: 1px solid #333; 
+            color: #aaa; padding: 16px; border-radius: 16px; cursor: pointer; 
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            transition: 0.3s;
+        }
+        .nav-item:active { background: rgba(255,215,0,0.1); border-color: var(--primary); color: var(--primary); }
+        .nav-item i { font-size: 22px; }
+        .nav-item span { font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+
+        /* MODAL & FORM */
+        .modal-wrap {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); backdrop-filter: blur(8px);
+            z-index: 30000; display: none; align-items: center; justify-content: center;
+        }
+        .modal-wrap.open { display: flex; animation: zoomIn 0.2s; }
+        @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+        
+        .modal-panel {
+            background: #0a0a0a; border: 2px solid var(--primary);
+            width: 85%; max-width: 400px; padding: 25px; border-radius: 25px;
+            box-shadow: 0 0 60px rgba(255, 215, 0, 0.15);
+            max-height: 90vh; display: flex; flex-direction: column;
+        }
+        .modal-head { 
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px;
+        }
+        .modal-h-title { font-family: 'Rajdhani'; font-size: 28px; font-weight: 900; color: #fff; }
+        .close-x { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; font-weight: bold; }
+
+        .slot-list-box { display: flex; flex-direction: column; gap: 12px; }
+        .slot-row { background: #151515; border-left: 5px solid #444; padding: 15px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .slot-row.active { border-left-color: var(--primary); background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent); }
+        .slot-row.empty { border-left-color: #00ff00; cursor: pointer; }
+        .sr-left { display: flex; flex-direction: column; gap: 4px; }
+        .sr-plat { font-family: 'Rajdhani'; font-size: 24px; font-weight: 900; color: #fff; }
+        .sr-name { font-size: 14px; color: var(--off-white); font-weight: 600; text-transform: uppercase; } 
+        .sr-right { text-align: right; display: flex; flex-direction: column; gap: 4px;}
+        .sr-time { font-family: 'Rajdhani'; font-size: 22px; font-weight: 800; color: var(--primary); }
+        .sr-batt { font-size: 12px; color: #000; background: #fff; padding: 3px 8px; border-radius: 4px; display: inline-block; font-weight: 800;}
+
+        .queue-table { display: flex; flex-direction: column; gap: 5px; }
+        .q-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #333; }
+        .q-num { width: 40px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 800; color: var(--primary); text-align: center; }
+        .q-data { flex: 1; padding-left: 15px; display: flex; flex-direction: column; gap: 2px; }
+        .q-plat { font-family: 'Rajdhani'; font-size: 22px; font-weight: 800; color: #fff; display: block; }
+        .q-name { font-size: 14px; color: var(--off-white); font-weight: 600; text-transform: uppercase; } 
+        .q-batt { font-family: 'Rajdhani'; font-size: 20px; font-weight: 800; color: #fff; }
+
+        .inp-label { color: var(--primary); font-size: 14px; font-weight: 800; margin-bottom: 8px; display: block; }
+        .inp-box { width: 100%; padding: 16px; background: #222; border: 2px solid #444; color: #fff; font-family: 'Rajdhani'; font-size: 24px; font-weight: 700; border-radius: 12px; margin-bottom: 20px; box-sizing: border-box; }
+        .inp-box:focus { border-color: var(--primary); outline: none; background: #000; }
+
+        .btn-kirim { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border: none; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 900; font-size: 22px; cursor: pointer; margin-bottom: 12px; color: #000;}
+        .btn-batal { width: 100%; padding: 15px; background: transparent; border: 2px solid #500; color: #f55; border-radius: 12px; font-weight: 800; font-size: 18px; cursor: pointer; }
+
+        /* LOADING */
+        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 50000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
+        .loader-spinner { width: 50px; height: 50px; border: 3px solid #111; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; box-shadow: 0 0 20px var(--primary); }
+        .loader-text { font-family: 'Rajdhani'; font-weight:900; color: var(--primary); font-size: 16px; letter-spacing: 3px; animation: pulseText 1s infinite; }
+        
+        @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <img src="logo.png" alt="LOGO" class="logo-img">
-        <div class="live-tag"><div class="live-dot"></div> LIVE STATUS</div>
-        
-        <div class="main-title" ondblclick="toggleAdmin()">FC KARTIKA CHANDRA</div>
-        
-        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
+    <div id="loading-screen">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">SCANNING SYSTEM...</div>
     </div>
 
-    <div class="dashboard-grid">
-        <div class="stat-card">
-            <div class="stat-label">STATUS SLOT</div>
-            <div class="stat-value" id="slotVal">0/5</div>
-            <div class="stat-sub">TERPAKAI / TOTAL</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">TOTAL ANTRIAN</div>
-            <div class="stat-value" id="queueVal">0</div>
-            <div class="stat-sub">MOTOR MENUNGGU</div>
+    <div class="top-area">
+        <div class="logo-glow" id="mainLogo">
+            <div class="scan-line"></div>
+            <img src="logo1.png" alt="Logo" class="logo-img" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\'fas fa-crown\' style=\'font-size:60px; color:var(--primary)\'></i>'">
         </div>
     </div>
 
-    <button class="btn-register-glow" onclick="goToSystem()">
-        DAFTAR SEKARANG
-    </button>
+    <div class="bottom-panel">
+        
+        <div class="header-section">
+            <div class="live-tag"><i class="fas fa-circle" style="font-size:8px; vertical-align:middle; margin-right:5px;"></i> <span id="liveClock">ONLINE</span></div>
+            <h1 ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
+            <div class="sub-text">MAKA LINTAS KARTIKA CHANDRA</div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-btn" onclick="openModal('slot')">
+                <div class="st-label">Slot Tersedia</div>
+                <div class="st-val" id="slotVal">...</div>
+                <div class="st-hint">LIHAT DETAIL ►</div>
+            </div>
+            <div class="stat-btn" onclick="openModal('queue')">
+                <div class="st-label">Antrian</div>
+                <div class="st-val" id="queueVal">...</div>
+                <div class="st-hint">LIHAT DAFTAR ►</div>
+            </div>
+        </div>
+
+        <button id="btnDaftar" class="btn-main" onclick="checkLocationAndOpenForm()">
+            DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <div class="nav-bar">
+            <div class="nav-item" onclick="navTo('map')"><i class="fas fa-map-marked-alt"></i><span>PETA LOKASI</span></div>
+            <div class="nav-item" onclick="navTo('plan')"><i class="fas fa-route"></i><span>TRIP PLAN</span></div>
+        </div>
+
+    </div>
+
+    <div id="detailModal" class="modal-wrap">
+        <div class="modal-panel">
+            <div class="modal-head">
+                <div class="modal-h-title" id="mTitle">STATUS SLOT</div>
+                <button class="close-x" onclick="closeModal('detailModal')">✕</button>
+            </div>
+            <div id="mContent" class="slot-list-box"></div>
+        </div>
+    </div>
+
+    <div id="formModal" class="modal-wrap">
+        <div class="modal-panel">
+            <div class="modal-head">
+                <div class="modal-h-title">FORM TIKET</div>
+                <button class="close-x" onclick="closeModal('formModal')">✕</button>
+            </div>
+            <div>
+                <span class="inp-label">NAMA LENGKAP</span>
+                <input type="text" id="inpNama" class="inp-box" placeholder="NAMA ANDA">
+                
+                <span class="inp-label">NOMOR PLAT (Wajib Spasi)</span>
+                <input type="text" id="inpPlat" class="inp-box" placeholder="B 1234 XYZ" style="text-transform:uppercase;">
+                
+                <span class="inp-label">SISA BATERAI (0-100%)</span>
+                <input type="number" id="inpBatre" class="inp-box" placeholder="Contoh: 20" min="0" max="100">
+                
+                <button class="btn-kirim" id="btnSubmitForm" onclick="submitData()">AMBIL TIKET</button>
+                <button class="btn-batal" onclick="closeModal('formModal')">BATAL</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // === AUTO REDIRECT IF ALREADY REGISTERED ===
+        // === AUTO REDIRECT IF ALREADY REGISTERED (RECOVERY) ===
         if(localStorage.getItem('myPlat')) {
             window.location.href = "system.html";
         }
 
-        // === CONFIG KARTIKA CHANDRA ===
+        // KOORDINAT BARU
+        const STATION_LAT = -6.2285953; 
+        const STATION_LNG = 106.819502; 
+        const MAX_DIST_KM = 0.2; 
+        
+        // FIREBASE KARTIKA CHANDRA
         const firebaseConfig = {
           apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
           authDomain: "kartikachandrafc.firebaseapp.com",
@@ -101,41 +324,255 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const mainRef = doc(db, "antrian", "utama");
-        const TOTAL_SLOTS = 5; // UPDATED TO 5
+        
+        const TOTAL_SLOTS = 5;
+        let globalSlots = [null, null, null, null, null];
+        let globalQueue = [];
 
-        // === FITUR ADMIN DOUBLE CLICK ===
-        window.toggleAdmin = () => {
-            const pass = prompt("MASUKKAN KODE ADMIN:");
-            // Password Admin: 5678
-            if(pass === "5678") {
-                window.location.href = "admin.html";
-            } else if (pass !== null && pass !== "") {
-                alert("PASSWORD SALAH!");
-            }
+        // PASSWORD ADMIN 5588
+        window.toggleAdmin = () => { 
+            const pass = prompt("MASUKKAN KODE ADMIN:"); 
+            if(pass === "5588") window.location.href = "admin.html"; 
+            else if(pass) alert("KODE SALAH!"); 
         };
 
+        window.openModal = (type) => {
+            const content = document.getElementById('mContent');
+            const title = document.getElementById('mTitle');
+            content.innerHTML = ""; 
+
+            if(type === 'slot') {
+                title.innerText = "STATUS SLOT";
+                content.className = "slot-list-box"; 
+                
+                globalSlots.forEach((s, i) => {
+                    let html;
+                    if (s) {
+                        let timeText = "WAIT";
+                        let timeColor = "var(--primary)"; 
+                        if (s.startTime) {
+                            const diff = Math.floor((Date.now() - s.startTime) / 60000);
+                            timeText = `${diff} MNT`;
+                        }
+                        html = `
+                        <div class="slot-row active">
+                            <div class="sr-left">
+                                <span class="sr-plat">${s.plat}</span>
+                                <span class="sr-name">${s.userName}</span>
+                            </div>
+                            <div class="sr-right">
+                                <span class="sr-time" style="color:${timeColor}">${timeText}</span>
+                                <span class="sr-batt">BAT: ${s.batreSisa}%</span>
+                            </div>
+                        </div>`;
+                    } else {
+                        html = `
+                        <div class="slot-row empty" onclick="window.selectSlot(${i})">
+                            <div class="sr-left">
+                                <span class="sr-plat" style="color:#0f0">SLOT ${i+1}</span>
+                                <span class="sr-name" style="color:#fff">TERSEDIA</span>
+                            </div>
+                            <div class="sr-right">
+                                <span class="sr-time" style="color:#0f0">OPEN</span>
+                            </div>
+                        </div>`;
+                    }
+                    content.innerHTML += html;
+                });
+            } else {
+                title.innerText = "DAFTAR ANTRIAN";
+                content.className = "queue-table"; 
+
+                if(globalQueue.length === 0) content.innerHTML = "<div style='text-align:center;padding:20px;color:#fff;font-size:18px;'>TIDAK ADA ANTRIAN</div>";
+                else {
+                    globalQueue.forEach((q, i) => {
+                        content.innerHTML += `
+                        <div class="q-row">
+                            <div class="q-num">#${i+1}</div>
+                            <div class="q-data">
+                                <span class="q-plat">${q.plat}</span>
+                                <span class="q-name">${q.userName}</span>
+                            </div>
+                            <div class="q-batt">${q.batreSisa}%</div>
+                        </div>`;
+                    });
+                }
+            }
+            document.getElementById('detailModal').classList.add('open');
+            document.getElementById('detailModal').style.display = 'flex';
+        };
+
+        window.closeModal = (id) => { 
+            document.getElementById(id).classList.remove('open'); 
+            setTimeout(() => document.getElementById(id).style.display = 'none', 200); 
+        };
+
+        window.checkLocationAndOpenForm = () => {
+            const btn = document.getElementById('btnDaftar');
+            if(btn.innerHTML.includes('SYSTEM')) {
+                window.location.href = 'system.html';
+                return;
+            }
+
+            if (!navigator.geolocation) { alert("GPS WAJIB AKTIF!"); return; }
+            const ori = btn.innerHTML;
+            btn.innerHTML = 'CEK LOKASI...';
+            
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const dist = calculateDistance(STATION_LAT, STATION_LNG, pos.coords.latitude, pos.coords.longitude);
+                btn.innerHTML = ori;
+                if (dist <= MAX_DIST_KM) { 
+                    document.getElementById('formModal').classList.add('open'); 
+                    document.getElementById('formModal').style.display = 'flex';
+                } else { alert(`AKSES DITOLAK!\nJarak: ${(dist*1000).toFixed(0)}m (Max 200m)`); }
+            }, () => { btn.innerHTML = ori; alert("GAGAL LOKASI"); }, { enableHighAccuracy: true });
+        };
+
+        // --- SISTEM SCANNING MEWAH SAAT DAFTAR ---
+        window.submitData = async () => {
+            const nama = document.getElementById('inpNama').value.toUpperCase();
+            const plat = document.getElementById('inpPlat').value.toUpperCase();
+            const batre = document.getElementById('inpBatre').value;
+            
+            if(!nama) return alert("NAMA HARUS DIISI!");
+            if(!plat) return alert("PLAT NOMOR HARUS DIISI!");
+            if(!batre) return alert("BATERAI WAJIB DIISI!");
+            if(parseInt(batre) > 100) return alert("BATERAI MAKSIMAL 100%!");
+            
+            const btnSubmit = document.getElementById('btnSubmitForm');
+            btnSubmit.innerText = "MEMPROSES...";
+            btnSubmit.disabled = true;
+
+            // 1. TUTUP MODAL FORM BIAR BISA LIHAT LOGO
+            closeModal('formModal');
+            
+            // 2. NYALAKAN ANIMASI SCANNING DI LOGO UTAMA
+            const logoMain = document.getElementById('mainLogo');
+            const mainBtn = document.getElementById('btnDaftar');
+            
+            mainBtn.innerHTML = 'SCANNING DATA... <i class="fas fa-spinner fa-spin"></i>';
+            logoGlow.classList.add('scanning'); // Mulai kedap kedip & garis jalan
+
+            // 3. TUNGGU 3 DETIK BARU PROSES FIREBASE (Efek Lux)
+            setTimeout(async () => {
+                logoMain.classList.remove('scanning');
+                try {
+                    const memberRef = doc(db, "members", plat.replace(/[^A-Z0-9]/g, ''));
+                    const memberSnap = await getDoc(memberRef);
+                    let role = "GUEST";
+                    if(memberSnap.exists() && memberSnap.data().role) { role = memberSnap.data().role; }
+
+                    const snap = await getDoc(mainRef);
+                    if(snap.exists()) {
+                        let queue = snap.data().waitingQueue || [];
+                        if(queue.find(q => q.plat === plat)) { alert("SUDAH ANTRI!"); location.reload(); return; }
+                        
+                        queue.push({ userName: nama, plat: plat, batreSisa: batre, role: role, timestamp: Date.now(), qNo: (snap.data().lastTicket || 0) + 1 });
+                        await updateDoc(mainRef, { waitingQueue: queue, lastTicket: (snap.data().lastTicket || 0) + 1 });
+                        
+                        localStorage.setItem('myPlat', plat);
+                        
+                        // 4. ANIMASI SUKSES LOGO JADI BERWARNA
+                        logoMain.classList.add('success');
+                        mainBtn.innerHTML = 'SUKSES! <i class="fas fa-check"></i>';
+                        mainBtn.style.background = "#00ff00";
+                        mainBtn.style.color = "#000";
+                        
+                        // 5. REDIRECT KE SYSTEM
+                        setTimeout(() => {
+                            window.location.href = 'system.html'; 
+                        }, 1500);
+                    }
+                } catch(e) { 
+                    alert("ERROR: " + e); 
+                    btnSubmit.innerText = "AMBIL TIKET"; 
+                    btnSubmit.disabled = false;
+                    mainBtn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>';
+                }
+            }, 3000); // 3 Detik durasi scanning
+        };
+
+        window.selectSlot = async (index) => {
+           alert("SILAKAN LOGIN / DAFTAR DULU UNTUK MEMILIH SLOT.");
+        };
+
+        window.navTo = (id) => { 
+            if(id==='map') window.location.href='lokasifc.html'; 
+            if(id==='plan') window.location.href='plan.html'; 
+        };
+
+        function calculateDistance(lat1, lon1, lat2, lon2) { const p = 0.017453292519943295; const c = Math.cos; const a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2; return 12742 * Math.asin(Math.sqrt(a)); }
+
+        function checkMyTicketState() {
+            const myPlat = localStorage.getItem('myPlat');
+            const btn = document.getElementById('btnDaftar');
+            
+            if(myPlat) {
+                btn.innerHTML = 'KEMBALI KE SYSTEM <i class="fas fa-undo"></i>';
+                btn.style.background = "#fff";
+                btn.style.color = "#000";
+            } else {
+                btn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>';
+            }
+        }
+
+        checkMyTicketState();
+
         onSnapshot(mainRef, (snap) => {
+            const l = document.getElementById('loading-screen'); 
+            if(l) {
+                l.style.opacity = '0';
+                setTimeout(() => { l.style.display = 'none'; }, 500); 
+            }
+
             if (!snap.exists()) return;
             const d = snap.data();
-            // Ensure array has 5 items
-            const slots = d.chargingSlots || [null, null, null, null, null];
-            const usedCount = slots.filter(s => s !== null).length;
-            const queue = d.waitingQueue || [];
-            
-            document.getElementById('slotVal').innerText = `${usedCount}/${TOTAL_SLOTS}`;
-            document.getElementById('queueVal').innerText = queue.length;
+            globalSlots = d.chargingSlots || [null, null, null, null, null]; // 5 SLOTS
+            globalQueue = d.waitingQueue || [];
 
-            const slotEl = document.getElementById('slotVal');
-            if(usedCount === TOTAL_SLOTS) {
-                slotEl.style.color = "#FFD700"; slotEl.style.textShadow = "0 0 30px rgba(255, 215, 0, 0.5)";
-            } else {
-                slotEl.style.color = "#fff"; slotEl.style.textShadow = "0 0 25px rgba(255, 255, 255, 0.3)";
+            const usedCount = globalSlots.filter(s => s !== null).length;
+            document.getElementById('slotVal').innerHTML = `${usedCount}<span style="font-size:24px;opacity:0.8;margin-left:5px">/${TOTAL_SLOTS}</span>`;
+            document.getElementById('queueVal').innerText = globalQueue.length;
+
+            if(document.getElementById('detailModal').style.display === 'flex') {
+                if(document.getElementById('mTitle').innerText.includes('SLOT')) window.openModal('slot');
+                else window.openModal('queue');
             }
         });
 
-        window.goToSystem = () => {
-            window.location.href = "system.html?action=register"; 
-        };
+        setInterval(() => {
+            const d = new Date();
+            const days = ['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU'];
+            const months = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+            const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+            document.getElementById('liveClock').innerText = `LIVE | ${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${time}`;
+        }, 1000);
+
+        const platInput = document.getElementById('inpPlat');
+        if(platInput) {
+            platInput.addEventListener('input', function(e) {
+                let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                let formatted = "";
+                if (v.length > 0) {
+                    let match = v.match(/^([A-Z]{1,2})(\d{0,4})([A-Z]*)$/);
+                    if (match) {
+                        formatted = match[1];
+                        if (match[2]) formatted += " " + match[2];
+                        if (match[3]) formatted += " " + match[3];
+                    } else { formatted = v; } 
+                }
+                this.value = formatted;
+            });
+        }
+
+        const batInput = document.getElementById('inpBatre');
+        if(batInput) {
+            batInput.addEventListener('input', function(e) {
+                let v = this.value.replace(/[^0-9]/g, '');
+                if(parseInt(v) > 100) v = "100";
+                this.value = v;
+            });
+        }
     </script>
 </body>
 </html>
