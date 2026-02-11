@@ -1,18 +1,18 @@
 self.addEventListener('install', (e) => {
-  self.skipWaiting(); // Paksa langsung aktif saat itu juga
+  self.skipWaiting(); 
 });
 
 self.addEventListener('activate', (e) => {
-  // HAPUS SEMUA CACHE LAMA TANPA SISA
+  // Hancurkan semua cache memori masa lalu
   e.waitUntil(
     caches.keys().then((keyList) => {
       return Promise.all(keyList.map((key) => caches.delete(key)));
     })
   );
-  self.clients.claim(); // Ambil alih kontrol halaman saat ini juga
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (e) => {
-  // 100% BYPASS CACHE - SELALU MINTA KE SERVER (INTERNET)
+  // 100% Minta ke server internet, dilarang pakai memori HP
   e.respondWith(fetch(e.request));
 });
