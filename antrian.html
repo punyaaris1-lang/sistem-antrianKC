@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KARTIKA CHANDRA - DASHBOARD</title>
     
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#D4AF37">
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -49,12 +52,12 @@
             padding-top: 10px; 
         }
 
-        /* Logo 2 Container (Mencegah kelebaran) */
+        /* Logo 2 Container */
         .logo-main-box {
-            width: 70%; max-width: 230px; /* Maksimal lebar dikurangi agar logo memanjang tidak raksasa */
+            width: 70%; max-width: 230px; 
             display: flex; align-items: center; justify-content: center;
             animation: float 4s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px rgba(223, 255, 0, 0.3)); /* Glow Neon disesuaikan */
+            filter: drop-shadow(0 0 15px rgba(223, 255, 0, 0.3));
         }
         .logo-img-main { width: 100%; height: auto; object-fit: contain; }
 
@@ -69,10 +72,10 @@
             backdrop-filter: blur(15px);
             border-top: 1px solid rgba(223, 255, 0, 0.4);
             border-radius: 40px 40px 0 0;
-            padding: 30px 25px 20px 25px; /* Jarak atas disesuaikan */
+            padding: 30px 25px 20px 25px; 
             box-sizing: border-box;
             display: flex; flex-direction: column; 
-            gap: 15px; /* Gap lebih rapat agar tidak sumpek ke bawah */
+            gap: 15px; 
             box-shadow: 0 -15px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1);
             position: relative; z-index: 2;
         }
@@ -133,7 +136,7 @@
             box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2);
             display: flex; align-items: center; justify-content: center; gap: 10px;
             transition: all 0.3s ease; 
-            margin-top: auto; /* Dorong mentok bawah namun tetap proporsional */
+            margin-top: auto; 
             margin-bottom: 5px;
         }
         .btn-main:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(223, 255, 0, 0.4); }
@@ -151,7 +154,7 @@
         }
         .scan-logo-img {
             width: 80%; height: 80%; object-fit: contain;
-            filter: grayscale(100%) brightness(0.5); /* Hitam Putih Awal */
+            filter: grayscale(100%) brightness(0.5); 
             transition: all 0.5s ease;
         }
         .scan-line {
@@ -164,7 +167,6 @@
             color: var(--neon); letter-spacing: 2px; animation: pulseText 1s infinite; text-align: center;
         }
         
-        /* State Success */
         .scan-logo-box.success { border-color: #00ff00; box-shadow: 0 0 60px rgba(0,255,0,0.6); }
         .scan-logo-box.success .scan-logo-img { filter: grayscale(0%) brightness(1); drop-shadow: 0 0 15px var(--gold); animation: none; }
         .scan-logo-box.success .scan-line { display: none; }
@@ -287,8 +289,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Mencegah auto-redirect kalau dia sedang aktif Mode SuperAdmin
         if(localStorage.getItem('myPlat') && !localStorage.getItem('sa_sess')) {
             window.location.href = "system.html";
         }
@@ -314,6 +317,7 @@
         let globalSlots = [null, null, null, null, null];
         let globalQueue = [];
 
+        // FITUR SUPERADMIN 
         window.toggleAdmin = () => { 
             const pass = prompt("MASUKKAN KODE ADMIN / SUPERADMIN:"); 
             if(pass === "5588") {
@@ -374,6 +378,7 @@
                 return;
             }
 
+            // BYPASS GPS UNTUK SUPERADMIN
             if(localStorage.getItem('sa_sess')) {
                 document.getElementById('formModal').classList.add('open'); 
                 document.getElementById('formModal').style.display = 'flex';
@@ -414,15 +419,18 @@
                     let queue = d.waitingQueue || [];
                     let slots = d.chargingSlots || [];
                     
+                    // --- RECOVERY TINGKAT DEWA ---
                     if(queue.find(q => q.plat === plat)) { 
                         localStorage.setItem('myPlat', plat); window.location.href = 'system.html'; return; 
                     }
                     if(slots.find(s => s && s.plat === plat)) { 
                         localStorage.setItem('myPlat', plat); window.location.href = 'system.html'; return; 
                     }
+                    // ------------------------------
                     
                     queue.push({ userName: nama, plat: plat, batreSisa: batre, role: role, timestamp: Date.now(), qNo: (d.lastTicket || 0) + 1 });
                     await updateDoc(mainRef, { waitingQueue: queue, lastTicket: (d.lastTicket || 0) + 1 });
+                    
                     localStorage.setItem('myPlat', plat);
                     
                     closeModal('formModal');
