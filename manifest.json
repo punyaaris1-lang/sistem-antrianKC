@@ -2,25 +2,23 @@
   "name": "FC Kartika Chandra",
   "short_name": "FC KC",
   "description": "Sistem Antrian & Monitor Fast Charging",
-  "start_url": "./antrian.html",
+  "start_url": "/antrian.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#D4AF37",
   "icons": [
     {
       "src": "logo1.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "logo1.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "logo1.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
