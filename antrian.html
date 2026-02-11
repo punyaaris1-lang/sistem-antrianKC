@@ -10,9 +10,10 @@
 
     <style>
         :root {
+            /* KOMBISANI EMAS (LOGO 1) DAN NEON (LOGO 2) */
             --gold: #D4AF37;       
             --gold-dark: #AA8C27;
-            --neon: #DFFF00; 
+            --neon: #DFFF00; /* Kuning Stabilo Logo 2 */
             --neon-dark: #AACC00;
             --bg-dark: #050505;
             --glass-panel: rgba(12, 12, 15, 0.85);
@@ -21,51 +22,160 @@
             --off-white: #e0e0e0; 
         }
 
-        html, body { height: 100%; margin: 0; padding: 0; background: radial-gradient(circle at top center, #1a1a1a 0%, #000000 100%); color: var(--white); font-family: 'Inter', sans-serif; overflow: hidden; display: flex; flex-direction: column; }
+        html, body {
+            height: 100%; margin: 0; padding: 0;
+            background: radial-gradient(circle at top center, #1a1a1a 0%, #000000 100%);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; 
+            display: flex; flex-direction: column;
+        }
 
-        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 50000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
+        /* --- LOADING SCREEN (PAKAI LOGO 1) --- */
+        #loading-screen { 
+            position: fixed; inset: 0; background: #000; z-index: 50000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            transition: opacity 0.5s ease-out; 
+        }
         .load-logo { width: 120px; margin-bottom: 20px; animation: pulseText 1.5s infinite; filter: drop-shadow(0 0 15px var(--gold)); }
         .loader-text { font-family: 'Rajdhani'; font-weight:900; color: var(--gold); font-size: 16px; letter-spacing: 3px; animation: pulseText 1s infinite; }
 
-        .top-area { height: 40vh; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
-        .logo-main-box { width: 85%; max-width: 320px; display: flex; align-items: center; justify-content: center; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(223, 255, 0, 0.3)); }
+        /* --- BAGIAN ATAS (LOGO 2) --- */
+        .top-area {
+            height: 28vh; /* Diperkecil agar proporsional dan tidak mendorong ke bawah */
+            width: 100%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 1;
+            padding-top: 10px; 
+        }
+
+        /* Logo 2 Container (Mencegah kelebaran) */
+        .logo-main-box {
+            width: 70%; max-width: 230px; /* Maksimal lebar dikurangi agar logo memanjang tidak raksasa */
+            display: flex; align-items: center; justify-content: center;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(223, 255, 0, 0.3)); /* Glow Neon disesuaikan */
+        }
         .logo-img-main { width: 100%; height: auto; object-fit: contain; }
 
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .bottom-panel { height: 60vh; width: 100%; background: var(--glass-panel); backdrop-filter: blur(15px); border-top: 1px solid rgba(223, 255, 0, 0.4); border-radius: 40px 40px 0 0; padding: 40px 25px; box-sizing: border-box; display: flex; flex-direction: column; gap: 25px; box-shadow: 0 -15px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1); position: relative; z-index: 2; }
-        .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
-        .live-tag { display: inline-block; background: rgba(223, 255, 0, 0.1); border: 1px solid rgba(223, 255, 0, 0.5); padding: 6px 16px; border-radius: 20px; color: var(--neon); font-family: 'Rajdhani'; font-weight: 800; font-size: 14px; margin-bottom: 12px; box-shadow: 0 0 10px rgba(223, 255, 0, 0.1); }
-        h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(34px, 5vh, 46px); font-weight: 900; margin: 0; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: pointer; pointer-events: auto; user-select: none; letter-spacing: 1px; }
-        .sub-text { color: var(--gold); font-size: 14px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
+        /* --- PANEL BAWAH --- */
+        .bottom-panel {
+            flex: 1; 
+            width: 100%;
+            background: var(--glass-panel);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(223, 255, 0, 0.4);
+            border-radius: 40px 40px 0 0;
+            padding: 30px 25px 20px 25px; /* Jarak atas disesuaikan */
+            box-sizing: border-box;
+            display: flex; flex-direction: column; 
+            gap: 15px; /* Gap lebih rapat agar tidak sumpek ke bawah */
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative; z-index: 2;
+        }
 
-        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .stat-btn { background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 20px 15px; cursor: pointer; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .header-section { text-align: center; margin-bottom: 0px; position: relative; z-index: 20; }
+        
+        .live-tag {
+            display: inline-block; background: rgba(223, 255, 0, 0.1); 
+            border: 1px solid rgba(223, 255, 0, 0.5); padding: 5px 14px; border-radius: 20px;
+            color: var(--neon); font-family: 'Rajdhani'; font-weight: 800; font-size: 13px; margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(223, 255, 0, 0.1);
+        }
+
+        h1 {
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: clamp(30px, 4.5vh, 42px); 
+            font-weight: 900; margin: 0; line-height: 1;
+            color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: pointer; pointer-events: auto; user-select: none;
+            letter-spacing: 1px;
+        }
+        .sub-text {
+            color: var(--gold); font-size: 13px; font-weight: 800; letter-spacing: 3px;
+            text-transform: uppercase; margin-top: 8px; 
+        }
+
+        /* GRID STATISTIK */
+        .stats-container { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;
+        }
+        
+        .stat-btn {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 15px 10px; cursor: pointer; position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
         .stat-btn:active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); transform: scale(0.98); }
+        
         .st-label { font-size: 12px; color: #aaa; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; letter-spacing: 1px; }
-        .st-val { font-family: 'Rajdhani', sans-serif; font-size: clamp(50px, 8vh, 65px); font-weight: 900; color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        .st-hint { font-size: 11px; color: var(--gold); margin-top: 8px; font-weight: 700; letter-spacing: 1px; }
+        
+        .st-val {
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: clamp(45px, 7vh, 55px); 
+            font-weight: 900; 
+            color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .st-hint { font-size: 11px; color: var(--gold); margin-top: 5px; font-weight: 700; letter-spacing: 1px; }
 
-        .btn-main { background: linear-gradient(135deg, var(--neon) 0%, var(--neon-dark) 100%); color: #000; width: 100%; padding: 22px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2); display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease; margin-top: auto; }
+        /* TOMBOL UTAMA LUX (Warna NEON) */
+        .btn-main {
+            background: linear-gradient(135deg, var(--neon) 0%, var(--neon-dark) 100%);
+            color: #000; width: 100%; padding: 20px; 
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
+            font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; 
+            text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: all 0.3s ease; 
+            margin-top: auto; /* Dorong mentok bawah namun tetap proporsional */
+            margin-bottom: 5px;
+        }
         .btn-main:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(223, 255, 0, 0.4); }
 
-        /* SCAN OVERLAY */
-        .scan-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 60000; display: none; flex-direction: column; align-items: center; justify-content: center; }
-        .scan-logo-box { width: 180px; height: 180px; border-radius: 50%; background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--gold), var(--gold-dark)) border-box; border: 3px solid transparent; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); position: relative; overflow: hidden; }
-        .scan-logo-img { width: 80%; height: 80%; object-fit: contain; filter: grayscale(100%) brightness(0.5); transition: all 0.5s ease; }
-        .scan-line { position: absolute; top: -10%; left: 0; width: 100%; height: 5px; background: var(--neon); box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon); opacity: 1; animation: scanMove 1.5s linear infinite; z-index: 10; }
-        .scan-text { margin-top: 30px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 900; color: var(--neon); letter-spacing: 2px; animation: pulseText 1s infinite; text-align: center; }
+        /* --- OVERLAY SCAN POPUP (LOGO 1) --- */
+        .scan-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 60000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .scan-logo-box {
+            width: 180px; height: 180px; border-radius: 50%;
+            background: linear-gradient(#000, #000) padding-box, linear-gradient(135deg, var(--gold), var(--gold-dark)) border-box;
+            border: 3px solid transparent; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3); position: relative; overflow: hidden;
+        }
+        .scan-logo-img {
+            width: 80%; height: 80%; object-fit: contain;
+            filter: grayscale(100%) brightness(0.5); /* Hitam Putih Awal */
+            transition: all 0.5s ease;
+        }
+        .scan-line {
+            position: absolute; top: -10%; left: 0; width: 100%; height: 5px;
+            background: var(--neon); box-shadow: 0 0 15px var(--neon), 0 0 30px var(--neon);
+            opacity: 1; animation: scanMove 1.5s linear infinite; z-index: 10;
+        }
+        .scan-text {
+            margin-top: 30px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 900;
+            color: var(--neon); letter-spacing: 2px; animation: pulseText 1s infinite; text-align: center;
+        }
+        
+        /* State Success */
         .scan-logo-box.success { border-color: #00ff00; box-shadow: 0 0 60px rgba(0,255,0,0.6); }
         .scan-logo-box.success .scan-logo-img { filter: grayscale(0%) brightness(1); drop-shadow: 0 0 15px var(--gold); animation: none; }
         .scan-logo-box.success .scan-line { display: none; }
 
         @keyframes scanMove { 0% { top: -10%; } 100% { top: 110%; } }
 
-        /* MODAL */
+        /* MODAL & FORM */
         .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 30000; display: none; align-items: center; justify-content: center; }
         .modal-wrap.open { display: flex; animation: zoomIn 0.2s; }
         @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+        
         .modal-panel { background: #0a0a0a; border: 2px solid var(--gold); width: 85%; max-width: 400px; padding: 25px; border-radius: 25px; box-shadow: 0 0 60px rgba(212, 175, 55, 0.15); max-height: 90vh; display: flex; flex-direction: column; }
         .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         .modal-h-title { font-family: 'Rajdhani'; font-size: 28px; font-weight: 900; color: #fff; }
@@ -177,9 +287,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Mencegah auto-redirect kalau dia sedang aktif Mode SuperAdmin
         if(localStorage.getItem('myPlat') && !localStorage.getItem('sa_sess')) {
             window.location.href = "system.html";
         }
@@ -205,7 +314,6 @@
         let globalSlots = [null, null, null, null, null];
         let globalQueue = [];
 
-        // FITUR SUPERADMIN 
         window.toggleAdmin = () => { 
             const pass = prompt("MASUKKAN KODE ADMIN / SUPERADMIN:"); 
             if(pass === "5588") {
@@ -261,11 +369,11 @@
 
         window.checkLocationAndOpenForm = () => {
             const btn = document.getElementById('btnDaftar');
-            if(localStorage.getItem('myPlat')) {
-                window.location.href = 'system.html'; return;
+            if(btn.innerHTML.includes('SYSTEM')) {
+                window.location.href = 'system.html';
+                return;
             }
 
-            // BYPASS GPS UNTUK SUPERADMIN
             if(localStorage.getItem('sa_sess')) {
                 document.getElementById('formModal').classList.add('open'); 
                 document.getElementById('formModal').style.display = 'flex';
@@ -294,41 +402,50 @@
             const btnSubmit = document.getElementById('btnSubmitForm');
             btnSubmit.innerText = "MEMPROSES..."; btnSubmit.disabled = true;
 
-            closeModal('formModal');
-            const scanOverlay = document.getElementById('scanOverlay');
-            const scanBox = document.getElementById('scanLogoBox');
-            const scanText = document.getElementById('scanText');
-            
-            scanOverlay.style.display = 'flex';
-            scanBox.classList.remove('success');
-            scanText.innerText = 'SCANNING DATA...';
-            scanText.style.color = 'var(--neon)';
+            try {
+                const memberRef = doc(db, "members", plat.replace(/[^A-Z0-9]/g, ''));
+                const memberSnap = await getDoc(memberRef);
+                let role = "GUEST";
+                if(memberSnap.exists() && memberSnap.data().role) { role = memberSnap.data().role; }
 
-            setTimeout(async () => {
-                try {
-                    const memberRef = doc(db, "members", plat.replace(/[^A-Z0-9]/g, ''));
-                    const memberSnap = await getDoc(memberRef);
-                    let role = "GUEST";
-                    if(memberSnap.exists() && memberSnap.data().role) { role = memberSnap.data().role; }
+                const snap = await getDoc(mainRef);
+                if(snap.exists()) {
+                    let d = snap.data();
+                    let queue = d.waitingQueue || [];
+                    let slots = d.chargingSlots || [];
+                    
+                    if(queue.find(q => q.plat === plat)) { 
+                        localStorage.setItem('myPlat', plat); window.location.href = 'system.html'; return; 
+                    }
+                    if(slots.find(s => s && s.plat === plat)) { 
+                        localStorage.setItem('myPlat', plat); window.location.href = 'system.html'; return; 
+                    }
+                    
+                    queue.push({ userName: nama, plat: plat, batreSisa: batre, role: role, timestamp: Date.now(), qNo: (d.lastTicket || 0) + 1 });
+                    await updateDoc(mainRef, { waitingQueue: queue, lastTicket: (d.lastTicket || 0) + 1 });
+                    localStorage.setItem('myPlat', plat);
+                    
+                    closeModal('formModal');
+                    const scanOverlay = document.getElementById('scanOverlay');
+                    const scanBox = document.getElementById('scanLogoBox');
+                    const scanText = document.getElementById('scanText');
+                    
+                    scanOverlay.style.display = 'flex';
+                    scanBox.classList.remove('success');
+                    scanText.innerText = 'SCANNING DATA...';
+                    scanText.style.color = 'var(--neon)';
 
-                    const snap = await getDoc(mainRef);
-                    if(snap.exists()) {
-                        let queue = snap.data().waitingQueue || [];
-                        if(queue.find(q => q.plat === plat)) { alert("SUDAH ANTRI!"); location.reload(); return; }
-                        
-                        queue.push({ userName: nama, plat: plat, batreSisa: batre, role: role, timestamp: Date.now(), qNo: (snap.data().lastTicket || 0) + 1 });
-                        await updateDoc(mainRef, { waitingQueue: queue, lastTicket: (snap.data().lastTicket || 0) + 1 });
-                        
-                        localStorage.setItem('myPlat', plat);
-                        
+                    setTimeout(() => {
                         scanBox.classList.add('success');
                         scanText.innerText = 'VERIFIED! ACCESS GRANTED.';
                         scanText.style.color = '#00ff00';
-                        
                         setTimeout(() => { window.location.href = 'system.html'; }, 1500);
-                    }
-                } catch(e) { alert("ERROR: " + e); scanOverlay.style.display = 'none'; }
-            }, 3000); 
+                    }, 3000); 
+                }
+            } catch(e) { 
+                alert("ERROR: " + e); 
+                btnSubmit.innerText = "AMBIL TIKET"; btnSubmit.disabled = false;
+            }
         };
 
         window.selectSlot = async (index) => { alert("SILAKAN LOGIN / DAFTAR DULU UNTUK MEMILIH SLOT."); };
