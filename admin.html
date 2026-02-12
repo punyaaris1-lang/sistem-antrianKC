@@ -3,24 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADMIN - FC KARTIKA CHANDRA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Rajdhani:wght@500;700&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <title>COMMAND CENTER - KARTIKA CHANDRA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Rajdhani:wght@500;700;900&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* === STYLE TITANIUM/GOLD === */
+        /* === STYLE BASE TITANIUM/GOLD === */
         :root { 
             --bg: #050505; --panel: #111; --border: #333; 
             --gold: #FFD700; --cyan: #00F0FF; --red: #FF003C; 
-            --purple: #D000FF; --green: #39FF14;
-            --blue: #0088FF;
+            --blue: #0088FF; --neon: #DFFF00;
         }
         body { 
-            background: #000; color: #ddd; font-family: 'Rajdhani', sans-serif; padding: 10px; font-size: 12px; margin: 0; 
-            background-image: 
-                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+            background: #000; color: #ddd; font-family: 'Rajdhani', sans-serif; padding: 0; font-size: 12px; margin: 0; 
+            background-image: linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
             background-size: 20px 20px;
+            display: flex; flex-direction: column; height: 100vh;
         }
-        
+        * { box-sizing: border-box; }
+
+        /* --- LOGIN SCREEN --- */
+        #loginScreen { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 99999; }
+        .login-box { background: #0a0a0a; border: 2px solid var(--gold); padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 0 40px rgba(255, 215, 0, 0.2); width: 90%; max-width: 350px; }
+        .inp-pin { width: 100%; padding: 15px; font-size: 32px; font-family: 'Teko', sans-serif; text-align: center; letter-spacing: 15px; background: #000; color: var(--gold); border: 1px solid #333; border-radius: 8px; margin-bottom: 20px; }
+        .btn-login { width: 100%; padding: 15px; background: var(--gold); color: #000; font-family: 'Rajdhani'; font-size: 20px; font-weight: 900; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; }
+
+        /* --- DASHBOARD WRAPPER --- */
+        #adminDashboard { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+        .adm-header { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: #0a0a0a; border-bottom: 2px solid var(--gold); }
+        .nav-buttons { display: flex; gap: 5px; align-items: center; }
+
+        /* TABS */
+        .tabs { display: flex; background: #111; border-bottom: 1px solid #333; }
+        .tab-btn { flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 800; cursor: pointer; color: #666; transition: 0.3s; letter-spacing: 1px; }
+        .tab-btn.active { color: var(--gold); border-bottom: 3px solid var(--gold); background: rgba(255, 215, 0, 0.05); }
+        .tab-content { display: none; flex: 1; overflow-y: auto; padding: 15px; }
+        .tab-content.active { display: block; }
+
+        /* --- OPERASIONAL ELEMENTS --- */
         .box { border: 1px solid #333; padding: 15px; margin-bottom: 15px; background: #0a0a0a; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         h3 { margin: 0 0 15px 0; color: var(--gold); border-bottom: 1px solid #333; padding-bottom: 5px; font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
         
@@ -40,118 +59,168 @@
         th { color: var(--gold); text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
         tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 
-        /* GRID UNTUK 5 SLOT - Auto Fit */
-        .slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
-        .slot-item { border: 1px solid #333; padding: 5px; background: #050505; text-align: center; border-radius: 6px; min-height: 140px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+        .slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
+        .slot-item { border: 1px solid #333; padding: 10px; background: #050505; text-align: center; border-radius: 6px; min-height: 140px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
         .slot-item.active { border-color: var(--gold); background: rgba(255, 215, 0, 0.05); }
-        
-        /* BADGE LABEL DI ADMIN */
-        .adm-badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: bold; display: inline-block; margin-top: 3px; }
-        .bg-pea { background: var(--purple); color: #fff; }
-        .bg-gold { background: var(--blue); color: #fff; } 
-        .bg-red { background: var(--red); color: #fff; }
-        .bg-green { background: var(--green); color: #000; }
-        .bg-cyan { background: var(--cyan); color: #000; }
-        .bg-guest { background: #333; color: #aaa; }
 
-        .term-container { background: #000; border: 1px solid #333; height: 150px; overflow-y: auto; padding: 10px; font-family: 'Courier New', monospace; font-size: 10px; color: #888; border-radius: 5px; display: flex; flex-direction: column; }
+        .term-container { background: #000; border: 1px solid #333; height: 150px; overflow-y: auto; padding: 10px; font-family: 'Courier New', monospace; font-size: 10px; color: #888; border-radius: 5px; display: flex; flex-direction: column; margin-bottom: 20px; }
         .log-line { margin-bottom: 4px; border-bottom: 1px solid #111; padding-bottom: 2px; }
-        
-        .adm-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
-        .nav-buttons { display: flex; gap: 5px; }
+
+        /* --- DATABASE MEMBER PANEL --- */
+        .db-row { background: #111; border-left: 4px solid var(--gold); padding: 10px 15px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-radius: 4px; }
+        .db-info .db-plat { font-family: 'Teko'; font-size: 22px; color: #fff; line-height: 1; }
+        .db-info .db-name { font-size: 11px; color: #aaa; margin-bottom: 5px; }
 
         /* MODAL */
-        #customModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-box { background: #111; border: 1px solid var(--gold); width: 85%; max-width: 300px; padding: 25px; border-radius: 10px; text-align: center; box-shadow: 0 0 30px rgba(255, 215, 0, 0.1); }
+        #customModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-box { background: #111; border: 1px solid var(--gold); width: 85%; max-width: 320px; padding: 25px; border-radius: 10px; text-align: center; box-shadow: 0 0 30px rgba(255, 215, 0, 0.1); }
         .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
         .mb-yes { flex:1; background: var(--gold); color: #000; }
         .mb-no { flex:1; background: #333; color: #fff; border: 1px solid #555; }
+
+        /* =========================================================
+           ULTRA PREMIUM GLAMOUR BADGE (Disesuaikan untuk Admin) 
+           ========================================================= */
+        .glamour-badge { width: 110px; height: 26px; border-radius: 4px; display: flex; align-items: center; background: linear-gradient(135deg, #151515 0%, #050505 100%); border: 1px solid var(--b-color-main); box-shadow: 0 0 8px var(--b-glow), inset 0 0 5px rgba(0,0,0,0.8); overflow: hidden; position: relative; margin-top: 5px; }
+        .glamour-badge::after { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-30deg); animation: luxuryShine 4s infinite cubic-bezier(0.4, 0, 0.2, 1); z-index: 5; pointer-events: none; }
+        .gb-icon { width: 26px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; background: var(--b-gradient); color: var(--icon-color, #000); position: relative; z-index: 2; border-radius: 3px 0 0 3px; clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); box-shadow: 2px 0 5px rgba(0,0,0,0.8); }
+        .gb-text { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; color: var(--b-color-main); text-shadow: 0 0 4px var(--b-glow); z-index: 2; padding-right: 3px; }
+        @keyframes luxuryShine { 0% { left: -150%; } 20% { left: 200%; } 100% { left: 200%; } }
+        
+        /* THE GLAMOUR VARIANTS */
+        .b-ketum { --b-color-main: #FFDF00; --b-glow: rgba(255, 223, 0, 0.4); --b-gradient: linear-gradient(135deg, #FFF380, #D4AF37, #996515); }
+        .b-waketum { --b-color-main: #E5E4E2; --b-glow: rgba(229, 228, 226, 0.4); --b-gradient: linear-gradient(135deg, #FFFFFF, #B0C4DE, #708090); }
+        .b-sekertaris { --b-color-main: #00E5FF; --b-glow: rgba(0, 229, 255, 0.4); --b-gradient: linear-gradient(135deg, #80F2FF, #00BFFF, #005577); }
+        .b-bendahara { --b-color-main: #00FF7F; --b-glow: rgba(0, 255, 127, 0.4); --b-gradient: linear-gradient(135deg, #80FFAA, #00CC66, #004D00); }
+        .b-humas { --b-color-main: #D966FF; --b-glow: rgba(217, 102, 255, 0.4); --b-gradient: linear-gradient(135deg, #EEB3FF, #B026FF, #590099); --icon-color: #fff; }
+        .b-kreatif { --b-color-main: #FF007F; --b-glow: rgba(255, 0, 127, 0.5); --b-gradient: linear-gradient(135deg, #00F0FF, #9D00FF, #FF007F, #FF8C00); --icon-color: #fff; border-color: #FF007F; }
+        .b-urc { --b-color-main: #FF2A2A; --b-glow: rgba(255, 42, 42, 0.4); --b-gradient: linear-gradient(135deg, #FF6666, #CC0000, #660000); --icon-color: #fff; }
+        .b-member { --b-color-main: #D4AF37; --b-glow: rgba(212, 175, 55, 0.2); --b-gradient: linear-gradient(135deg, #D4AF37, #8B6508); }
 
     </style>
 </head>
 <body>
 
-    <div class="adm-header">
-        <div>
-            <div style="font-family:'Black Ops One'; font-size:20px; color:#fff;">ADMIN PANEL</div>
-            <div style="font-size:10px; color:#666;">FC KARTIKA CHANDRA</div>
-        </div>
-        <div class="nav-buttons">
-            <button onclick="window.location.href='antrian.html'" class="btn-blue" style="font-size:12px;">LAYAR DEPAN</button>
-            <button onclick="window.location.href='system.html'" class="btn-gold" style="font-size:12px;">DASHBOARD</button>
-        </div>
-    </div>
-
-    <div class="box" style="border-top: 2px solid var(--gold);">
-        <h3>LIVE MONITORING (5 SLOT)</h3>
-        <div class="slot-grid">
-            <div id="slot1" class="slot-item">...</div>
-            <div id="slot2" class="slot-item">...</div>
-            <div id="slot3" class="slot-item">...</div>
-            <div id="slot4" class="slot-item">...</div>
-            <div id="slot5" class="slot-item">...</div>
-        </div>
-        
-        <div style="margin-top:15px; background:#111; padding:10px; border-radius:5px; display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
-            <span style="font-size:10px; color:#666;">SWAP:</span>
-            <select id="moveSrc" style="padding:5px; width:auto; min-width:80px;">
-                <option value="0">SLOT 1</option>
-                <option value="1">SLOT 2</option>
-                <option value="2">SLOT 3</option>
-                <option value="3">SLOT 4</option>
-                <option value="4">SLOT 5</option>
-            </select>
-            <span style="color:#666;">➡</span>
-            <select id="moveDest" style="padding:5px; width:auto; min-width:80px;">
-                <option value="1">SLOT 2</option>
-                <option value="2">SLOT 3</option>
-                <option value="3">SLOT 4</option>
-                <option value="4">SLOT 5</option>
-                <option value="0">SLOT 1</option>
-            </select>
-            <button onclick="askConfirm('Tukar Posisi User?', moveSlotUser)" class="btn-blue btn-mini">GO</button>
+    <div id="loginScreen">
+        <div class="login-box">
+            <i class="fas fa-shield-alt" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
+            <h2 style="font-family:'Orbitron'; margin-top:0; color:#fff;">SECURITY CHECK</h2>
+            <input type="password" id="adminPin" class="inp-pin" placeholder="••••" maxlength="4">
+            <button class="btn-login" onclick="verifyLogin()">AUTHORIZE</button>
+            <div style="font-size: 11px; color: #555; margin-top: 15px;">Admin: 5588 | Superadmin: 9999</div>
         </div>
     </div>
 
-    <div class="box" style="border-top: 2px solid var(--blue);">
-        <h3>
-            DAFTAR ANTRIAN
-            <button onclick="askConfirm('RESET URUTAN NOMOR JADI 1? (ORANG TETAP ADA)', resetTicketNumbers)" class="btn-red btn-mini" style="font-size:10px;">♻ RESET NOMOR</button>
-        </h3>
+    <div id="adminDashboard">
         
-        <div id="queueTable" style="max-height:300px; overflow-y:auto; margin-bottom:15px; border:1px solid #222;"></div>
-        
-        <div style="background:#111; padding:10px; border-radius:5px;">
-            <div style="font-size:10px; color:var(--blue); margin-bottom:5px;">FORCE INPUT (VIP/MANUAL)</div>
-            <div style="display:flex; gap:5px;">
-                <input id="newPlat" placeholder="PLAT (CONTOH: B 7777 PEA)" style="flex:2;">
-                <input id="newNama" placeholder="NAMA" style="flex:2;">
+        <div class="adm-header">
+            <div>
+                <div style="font-family:'Orbitron'; font-size:18px; color:#fff;">ADMIN PANEL</div>
+                <div style="font-size:10px; color:var(--gold);">FC KARTIKA CHANDRA <span id="roleTag" style="background:#333; padding:2px 5px; border-radius:3px; margin-left:5px; font-weight:bold;">...</span></div>
             </div>
-            <div style="display:flex; gap:2px; margin-top:5px; flex-wrap: wrap;">
-                <button onclick="manualAdd('queue')" class="btn-green" style="flex:2; min-width: 100px;">+ ANTRIAN</button>
-                <button onclick="manualAdd(0)" class="btn-gold" style="flex:1;">S1</button>
-                <button onclick="manualAdd(1)" class="btn-gold" style="flex:1;">S2</button>
-                <button onclick="manualAdd(2)" class="btn-gold" style="flex:1;">S3</button>
-                <button onclick="manualAdd(3)" class="btn-gold" style="flex:1;">S4</button>
-                <button onclick="manualAdd(4)" class="btn-gold" style="flex:1;">S5</button>
+            <div class="nav-buttons">
+                <button onclick="window.location.href='system.html'" class="btn-gold" style="font-size:12px;"><i class="fas fa-tv"></i></button>
+                <button onclick="logout()" class="btn-red" style="font-size:12px;"><i class="fas fa-power-off"></i></button>
             </div>
         </div>
-    </div>
 
-    <div class="box" style="border: 1px dashed var(--red);">
-        <h3 style="color:var(--red);">EMERGENCY ZONE</h3>
-        <div style="display:flex; gap:10px;">
-            <button onclick="checkRecovery()" class="btn-blue" style="flex:1;">📂 CEK SNAPSHOT</button>
-            <button onclick="askConfirm('RESET SEMUA DATA (HAPUS SEMUA)?', hardReset)" class="btn-red" style="flex:1;">💀 KOSONGKAN SISTEM</button>
+        <div class="tabs">
+            <div class="tab-btn active" onclick="switchTab('tabOps', this)">OPERASIONAL</div>
+            <div class="tab-btn" id="navDb" onclick="switchTab('tabDb', this)" style="display:none;">DB MEMBER</div>
         </div>
-        <div id="recoveryPanel" style="display:none; margin-top:10px; background:#220000; padding:10px; border:1px solid var(--red);">
-            <div id="recList" style="font-size:10px; margin-bottom:10px; color:#fff;"></div>
-            <button onclick="executeRestore()" class="btn-green" style="width:100%;">PULIHKAN DATA</button>
-        </div>
-    </div>
 
-    <div style="font-size:10px; color:#444; margin-bottom:5px;">SYSTEM LOGS:</div>
-    <div class="term-container" id="termLog"></div>
+        <div id="tabOps" class="tab-content active">
+            
+            <div class="box" style="border-top: 2px solid var(--gold);">
+                <h3>LIVE MONITORING (5 SLOT)</h3>
+                <div class="slot-grid">
+                    <div id="slot1" class="slot-item">...</div>
+                    <div id="slot2" class="slot-item">...</div>
+                    <div id="slot3" class="slot-item">...</div>
+                    <div id="slot4" class="slot-item">...</div>
+                    <div id="slot5" class="slot-item">...</div>
+                </div>
+                
+                <div style="margin-top:15px; background:#111; padding:10px; border-radius:5px; display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
+                    <span style="font-size:10px; color:#666;">SWAP:</span>
+                    <select id="moveSrc" style="padding:5px; width:auto; min-width:80px;">
+                        <option value="0">SLOT 1</option><option value="1">SLOT 2</option><option value="2">SLOT 3</option><option value="3">SLOT 4</option><option value="4">SLOT 5</option>
+                    </select>
+                    <span style="color:#666;">➡</span>
+                    <select id="moveDest" style="padding:5px; width:auto; min-width:80px;">
+                        <option value="1">SLOT 2</option><option value="2">SLOT 3</option><option value="3">SLOT 4</option><option value="4">SLOT 5</option><option value="0">SLOT 1</option>
+                    </select>
+                    <button onclick="askConfirm('Tukar Posisi User?', moveSlotUser)" class="btn-blue btn-mini">GO</button>
+                </div>
+            </div>
+
+            <div class="box" style="border-top: 2px solid var(--blue);">
+                <h3>
+                    DAFTAR ANTRIAN
+                    <button onclick="askConfirm('RESET URUTAN NOMOR JADI 1?', resetTicketNumbers)" class="btn-red btn-mini" style="font-size:10px;">♻ RESET NOMOR</button>
+                </h3>
+                
+                <div id="queueTable" style="max-height:300px; overflow-y:auto; margin-bottom:15px; border:1px solid #222;"></div>
+                
+                <div style="background:#111; padding:10px; border-radius:5px;">
+                    <div style="font-size:10px; color:var(--blue); margin-bottom:5px;">FORCE INPUT (VIP/MANUAL)</div>
+                    <div style="display:flex; gap:5px;">
+                        <input id="newPlat" placeholder="PLAT (B 1234 XY)" style="flex:2;">
+                        <input id="newNama" placeholder="NAMA" style="flex:2;">
+                    </div>
+                    <div style="display:flex; gap:2px; margin-top:5px; flex-wrap: wrap;">
+                        <button onclick="manualAdd('queue')" class="btn-green" style="flex:2; min-width: 100px;">+ ANTRIAN</button>
+                        <button onclick="manualAdd(0)" class="btn-gold" style="flex:1;">S1</button>
+                        <button onclick="manualAdd(1)" class="btn-gold" style="flex:1;">S2</button>
+                        <button onclick="manualAdd(2)" class="btn-gold" style="flex:1;">S3</button>
+                        <button onclick="manualAdd(3)" class="btn-gold" style="flex:1;">S4</button>
+                        <button onclick="manualAdd(4)" class="btn-gold" style="flex:1;">S5</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box" style="border: 1px dashed var(--red);">
+                <h3 style="color:var(--red);">EMERGENCY ZONE</h3>
+                <div style="display:flex; gap:10px;">
+                    <button onclick="checkRecovery()" class="btn-blue" style="flex:1;">📂 CEK SNAPSHOT</button>
+                    <button onclick="askConfirm('RESET SEMUA DATA (HAPUS SEMUA)?', hardReset)" class="btn-red" style="flex:1;">💀 KOSONGKAN SISTEM</button>
+                </div>
+                <div id="recoveryPanel" style="display:none; margin-top:10px; background:#220000; padding:10px; border:1px solid var(--red);">
+                    <div id="recList" style="font-size:10px; margin-bottom:10px; color:#fff;"></div>
+                    <button onclick="executeRestore()" class="btn-green" style="width:100%;">PULIHKAN DATA</button>
+                </div>
+            </div>
+
+            <div style="font-size:10px; color:#444; margin-bottom:5px;">SYSTEM LOGS:</div>
+            <div class="term-container" id="termLog"></div>
+        </div>
+
+        <div id="tabDb" class="tab-content">
+            <div class="box" style="border-top: 2px solid var(--cyan);">
+                <h3 style="color:var(--cyan);">SETTING JABATAN / BADGE</h3>
+                <input type="text" id="dbPlat" placeholder="PLAT NOMOR (Wajib Spasi: B 1234 XX)" style="text-transform:uppercase;">
+                <input type="text" id="dbNama" placeholder="NAMA LENGKAP" style="text-transform:uppercase;">
+                
+                <select id="dbRole" style="color:var(--gold);">
+                    <option value="MEMBER">MEMBER BIASA</option>
+                    <option value="KETUM">KETUM (Emas)</option>
+                    <option value="WAKETUM">WAKETUM (Platinum)</option>
+                    <option value="SEKERTARIS">SEKERTARIS (Cyan)</option>
+                    <option value="BENDAHARA">BENDAHARA (Hijau)</option>
+                    <option value="HUMAS">HUMAS (Ungu)</option>
+                    <option value="KREATIF">TIM KREATIF (Hologram Pink)</option>
+                    <option value="URC">URC (Merah)</option>
+                </select>
+                
+                <button onclick="saveMember()" class="btn-blue" style="width:100%; margin-top:5px;">SIMPAN DATA</button>
+                <div style="font-size:10px; color:#666; margin-top:10px; text-align:center;">*GUEST tidak perlu dimasukkan ke database ini.</div>
+            </div>
+
+            <h3 style="color:var(--gold); margin-top:20px;">LIST MEMBER TERSIMPAN</h3>
+            <div id="memberList">Memuat data database...</div>
+        </div>
+
+    </div>
 
     <div id="customModal">
         <div class="modal-box">
@@ -166,9 +235,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, query, orderBy, limit, getDocs, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, query, orderBy, limit, setDoc, getDoc, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // === FIREBASE CONFIG KARTIKA CHANDRA ===
         const firebaseConfig = {
           apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
           authDomain: "kartikachandrafc.firebaseapp.com",
@@ -183,21 +251,58 @@
         const mainRef = doc(db, "antrian", "utama");
         const logRef = collection(db, "activityLog");
         const snapshotRef = doc(db, "antrian", "snapshot");
+        const membersRef = collection(db, "members");
 
-        // DEFAULT 5 SLOTS
         let cachedSlots = [null, null, null, null, null];
         let cachedQueue = [];
         let snapshotData = null;
 
-        // AUTH SIMPLE (PIN: 5588 SESUAI INSTRUKSI)
-        if(localStorage.getItem('adm_sess')) {} 
-        else { 
-            let p = prompt("PIN ADMIN (KARTIKA CHANDRA):"); 
-            if(p==="5588") localStorage.setItem('adm_sess','1'); 
-            else { alert("Salah!"); location.href = 'index.html'; } 
+        function cleanStr(s) { return s ? s.replace(/[^A-Z0-9]/gi, '').toUpperCase() : ''; }
+
+        // --- SISTEM LOGIN 2 PINTU ---
+        window.verifyLogin = () => {
+            const pin = document.getElementById('adminPin').value;
+            if(pin === "5588") {
+                sessionStorage.setItem('adm_role', 'ADMIN');
+                openDashboard('ADMIN');
+            } else if(pin === "9999") { 
+                sessionStorage.setItem('adm_role', 'SUPERADMIN');
+                openDashboard('SUPERADMIN');
+            } else {
+                alert("PIN SALAH / TIDAK DIKENAL!");
+            }
+        };
+
+        window.logout = () => { sessionStorage.removeItem('adm_role'); location.reload(); };
+
+        function openDashboard(role) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'flex';
+            
+            const tag = document.getElementById('roleTag');
+            tag.innerText = role;
+            
+            if(role === 'SUPERADMIN') {
+                tag.style.background = 'var(--red)'; tag.style.color = '#fff';
+                document.getElementById('navDb').style.display = 'block'; // Tampilkan Tab DB
+                loadMembers(); // Render List Member
+            } else {
+                tag.style.background = '#333'; tag.style.color = '#fff';
+            }
         }
 
-        // MODAL LOGIC
+        // Cek sesi reload
+        if(sessionStorage.getItem('adm_role')) { openDashboard(sessionStorage.getItem('adm_role')); }
+
+        // --- TAB NAVIGATION ---
+        window.switchTab = (tabId, element) => {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        };
+
+        // --- CUSTOM MODAL ---
         let currentCallback = null;
         window.askConfirm = (text, callback) => {
             document.getElementById('modalText').innerText = text;
@@ -207,61 +312,69 @@
         document.getElementById('btnYes').onclick = () => { if(currentCallback) currentCallback(); closeModal(); };
         window.closeModal = () => { document.getElementById('customModal').style.display = 'none'; currentCallback = null; };
 
-        // === MONITOR ===
+        // --- FUNGSI RENDER BADGE ULTRA PREMIUM ---
+        function renderAdminBadge(r) {
+            if (!r || r.toUpperCase() === "GUEST") return `<span style="color:#666; font-size:10px;">[NON-MEMBER]</span>`; 
+            const rUp = r.toUpperCase();
+            let css = "b-member"; let icon = "fa-user"; let roleTxt = "MEMBER";
+            if (rUp.includes("KETUM") && !rUp.includes("WAKETUM")) { css="b-ketum"; icon="fa-crown"; roleTxt="KETUM"; }
+            else if (rUp.includes("WAKETUM")) { css="b-waketum"; icon="fa-star"; roleTxt="WAKETUM"; }
+            else if (rUp.includes("SEKERTARIS") || rUp.includes("SEKRETARIS")) { css="b-sekertaris"; icon="fa-pen-nib"; roleTxt="SEKERTARIS"; }
+            else if (rUp.includes("BENDAHARA")) { css="b-bendahara"; icon="fa-coins"; roleTxt="BENDAHARA"; }
+            else if (rUp.includes("HUMAS")) { css="b-humas"; icon="fa-bullhorn"; roleTxt="HUMAS"; }
+            else if (rUp.includes("KREATIF")) { css="b-kreatif"; icon="fa-palette"; roleTxt="KREATIF"; }
+            else if (rUp.includes("URC")) { css="b-urc"; icon="fa-bolt"; roleTxt="URC"; }
+            
+            return `
+            <div class="glamour-badge ${css}" style="transform: scale(0.85); transform-origin: left center;">
+                <div class="gb-icon"><i class="fas ${icon}"></i></div>
+                <div class="gb-text">${roleTxt}</div>
+            </div>`;
+        }
+
+        // ==========================================
+        // FITUR OPERASIONAL (SLOT & ANTRIAN)
+        // ==========================================
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) return;
             const d = snap.data();
-            
-            // Ensure 5 slots logic
             cachedSlots = d.chargingSlots || [null, null, null, null, null];
             while(cachedSlots.length < 5) cachedSlots.push(null);
-
             cachedQueue = d.waitingQueue || [];
             updateMonitor();
         });
 
         function updateMonitor() {
-            // UPDATE SLOT (S1 - S5)
+            // RENDER SLOT
             cachedSlots.forEach((s, i) => {
                 const el = document.getElementById(`slot${i+1}`);
                 if(s) {
-                    let badgeClass = "bg-guest"; let roleText = s.role || "GUEST";
-                    if(roleText === "MEMBER" || roleText.includes("KELUARGA") || roleText.includes("KETUA") || roleText.includes("WAKETUM") || roleText.includes("PEMBINA")) { badgeClass = "bg-gold"; }
-                    else if(roleText.includes("PEA")) { badgeClass = "bg-pea"; }
-                    else if(roleText.includes("SATGAS")) { badgeClass = "bg-red"; }
-                    else if(roleText.includes("TURTLE")) { badgeClass = "bg-green"; }
-                    else if(roleText.includes("OFFICE")) { badgeClass = "bg-cyan"; }
-                    else if(roleText === "GUEST") { roleText = "NON-MEMBER"; }
-
                     el.className = "slot-item active";
                     el.innerHTML = `
-                        <div>
-                            <div style="font-size:24px; font-family:'Teko'; color:#fff; line-height:1;">${s.plat}</div>
-                            <div style="font-size:10px; color:#aaa;">${s.userName}</div>
-                            <span class="adm-badge ${badgeClass}">${roleText}</span>
+                        <div style="text-align:left;">
+                            <div style="font-size:26px; font-family:'Teko'; color:#fff; line-height:0.9;">${s.plat}</div>
+                            <div style="font-size:11px; color:#aaa; margin-bottom:5px;">${s.userName}</div>
+                            ${renderAdminBadge(s.role)}
                         </div>
-                        <div style="display:grid; gap:2px; width:100%;">
-                            <button class="btn-red btn-mini" onclick="askConfirm('Keluarkan User ini?', ()=>forceStop(${i}))">STOP / KICK</button>
-                            <button class="btn-blue btn-mini" onclick="askConfirm('Pindahkan ke Antrian?', ()=>kickToQueue(${i}))">KE ANTRIAN</button>
+                        <div style="display:grid; gap:4px; width:100%; margin-top:10px;">
+                            <button class="btn-red btn-mini" onclick="askConfirm('Stop / Keluarkan User?', ()=>forceStop(${i}))">STOP / KICK</button>
+                            <button class="btn-blue btn-mini" onclick="askConfirm('Kembalikan ke Antrian?', ()=>kickToQueue(${i}))">KE ANTRIAN</button>
                         </div>
                     `;
                 } else {
                     el.className = "slot-item";
-                    el.innerHTML = `<div style="color:#333; margin:auto;">KOSONG</div>`;
+                    el.innerHTML = `<div style="color:#444; margin:auto; font-family:'Orbitron'; font-size:16px;">KOSONG</div>`;
                 }
             });
 
-            // UPDATE QUEUE TABLE (DENGAN 5 TOMBOL FORCE SLOT)
-            let h = `<table><tr><th width="20">#</th><th>PLAT / NAMA</th><th width="120">PINDAH KE</th><th width="40">AKSI</th></tr>`;
-            if(cachedQueue.length === 0) h += `<tr><td colspan="4" style="text-align:center; padding:10px; color:#444;">TIDAK ADA ANTRIAN</td></tr>`;
+            // RENDER QUEUE TABLE
+            let h = `<table><tr><th width="20">#</th><th>USER DATA</th><th width="120">KE SLOT</th><th width="40">AKSI</th></tr>`;
+            if(cachedQueue.length === 0) h += `<tr><td colspan="4" style="text-align:center; padding:15px; color:#444;">TIDAK ADA ANTRIAN</td></tr>`;
             
             cachedQueue.forEach((q, idx) => {
-                let badgeClass = "bg-guest"; let roleText = q.role || "GUEST";
-                if(roleText === "MEMBER" || roleText.includes("KELUARGA") || roleText.includes("KETUA") || roleText.includes("WAKETUM") || roleText.includes("PEMBINA")) badgeClass = "bg-gold";
-                
                 h += `<tr>
-                    <td style="font-size:14px; font-weight:bold; color:var(--cyan)">${q.qNo}</td>
-                    <td><b style="color:#fff; font-size:14px;">${q.plat}</b><br><span style="color:#888;">${q.userName}</span> <span class="adm-badge ${badgeClass}" style="font-size:8px;">${roleText}</span></td>
+                    <td style="font-size:16px; font-weight:bold; color:var(--cyan)">${q.qNo}</td>
+                    <td><b style="color:#fff; font-size:16px; font-family:'Teko';">${q.plat}</b><br><span style="color:#888;">${q.userName}</span><br>${renderAdminBadge(q.role)}</td>
                     <td>
                         <div style="display:flex; gap:2px; flex-wrap:wrap;">
                             <button class="btn-gold btn-mini" onclick="forceToSlot('${q.plat}', 0)">S1</button>
@@ -275,7 +388,7 @@
                         <div style="display:flex; gap:2px;">
                             <button class="btn-blue btn-mini" onclick="switchQueue(${idx}, -1)">⬆</button>
                             <button class="btn-blue btn-mini" onclick="switchQueue(${idx}, 1)">⬇</button>
-                            <button class="btn-red btn-mini" onclick="askConfirm('Hapus?', ()=>delQueue('${q.plat}'))">X</button>
+                            <button class="btn-red btn-mini" onclick="askConfirm('Hapus Antrian?', ()=>delQueue('${q.plat}'))"><i class="fas fa-times"></i></button>
                         </div>
                     </td>
                 </tr>`;
@@ -283,194 +396,153 @@
             document.getElementById('queueTable').innerHTML = h + `</table>`;
         }
 
-        // === FITUR BARU: RESET NOMOR ANTRIAN SAJA ===
         window.resetTicketNumbers = () => {
             runTransaction(db, async(t) => {
-                const docSnap = await t.get(mainRef);
-                if (!docSnap.exists()) return;
-                const d = docSnap.data();
-                
-                let queue = d.waitingQueue || [];
-                // Mengubah nomor tiket qNo berurutan dari 1
-                queue.forEach((q, index) => { 
-                    q.qNo = index + 1; 
-                });
-                
-                // Update database: Antrian tersusun ulang, dan tiket terakhir di-reset ke jumlah orang yang antri
-                t.update(mainRef, { 
-                    waitingQueue: queue, 
-                    lastTicket: queue.length 
-                });
-                addLog("ADMIN", "RESET_NUMBER", `Urutan di-reset dari 1 untuk ${queue.length} orang`);
-            }).catch(e => alert("Gagal Reset: " + e));
+                const docSnap = await t.get(mainRef); if (!docSnap.exists()) return;
+                const d = docSnap.data(); let queue = d.waitingQueue || [];
+                queue.forEach((q, index) => { q.qNo = index + 1; });
+                t.update(mainRef, { waitingQueue: queue, lastTicket: queue.length });
+                addLog("ADMIN", "RESET_NUMBER", `Urutan direset`);
+            }).catch(e => alert("Gagal: " + e));
         };
 
-        // === INPUT MANUAL (FORCE) ===
         window.manualAdd = async (target) => {
             const p = document.getElementById('newPlat').value.trim().toUpperCase();
             const n = document.getElementById('newNama').value.trim().toUpperCase();
-            if(!p) return alert("Plat Nomor Wajib Diisi!");
+            if(!p) return alert("Plat Nomor Wajib!");
 
-            // Cek Role dari DB Members
             let userRole = "GUEST";
-            const cleanID = p.replace(/[^A-Z0-9]/g, '');
             try {
-                let m = await getDoc(doc(db, "members", cleanID));
+                let m = await getDoc(doc(db, "members", cleanStr(p)));
                 if(m.exists()) userRole = m.data().role || "MEMBER";
             } catch(e) {}
 
             runTransaction(db, async(t) => {
-                const docSnap = await t.get(mainRef);
-                let d = docSnap.data() || {};
-                
+                const docSnap = await t.get(mainRef); let d = docSnap.data() || {};
                 if(!d.chargingSlots) d.chargingSlots = [null,null,null,null,null];
                 if(!d.waitingQueue) d.waitingQueue = [];
-                
                 if([...d.chargingSlots, ...d.waitingQueue].some(u => u && u.plat === p)) throw "User sudah ada!";
 
                 const newNo = (d.lastTicket||0)+1;
                 const u = { plat:p, userName:n||"MANUAL", qNo:newNo, entryTime:Date.now(), role: userRole };
 
                 if(target === 'queue') d.waitingQueue.push(u); 
-                else { 
-                    if(d.chargingSlots[target]) throw "Slot Penuh!"; 
-                    u.startTime = Date.now(); d.chargingSlots[target] = u; 
-                }
+                else { if(d.chargingSlots[target]) throw "Slot Penuh!"; u.startTime = Date.now(); d.chargingSlots[target] = u; }
 
-                // BACKUP SNAPSHOT OTOMATIS SAAT INPUT MANUAL
-                t.set(snapshotRef, { ...d, backupTime: new Date() });
-                
-                t.set(mainRef, { 
-                    waitingQueue: d.waitingQueue, 
-                    chargingSlots: d.chargingSlots, 
-                    lastTicket: newNo 
-                }, { merge: true });
-                
-                addLog("ADMIN", "MANUAL_INPUT", `Add ${p} (${userRole})`);
-            }).then(() => {
-                document.getElementById('newPlat').value = '';
-                document.getElementById('newNama').value = '';
-            }).catch(e => alert("GAGAL: " + e));
+                t.set(snapshotRef, { ...d, backupTime: new Date() }); // Auto Backup
+                t.set(mainRef, { waitingQueue: d.waitingQueue, chargingSlots: d.chargingSlots, lastTicket: newNo }, { merge: true });
+                addLog("ADMIN", "FORCE_INPUT", `Add ${p}`);
+            }).then(() => { $('newPlat').value = ''; $('newNama').value = ''; }).catch(e => alert("Error: " + e));
         };
 
-        // === ACTION BUTTONS ===
         window.forceToSlot = (plat, slotIdx) => {
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
-                if(!d.chargingSlots) d.chargingSlots = [null,null,null,null,null];
-
                 if(d.chargingSlots[slotIdx]) throw "SLOT TERISI!";
                 const qIdx = d.waitingQueue.findIndex(x => x.plat === plat);
-                if(qIdx === -1) throw "User hilang.";
-                
-                const user = d.waitingQueue.splice(qIdx, 1)[0];
-                user.startTime = Date.now();
+                if(qIdx === -1) throw "Data hilang.";
+                const user = d.waitingQueue.splice(qIdx, 1)[0]; user.startTime = Date.now();
                 d.chargingSlots[slotIdx] = user;
-                
                 t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
-                addLog("ADMIN", "FORCE_SLOT", `${plat} -> S${slotIdx+1}`);
             }).catch(e => alert(e));
         };
 
-        window.forceStop = (i) => {
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                d.chargingSlots[i] = null;
-                t.update(mainRef, { chargingSlots: d.chargingSlots });
-                addLog("ADMIN", "STOP", `Slot ${i+1}`);
-            });
-        };
-
-        window.kickToQueue = (i) => {
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                const u = d.chargingSlots[i];
-                if(u) {
-                    d.chargingSlots[i] = null; delete u.startTime; 
-                    d.waitingQueue.unshift(u);
-                    t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue });
-                }
-            });
-        };
-
+        window.forceStop = (i) => { runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); d.chargingSlots[i] = null; t.update(mainRef, { chargingSlots: d.chargingSlots }); addLog("ADMIN", "STOP", `Slot ${i+1}`); }); };
+        window.kickToQueue = (i) => { runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); const u = d.chargingSlots[i]; if(u) { d.chargingSlots[i] = null; delete u.startTime; d.waitingQueue.unshift(u); t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue }); } }); };
+        
         window.moveSlotUser = () => {
-            const s1 = document.getElementById('moveSrc').value;
-            const s2 = document.getElementById('moveDest').value;
+            const s1 = document.getElementById('moveSrc').value; const s2 = document.getElementById('moveDest').value;
             if(s1 == s2) return alert("Pilih slot beda!");
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
-                const temp = d.chargingSlots[s1];
-                d.chargingSlots[s1] = d.chargingSlots[s2];
-                d.chargingSlots[s2] = temp;
+                const temp = d.chargingSlots[s1]; d.chargingSlots[s1] = d.chargingSlots[s2]; d.chargingSlots[s2] = temp;
                 t.update(mainRef, { chargingSlots: d.chargingSlots });
             });
         };
 
         window.switchQueue = (idx, dir) => {
             runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                let q = d.waitingQueue;
-                const target = idx + dir;
-                if(target >= 0 && target < q.length) {
-                    [q[idx], q[target]] = [q[target], q[idx]];
-                    t.update(mainRef, { waitingQueue: q });
-                }
+                const d = (await t.get(mainRef)).data(); let q = d.waitingQueue; const target = idx + dir;
+                if(target >= 0 && target < q.length) { [q[idx], q[target]] = [q[target], q[idx]]; t.update(mainRef, { waitingQueue: q }); }
             });
         };
 
-        window.delQueue = (p) => {
-            runTransaction(db, async(t) => {
-                const d = (await t.get(mainRef)).data();
-                const newQ = d.waitingQueue.filter(x => x.plat !== p);
-                t.update(mainRef, { waitingQueue: newQ });
-            });
-        };
+        window.delQueue = (p) => { runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); const newQ = d.waitingQueue.filter(x => x.plat !== p); t.update(mainRef, { waitingQueue: newQ }); }); };
 
-        // === SNAPSHOT & LOG ===
+        // --- EMERGENCY ZONE ---
         window.checkRecovery = async () => {
-            const s = await getDoc(snapshotRef);
-            if(!s.exists()) return alert("Tidak ada backup.");
+            const s = await getDoc(snapshotRef); if(!s.exists()) return alert("Tidak ada backup.");
             snapshotData = s.data();
-            document.getElementById('recList').innerText = `BACKUP: ${snapshotData.backupTime ? snapshotData.backupTime.toDate().toLocaleTimeString() : '-'}`;
+            document.getElementById('recList').innerText = `TGL BACKUP: ${snapshotData.backupTime ? snapshotData.backupTime.toDate().toLocaleString() : '-'}`;
             document.getElementById('recoveryPanel').style.display = 'block';
         };
-
         window.executeRestore = () => {
             if(!snapshotData) return;
             runTransaction(db, async(t) => {
-                let rSlots = snapshotData.chargingSlots || [null,null,null,null,null];
-                while(rSlots.length < 5) rSlots.push(null);
+                let rSlots = snapshotData.chargingSlots || [null,null,null,null,null]; while(rSlots.length < 5) rSlots.push(null);
+                t.set(mainRef, { chargingSlots: rSlots, waitingQueue: snapshotData.waitingQueue || [], lastTicket: snapshotData.lastTicket || 0 });
+            });
+            document.getElementById('recoveryPanel').style.display = 'none'; alert("Data Dipulihkan!");
+        };
+        window.hardReset = () => { runTransaction(db, async(t) => { t.set(mainRef, { chargingSlots: [null,null,null,null,null], waitingQueue: [], lastTicket: 0 }); addLog("ADMIN", "HARD_RESET", "Wiped All"); }); };
 
-                t.set(mainRef, { 
-                    chargingSlots: rSlots, 
-                    waitingQueue: snapshotData.waitingQueue || [], 
-                    lastTicket: snapshotData.lastTicket || 0 
+        // ==========================================
+        // FITUR DATABASE MEMBER (SUPERADMIN)
+        // ==========================================
+        async function loadMembers() {
+            const memberDiv = document.getElementById('memberList');
+            try {
+                const querySnapshot = await getDocs(membersRef);
+                let html = '';
+                querySnapshot.forEach((doc) => {
+                    const m = doc.data();
+                    html += `
+                    <div class="db-row">
+                        <div class="db-info">
+                            <div class="db-plat">${m.plat}</div>
+                            <div class="db-name">${m.nama}</div>
+                            ${renderAdminBadge(m.role)}
+                        </div>
+                        <button class="btn-red btn-mini" onclick="deleteMember('${doc.id}', '${m.plat}')"><i class="fas fa-trash"></i></button>
+                    </div>`;
                 });
-                addLog("ADMIN", "RESTORE", "Restored Snapshot");
-            });
-            document.getElementById('recoveryPanel').style.display = 'none';
-            alert("Data Pulih!");
+                memberDiv.innerHTML = html || '<div style="color:#666; text-align:center; padding:20px;">Belum ada member.</div>';
+            } catch(e) { memberDiv.innerHTML = 'Error load DB.'; }
+        }
+
+        window.saveMember = async () => {
+            const plat = document.getElementById('dbPlat').value.toUpperCase();
+            const nama = document.getElementById('dbNama').value.toUpperCase();
+            const role = document.getElementById('dbRole').value;
+            const docId = cleanStr(plat);
+
+            if(!plat || !nama) return alert("Plat & Nama wajib diisi!");
+            try {
+                await setDoc(doc(db, "members", docId), { plat: plat, nama: nama, role: role, timestamp: Date.now() });
+                alert("MEMBER TERSIMPAN!");
+                document.getElementById('dbPlat').value = ''; document.getElementById('dbNama').value = '';
+                loadMembers();
+            } catch(e) { alert("GAGAL: " + e); }
         };
 
-        window.hardReset = () => {
-            runTransaction(db, async(t) => {
-                t.set(mainRef, { chargingSlots: [null,null,null,null,null], waitingQueue: [], lastTicket: 0 });
-                addLog("ADMIN", "HARD_RESET", "Wiped All Data");
-            });
+        window.deleteMember = async (docId, platStr) => {
+            if(confirm("Hapus " + platStr + " dari Database? (Akan menjadi GUEST)")) {
+                try { await deleteDoc(doc(db, "members", docId)); loadMembers(); } catch(e) { alert("GAGAL: " + e); }
+            }
         };
 
+        // --- SYSTEM LOGS ---
         onSnapshot(query(logRef, orderBy("timestamp", "desc"), limit(20)), (snap) => {
             let h = '';
             snap.forEach(d => {
                 const x = d.data();
-                h += `<div class="log-line">[${x.timestamp ? x.timestamp.toDate().toLocaleTimeString() : '-'}] <span style="color:var(--cyan)">${x.actor}</span>: ${x.action} - ${x.details}</div>`;
+                h += `<div class="log-line">[${x.timestamp ? x.timestamp.toDate().toLocaleTimeString() : '-'}] <span style="color:var(--gold)">${x.actor}</span>: ${x.action} - ${x.details}</div>`;
             });
             document.getElementById('termLog').innerHTML = h;
         });
 
-        function addLog(actor, act, det) { 
-            addDoc(logRef, { action: act, details: det, actor: actor, timestamp: new Date() }); 
-        }
+        function addLog(actor, act, det) { addDoc(logRef, { action: act, details: det, actor: actor, timestamp: new Date() }); }
+        const $ = (id) => document.getElementById(id);
     </script>
 </body>
 </html>

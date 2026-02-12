@@ -64,22 +64,60 @@
 
         .armor-inner { display: flex; flex-direction: column; align-items: center; height: 100%; width: 100%; padding: 15px 12px; position: relative; z-index: 4; text-align: center; }
 
+        /* =========================================
+           ULTRA PREMIUM GLAMOUR BADGE (SYSTEM.HTML)
+           ========================================= */
         .badge-container { display: flex; align-items: center; justify-content: center; width: 100%; margin-bottom: 5px; }
-        .tactical-badge { display: flex; align-items: center; width: 100%; max-width: 120px; height: 32px; background: rgba(0,0,0,0.9); border: 1px solid #444; position: relative; overflow: hidden; clip-path: polygon(10px 0, 100% 0, 100% 100%, 0 100%, 0 10px); }
-        .tb-icon { width: 30px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #000; clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%); margin-right: -2px; z-index: 2; position: relative; }
-        .tb-text { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-left: 2px; text-align: center; z-index: 1; }
-        .tb-label { font-size: 6px; letter-spacing: 1px; color: #aaa; text-transform: uppercase; font-family: var(--font-head); line-height: 1; margin-bottom: 2px; }
-        .tb-role { font-size: 9px; font-weight: 800; text-transform: uppercase; line-height: 0.9; font-family: var(--font-tech); letter-spacing: 0.5px; }
+        
+        .glamour-badge {
+            width: 130px; 
+            height: 32px; 
+            border-radius: 6px; 
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #151515 0%, #050505 100%);
+            border: 1px solid var(--b-color-main);
+            box-shadow: 0 0 10px var(--b-glow), inset 0 0 5px rgba(0,0,0,0.8);
+            overflow: hidden;
+            animation: pulseAura 3s infinite alternate;
+        }
 
-        /* WARNA JABATAN PENGURUS */
-        .b-platinum { border-color: #E5E4E2; } .b-platinum .tb-icon { background: linear-gradient(135deg, #E5E4E2, #708090); color: #000; } .b-platinum .tb-role { color: #E5E4E2; }
-        .b-red { border-color: #FF003C; } .b-red .tb-icon { background: repeating-linear-gradient(45deg, #FF003C, #FF003C 5px, #900 5px, #900 10px); color: #fff; } .b-red .tb-role { color: #FF003C; }
-        .b-cyan { border-color: #00F0FF; } .b-cyan .tb-icon { background: linear-gradient(135deg, #00F0FF, #0088AA); color: #000; } .b-cyan .tb-role { color: #00F0FF; }
-        .b-kc-member { border-color: #A67C00; } .b-kc-member .tb-icon { background: linear-gradient(135deg, #A67C00, #594300); color: #fff; } .b-kc-member .tb-role { color: #D4AF37; }
-        .b-gold { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); } .b-gold .tb-icon { background: linear-gradient(135deg, var(--gold), #8B6508); color: #000; } .b-gold .tb-role { color: var(--gold); } .b-gold::after { content:''; position:absolute; top:-50%; left:-100%; width:20px; height:200%; background:rgba(255,255,255,0.5); transform:rotate(25deg); animation:shinePass 3s infinite; }
-        .b-vip { border-color: #9932CC; box-shadow: 0 0 15px rgba(153, 50, 204, 0.3); } .b-vip .tb-icon { background: linear-gradient(135deg, #DA70D6, #800080); color: #fff; } .b-vip .tb-role { color: #DA70D6; }
-        .b-donatur { border-color: #00FF7F; } .b-donatur .tb-icon { background: linear-gradient(135deg, #00FF7F, #006400); color: #000; } .b-donatur .tb-role { color: #00FF7F; }
-        .b-ninja { border-color: #333; background: #000; position: relative; overflow: hidden; box-shadow: 0 0 8px rgba(0,0,0,0.8); } .b-ninja::after { content: ''; position: absolute; top: 0; left: -150%; width: 20px; height: 100%; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px #fff; transform: skewX(-30deg); animation: slashKill 3s infinite ease-in; z-index: 5; } .b-ninja .tb-icon { background: #111; color: var(--gold); z-index: 2; border-right: 1px solid #333; } .b-ninja .tb-icon i { animation: ninjaShunpo 3s infinite linear; text-shadow: 0 0 5px var(--gold); } .b-ninja .tb-role { color: #aaa; font-family: var(--font-head); letter-spacing: 2px; z-index: 2; font-weight: 900; font-size: 8px; }
+        .glamour-badge::after {
+            content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-30deg); animation: luxuryShine 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5; pointer-events: none;
+        }
+
+        .gb-icon {
+            width: 35px; height: 100%; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; background: var(--b-gradient); color: var(--icon-color, #000);
+            position: relative; z-index: 2; border-radius: 5px 0 0 5px;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); box-shadow: 2px 0 8px rgba(0,0,0,0.8);
+        }
+
+        .gb-text {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;
+            color: var(--b-color-main); text-shadow: 0 0 6px var(--b-glow); z-index: 2; padding-right: 5px;
+        }
+
+        @keyframes luxuryShine { 0% { left: -150%; } 20% { left: 200%; } 100% { left: 200%; } }
+        @keyframes pulseAura { 0% { box-shadow: 0 0 5px var(--b-glow), inset 0 0 3px rgba(0,0,0,0.8); } 100% { box-shadow: 0 0 15px var(--b-glow), inset 0 0 3px rgba(0,0,0,0.8); } }
+
+        /* THE GLAMOUR VARIANTS */
+        .b-ketum { --b-color-main: #FFDF00; --b-glow: rgba(255, 223, 0, 0.4); --b-gradient: linear-gradient(135deg, #FFF380, #D4AF37, #996515); }
+        .b-waketum { --b-color-main: #E5E4E2; --b-glow: rgba(229, 228, 226, 0.4); --b-gradient: linear-gradient(135deg, #FFFFFF, #B0C4DE, #708090); }
+        .b-sekertaris { --b-color-main: #00E5FF; --b-glow: rgba(0, 229, 255, 0.4); --b-gradient: linear-gradient(135deg, #80F2FF, #00BFFF, #005577); }
+        .b-bendahara { --b-color-main: #00FF7F; --b-glow: rgba(0, 255, 127, 0.4); --b-gradient: linear-gradient(135deg, #80FFAA, #00CC66, #004D00); }
+        .b-humas { --b-color-main: #D966FF; --b-glow: rgba(217, 102, 255, 0.4); --b-gradient: linear-gradient(135deg, #EEB3FF, #B026FF, #590099); --icon-color: #fff; }
+        .b-kreatif { --b-color-main: #FF007F; --b-glow: rgba(255, 0, 127, 0.5); --b-gradient: linear-gradient(135deg, #00F0FF, #9D00FF, #FF007F, #FF8C00); --icon-color: #fff; border-color: #FF007F; animation: pulseAuraKreatif 2s infinite alternate; }
+        @keyframes pulseAuraKreatif { 0% { box-shadow: 0 0 8px rgba(255,0,127,0.5), inset 0 0 3px rgba(0,0,0,0.8); } 100% { box-shadow: 0 0 20px rgba(157,0,255,0.7), inset 0 0 3px rgba(0,0,0,0.8); } }
+        .b-urc { --b-color-main: #FF2A2A; --b-glow: rgba(255, 42, 42, 0.4); --b-gradient: linear-gradient(135deg, #FF6666, #CC0000, #660000); --icon-color: #fff; }
+        .b-member { --b-color-main: #D4AF37; --b-glow: rgba(212, 175, 55, 0.2); --b-gradient: linear-gradient(135deg, #D4AF37, #8B6508); }
+
+        /* ========================================= */
 
         .btn-kudeta { width: 100%; margin-top: 10px; background: rgba(255,0,0,0.9); border: 1px solid #fff; color: #fff; font-size: 10px; padding: 6px 0; font-weight: 900; cursor: pointer; transform: skewX(-5deg); font-family: var(--font-tech); letter-spacing: 1px; box-shadow: 0 0 15px #ff0000; animation: blinkKudeta 0.5s infinite; }
         .btn-pilih { width: 100%; padding: 10px 0; margin-top: auto; background: linear-gradient(135deg, var(--neon), #AACC00); color: #000; border: none; border-radius: 4px; font-family: 'Rajdhani'; font-weight: 900; font-size: 14px; box-shadow: 0 0 15px rgba(223, 255, 0, 0.3); cursor: pointer; transition: 0.2s; position: relative; z-index: 5; }
@@ -104,11 +142,8 @@
         .btn-close-mini { width: 100%; padding: 10px; background: rgba(255,0,0,0.1); color: var(--accent); border: none; border-top: 1px solid var(--accent); font-family: var(--font-head); font-size: 12px; font-weight: 800; letter-spacing: 2px; cursor: pointer; transition: 0.2s; }
         .btn-close-mini:active { background: var(--accent); color: #000; }
 
-        @keyframes shinePass { 0% {left:-100%; opacity:0;} 50% {left:150%; opacity:1;} 100% {left:150%; opacity:0;} }
         @keyframes pulseText { 0%,100% {opacity: 1;} 50% {opacity: 0.5;} }
         @keyframes blinkKudeta { 0%, 100% { opacity: 1; transform: skewX(-5deg) scale(1); box-shadow: 0 0 20px #ff0000; } 50% { opacity: 0.6; transform: skewX(-5deg) scale(0.95); box-shadow: 0 0 5px #ff0000; } }
-        @keyframes slashKill { 0%, 70% { left: -50%; opacity: 0; } 75% { opacity: 1; } 80% { left: 150%; opacity: 0; } 100% { left: 150%; opacity: 0; } }
-        @keyframes ninjaShunpo { 0%, 75% { opacity: 1; transform: scale(1); filter: blur(0); } 78% { opacity: 0; transform: scale(1.2) translateX(20px); filter: blur(5px); } 85% { opacity: 0; transform: translateX(-20px); } 90% { opacity: 1; transform: scale(1) translateX(0); filter: blur(0); } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -241,9 +276,8 @@
             } catch (e) { console.log(e); }
         }
 
-        // --- FITUR GOD MODE BYPASS GPS ---
         window.toggleAdmin = () => { 
-            const pass = prompt("MASUKKAN KODE ADMIN/SUPERADMIN:"); 
+            const pass = prompt("MASUKKAN KODE ADMIN / SUPERADMIN:"); 
             if(pass === "5588") {
                 window.location.href = "admin.html"; 
             } else if (pass === "090815") {
@@ -343,28 +377,33 @@
             $('nextQDisplay').innerText = localQueue.length > 0 ? localQueue[0].userName : "--";
         }
 
-        // --- SISTEM BADGE UPDATE LENGKAP ---
+        // ==========================================
+        // SISTEM BADGE ULTRA PREMIUM GLAMOUR
+        // ==========================================
         function getBadgeHTML(r) {
-            if (!r) r = "GUEST"; 
+            // GUEST atau tanpa role, JANGAN TAMPILKAN BADGE
+            if (!r || r.toUpperCase() === "GUEST") return ""; 
             
-            if (r.includes("SENYAP") || r.includes("NINJA")) {
-                return `<div class="badge-container"><div class="tactical-badge b-ninja"><div class="tb-icon"><i class="fas fa-user-ninja"></i></div><div class="tb-text"><div class="tb-role" style="font-size:8px;">PASUKAN SENYAP</div></div></div></div>`;
-            }
+            const rUp = r.toUpperCase();
+            let css = "b-member"; let icon = "fa-user"; let roleTxt = "MEMBER";
             
-            let css = "b-kc-member"; let icon = "fa-user"; let label = "MEMBER KC"; let roleTxt = r;
-            
-            if (r === "GUEST") { css = "b-platinum"; icon = "fa-id-card"; label = "NON-MEMBER"; roleTxt = "GUEST"; }
-            else if (r === "MEMBER" || r.includes("KELUARGA")) { roleTxt = "MEMBER"; }
-            else if (r.includes("PEMBINA")) { css="b-gold"; icon="fa-star"; label="SENIOR"; roleTxt="PEMBINA"; }
-            else if (r.includes("WAKETUM")) { css="b-gold"; icon="fa-chess-king"; label="CO-LEAD"; roleTxt="WAKETUM"; } 
-            else if (r.includes("KETUM")) { css="b-gold"; icon="fa-crown"; label="LEADER"; roleTxt="KETUM"; }
-            else if (r.includes("KORLAP")) { css="b-red"; icon="fa-bullhorn"; label="OPS"; roleTxt="KORLAP"; }
-            else if (r.includes("SATGAS")) { css="b-red"; icon="fa-shield-alt"; label="OPS"; roleTxt="SATGAS"; }
-            else if (r.includes("HUMAS")) { css="b-cyan"; icon="fa-users"; label="COMM"; roleTxt="HUMAS"; }
-            else if (r.includes("VIP")) { css="b-vip"; icon="fa-gem"; label="GUEST"; roleTxt="VIP"; }
-            else if (r.includes("DONATUR")) { css="b-donatur"; icon="fa-hand-holding-usd"; label="SPONSOR"; roleTxt="DONATUR"; }
-            
-            return `<div class="badge-container"><div class="tactical-badge ${css}"><div class="tb-icon"><i class="fas ${icon}"></i></div><div class="tb-text">${label ? `<div class="tb-label">${label}</div>` : ''}<div class="tb-role">${roleTxt}</div></div></div></div>`;
+            if (rUp.includes("KETUM") && !rUp.includes("WAKETUM")) { css="b-ketum"; icon="fa-crown"; roleTxt="KETUM"; }
+            else if (rUp.includes("WAKETUM")) { css="b-waketum"; icon="fa-star"; roleTxt="WAKETUM"; }
+            else if (rUp.includes("SEKRETARIS") || rUp.includes("SEKERTARIS")) { css="b-sekertaris"; icon="fa-pen-nib"; roleTxt="SEKERTARIS"; }
+            else if (rUp.includes("BENDAHARA")) { css="b-bendahara"; icon="fa-coins"; roleTxt="BENDAHARA"; }
+            else if (rUp.includes("HUMAS")) { css="b-humas"; icon="fa-bullhorn"; roleTxt="HUMAS"; }
+            else if (rUp.includes("KREATIF")) { css="b-kreatif"; icon="fa-palette"; roleTxt="KREATIF"; }
+            else if (rUp.includes("URC")) { css="b-urc"; icon="fa-bolt"; roleTxt="URC"; }
+            else if (rUp.includes("MEMBER") || rUp.includes("KELUARGA")) { css="b-member"; icon="fa-user"; roleTxt="MEMBER"; }
+            else { roleTxt = rUp; css="b-member"; icon="fa-id-badge"; } // Buat jabatan aneh-aneh (custom)
+
+            return `
+            <div class="badge-container">
+                <div class="glamour-badge ${css}">
+                    <div class="gb-icon"><i class="fas ${icon}"></i></div>
+                    <div class="gb-text">${roleTxt}</div>
+                </div>
+            </div>`;
         }
 
         window.selectSlot = async (i) => { showConfirm(`MASUK SLOT 0${i+1}?`, () => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); if(d.chargingSlots[i]) throw "SLOT PENUH!"; let q = d.waitingQueue; const idx = q.findIndex(x => cleanStr(x.plat) === cleanStr(myPlat)); if(idx === -1) throw "DATA ANTRIAN HILANG!"; const me = q[idx]; q.splice(idx, 1); me.startTime = Date.now(); d.chargingSlots[i] = me; t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: q }); }).then(() => addUserLog("START", `Slot ${i+1}`)).catch(e => showAlert(e)); }); };
@@ -399,7 +438,12 @@
     
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) registration.unregister();
+                });
+                navigator.serviceWorker.register('sw.js?v=' + new Date().getTime()); 
+            });
         }
     </script>
 </body>
