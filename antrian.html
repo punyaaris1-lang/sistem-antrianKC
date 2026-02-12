@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FC KARTIKA CHANDRA - DASHBOARD</title>
+    <title>KARTIKA CHANDRA - DASHBOARD</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D4AF37">
@@ -13,74 +13,163 @@
 
     <style>
         :root {
-            --gold: #D4AF37; --gold-dark: #AA8C27;
-            --neon: #DFFF00; --neon-dark: #AACC00;
-            --bg-dark: #050505; --glass-panel: rgba(12, 12, 15, 0.9);
-            --border-color: rgba(212, 175, 55, 0.2); --white: #ffffff;
+            --gold: #D4AF37;       
+            --neon: #DFFF00; 
+            --neon-dark: #AACC00;
+            --bg-dark: #050505;
+            --glass-panel: rgba(12, 12, 15, 0.95);
+            --border-color: rgba(212, 175, 55, 0.2);
+            --white: #ffffff;
         }
 
         html, body {
             height: 100%; margin: 0; padding: 0;
             background: radial-gradient(circle at top center, #1a1a1a 0%, #000000 100%);
-            color: var(--white); font-family: 'Inter', sans-serif;
-            overflow: hidden; display: flex; flex-direction: column;
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; 
+            display: flex; flex-direction: column;
         }
 
-        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 50000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
+        /* LOADING SCREEN */
+        #loading-screen { 
+            position: fixed; inset: 0; background: #000; z-index: 50000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            transition: opacity 0.5s ease-out; 
+        }
         .load-logo { width: 120px; margin-bottom: 20px; animation: pulseText 1.5s infinite; filter: drop-shadow(0 0 15px var(--gold)); }
-        
-        .top-area { height: 28vh; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; padding-top: 10px; }
-        .logo-main-box { width: 70%; max-width: 230px; display: flex; align-items: center; justify-content: center; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(223, 255, 0, 0.3)); }
+        .loader-text { font-family: 'Rajdhani'; font-weight:900; color: var(--gold); font-size: 16px; letter-spacing: 3px; animation: pulseText 1s infinite; }
+
+        /* HEADER (LOGO) */
+        .top-area {
+            height: 25vh; /* Sedikit dilonggarkan biar logo ga kejepit */
+            width: 100%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; z-index: 1;
+            padding-top: 10px; 
+        }
+        .logo-main-box {
+            width: 70%; max-width: 220px; 
+            display: flex; align-items: center; justify-content: center;
+            animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(223, 255, 0, 0.3));
+        }
         .logo-img-main { width: 100%; height: auto; object-fit: contain; }
 
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+        @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* PANEL BAWAH */
         .bottom-panel {
-            flex: 1; width: 100%; background: var(--glass-panel); backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(223, 255, 0, 0.4); border-radius: 40px 40px 0 0;
-            padding: 30px 25px 20px 25px; box-sizing: border-box;
-            display: flex; flex-direction: column; gap: 15px; 
-            box-shadow: 0 -15px 50px rgba(0,0,0,0.9); position: relative; z-index: 2;
+            flex: 1; 
+            width: 100%;
+            background: var(--glass-panel);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(223, 255, 0, 0.4);
+            border-radius: 35px 35px 0 0;
+            padding: 30px 25px; /* Padding standar */
+            box-sizing: border-box;
+            display: flex; flex-direction: column; 
+            /* GAP KECIL: Biar elemen atas ga terlalu jauh2an */
+            gap: 15px; 
+            box-shadow: 0 -15px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative; z-index: 2;
+            justify-content: flex-start; /* Pastikan isi mulai dari atas */
         }
 
-        .header-section { text-align: center; margin-bottom: 0px; }
-        .live-tag { display: inline-block; background: rgba(223, 255, 0, 0.1); border: 1px solid rgba(223, 255, 0, 0.5); padding: 5px 14px; border-radius: 20px; color: var(--neon); font-family: 'Rajdhani'; font-weight: 800; font-size: 13px; margin-bottom: 10px; }
-        h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(30px, 4.5vh, 42px); font-weight: 900; margin: 0; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: pointer; letter-spacing: 1px; }
-        .sub-text { color: var(--gold); font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 8px; }
-
-        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
-        .stat-btn { background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%); border: 1px solid var(--border-color); border-radius: 20px; padding: 15px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .st-label { font-size: 12px; color: #aaa; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-        .st-val { font-family: 'Rajdhani', sans-serif; font-size: clamp(45px, 7vh, 55px); font-weight: 900; color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
+        .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
         
-        .btn-main { background: linear-gradient(135deg, var(--neon) 0%, var(--neon-dark) 100%); color: #000; width: 100%; padding: 20px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: auto; margin-bottom: 5px; }
+        .live-tag {
+            display: inline-block; background: rgba(223, 255, 0, 0.1); 
+            border: 1px solid rgba(223, 255, 0, 0.5); padding: 4px 12px; border-radius: 20px;
+            color: var(--neon); font-family: 'Rajdhani'; font-weight: 800; font-size: 12px; margin-bottom: 8px;
+            box-shadow: 0 0 10px rgba(223, 255, 0, 0.1); letter-spacing: 1px;
+        }
 
-        /* MODALS */
+        h1 {
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: clamp(30px, 4.5vh, 40px); 
+            font-weight: 900; margin: 0; line-height: 1;
+            color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: pointer; letter-spacing: 1px;
+        }
+        .sub-text {
+            color: var(--gold); font-size: 13px; font-weight: 800; letter-spacing: 3px;
+            text-transform: uppercase; margin-top: 6px; 
+        }
+
+        /* GRID STATISTIK */
+        .stats-container { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;
+        }
+        
+        .stat-btn {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.5) 100%);
+            border: 1px solid var(--border-color); border-radius: 20px;
+            padding: 15px 10px; cursor: pointer; position: relative;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .stat-btn:active { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); transform: scale(0.98); }
+        
+        .st-label { font-size: 11px; color: #aaa; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 1px; }
+        .st-val {
+            font-family: 'Rajdhani', sans-serif; 
+            font-size: clamp(45px, 6vh, 55px); 
+            font-weight: 900; 
+            color: #fff; line-height: 1; text-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .st-hint { font-size: 10px; color: var(--gold); margin-top: 2px; font-weight: 700; letter-spacing: 1px; }
+
+        /* TOMBOL UTAMA (FIXED POSISI DEKAT KONTEN) */
+        .btn-main {
+            background: linear-gradient(135deg, var(--neon) 0%, var(--neon-dark) 100%);
+            color: #000; width: 100%; padding: 20px; 
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 20px;
+            font-family: 'Rajdhani', sans-serif; font-size: 24px; font-weight: 900; 
+            text-transform: uppercase; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(223, 255, 0, 0.2);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            transition: all 0.3s ease; 
+            
+            /* INI KUNCI PERBAIKANNYA: */
+            margin-top: 20px; /* Jarak fix dari stats, BUKAN auto */
+            margin-bottom: auto; /* Sisa ruang kosong dibuang ke bawah */
+        }
+        .btn-main:active { transform: scale(0.96); box-shadow: 0 5px 15px rgba(223, 255, 0, 0.4); }
+
+        /* MODAL & FORM */
         .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 30000; display: none; align-items: center; justify-content: center; }
         .modal-wrap.open { display: flex; animation: zoomIn 0.2s; }
-        .modal-panel { background: #0a0a0a; border: 2px solid var(--gold); width: 85%; max-width: 400px; padding: 25px; border-radius: 25px; display: flex; flex-direction: column; }
+        @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+        
+        .modal-panel { background: #0a0a0a; border: 2px solid var(--gold); width: 85%; max-width: 400px; padding: 25px; border-radius: 25px; box-shadow: 0 0 60px rgba(212, 175, 55, 0.15); max-height: 90vh; display: flex; flex-direction: column; }
         .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
         .modal-h-title { font-family: 'Rajdhani'; font-size: 28px; font-weight: 900; color: #fff; }
-        .close-x { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; }
+        .close-x { background: none; border: none; color: #fff; font-size: 28px; cursor: pointer; font-weight: bold; }
 
-        .inp-label { color: var(--gold); font-size: 14px; font-weight: 800; margin-bottom: 8px; display: block; }
-        .inp-box { width: 100%; padding: 16px; background: #222; border: 2px solid #444; color: #fff; font-family: 'Rajdhani'; font-size: 24px; font-weight: 700; border-radius: 12px; margin-bottom: 20px; box-sizing: border-box; }
-        .btn-kirim { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--neon), var(--neon-dark)); border: none; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 900; font-size: 22px; cursor: pointer; margin-bottom: 12px; color: #000;}
-        
-        .slot-list-box { display: flex; flex-direction: column; gap: 12px; }
-        .slot-row { background: #151515; border-left: 5px solid #444; padding: 15px 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .slot-list-box { display: flex; flex-direction: column; gap: 10px; }
+        .slot-row { background: #151515; border-left: 5px solid #444; padding: 12px 15px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
         .slot-row.active { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(212,175,55,0.1), transparent); }
-        .slot-row.empty { border-left-color: var(--neon); }
-        .sr-plat { font-family: 'Rajdhani'; font-size: 24px; font-weight: 900; color: #fff; }
-        .sr-name { font-size: 14px; color: var(--off-white); font-weight: 600; text-transform: uppercase; } 
-        .sr-time { font-family: 'Rajdhani'; font-size: 22px; font-weight: 800; color: var(--gold); }
+        .slot-row.empty { border-left-color: var(--neon); cursor: pointer; }
+        .sr-left { display: flex; flex-direction: column; gap: 2px; }
+        .sr-plat { font-family: 'Rajdhani'; font-size: 22px; font-weight: 900; color: #fff; }
+        .sr-name { font-size: 12px; color: #aaa; font-weight: 600; text-transform: uppercase; } 
+        .sr-right { text-align: right; display: flex; flex-direction: column; gap: 4px;}
+        .sr-time { font-family: 'Rajdhani'; font-size: 20px; font-weight: 800; color: var(--gold); }
 
         .queue-table { display: flex; flex-direction: column; gap: 5px; }
         .q-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #333; }
         .q-num { width: 40px; font-family: 'Rajdhani'; font-size: 24px; font-weight: 800; color: var(--neon); text-align: center; }
+        .q-data { flex: 1; padding-left: 15px; display: flex; flex-direction: column; gap: 2px; }
         .q-plat { font-family: 'Rajdhani'; font-size: 22px; font-weight: 800; color: #fff; display: block; }
+        .q-name { font-size: 14px; color: #aaa; font-weight: 600; text-transform: uppercase; } 
 
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
+        .inp-label { color: var(--gold); font-size: 14px; font-weight: 800; margin-bottom: 8px; display: block; }
+        .inp-box { width: 100%; padding: 16px; background: #222; border: 2px solid #444; color: #fff; font-family: 'Rajdhani'; font-size: 24px; font-weight: 700; border-radius: 12px; margin-bottom: 20px; box-sizing: border-box; }
+        .inp-box:focus { border-color: var(--neon); outline: none; background: #000; }
+        .btn-kirim { width: 100%; padding: 18px; background: linear-gradient(135deg, var(--neon), var(--neon-dark)); border: none; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 900; font-size: 22px; cursor: pointer; margin-bottom: 12px; color: #000;}
+        .btn-batal { width: 100%; padding: 15px; background: transparent; border: 2px solid #500; color: #f55; border-radius: 12px; font-weight: 800; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -91,12 +180,17 @@
     </div>
 
     <div class="top-area">
-        <div class="logo-main-box"><img src="logo2.png" alt="Maka Lintas KC" class="logo-img-main"></div>
+        <div class="logo-main-box">
+            <img src="logo2.png" alt="Maka Lintas KC" class="logo-img-main">
+        </div>
     </div>
 
     <div class="bottom-panel">
         <div class="header-section">
-            <div class="live-tag"><i class="fas fa-circle" style="font-size:8px; vertical-align:middle; margin-right:5px;"></i> <span id="liveClock">ONLINE</span></div>
+            <div class="live-tag">
+                <i class="fas fa-circle" style="font-size:8px; vertical-align:middle; margin-right:5px; color:var(--red);"></i> 
+                <span id="liveClock">LIVE | MEMUAT...</span>
+            </div>
             <h1 ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
             <div class="sub-text">MAKA LINTAS KARTIKA CHANDRA</div>
         </div>
@@ -105,15 +199,17 @@
             <div class="stat-btn" onclick="openModal('slot')">
                 <div class="st-label">Slot Tersedia</div>
                 <div class="st-val" id="slotVal">...</div>
+                <div class="st-hint">LIHAT DETAIL ►</div>
             </div>
             <div class="stat-btn" onclick="openModal('queue')">
                 <div class="st-label">Antrian</div>
                 <div class="st-val" id="queueVal">...</div>
+                <div class="st-hint">LIHAT DAFTAR ►</div>
             </div>
         </div>
 
         <button id="btnDaftar" class="btn-main" onclick="checkLocationAndOpenForm()">
-            MEMUAT DATA...
+            DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>
         </button>
     </div>
 
@@ -136,48 +232,65 @@
             <div>
                 <span class="inp-label">NAMA LENGKAP</span>
                 <input type="text" id="inpNama" class="inp-box" placeholder="NAMA ANDA">
+                
                 <span class="inp-label">NOMOR PLAT (Wajib Spasi)</span>
                 <input type="text" id="inpPlat" class="inp-box" placeholder="B 1234 XYZ" style="text-transform:uppercase;">
+                
                 <span class="inp-label">SISA BATERAI (0-100%)</span>
                 <input type="number" id="inpBatre" class="inp-box" placeholder="Contoh: 20" min="0" max="100">
+                
                 <button class="btn-kirim" id="btnSubmitForm" onclick="submitData()">AMBIL TIKET</button>
-                <button class="btn-batal" onclick="closeModal('formModal')" style="width:100%; padding:15px; background:transparent; border:2px solid #500; color:#f55; border-radius:12px; font-weight:800; font-size:18px; cursor:pointer;">BATAL</button>
+                <button class="btn-batal" onclick="closeModal('formModal')">BATAL</button>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk", authDomain: "kartikachandrafc.firebaseapp.com", projectId: "kartikachandrafc", storageBucket: "kartikachandrafc.firebasestorage.app", messagingSenderId: "677704449500", appId: "1:677704449500:web:671df8ae5cf6e66d0b6319" };
+        // CONFIG
+        const STATION_LAT = -6.2285953; 
+        const STATION_LNG = 106.819502; 
+        const MAX_DIST_KM = 0.2; 
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk",
+          authDomain: "kartikachandrafc.firebaseapp.com",
+          projectId: "kartikachandrafc",
+          storageBucket: "kartikachandrafc.firebasestorage.app",
+          messagingSenderId: "677704449500",
+          appId: "1:677704449500:web:671df8ae5cf6e66d0b6319"
+        };
+        
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const mainRef = doc(db, "antrian", "utama");
+        
         const TOTAL_SLOTS = 5;
-        const STATION_LAT = -6.2285953; const STATION_LNG = 106.819502; const MAX_DIST_KM = 0.2; 
+        let globalSlots = [null, null, null, null, null];
+        let globalQueue = [];
 
-        let globalSlots = [null, null, null, null, null]; let globalQueue = [];
-
-        // --- SISTEM KUNCI 9999 (GOD MODE) ---
+        // GOD MODE 9999
         window.toggleAdmin = () => { 
-            const pass = prompt("MASUKKAN KODE AKSES:"); 
-            if(pass === "9999") { // KODE SAKTI
+            const pass = prompt("KODE AKSES:"); 
+            if(pass === "9999") { 
                 localStorage.setItem('god_mode', '1');
-                alert("GOD MODE AKTIF! ANDA BISA DAFTAR TANPA GPS.");
+                alert("GOD MODE AKTIF (BYPASS GPS).");
                 location.reload();
-            } else if(pass === "5588" || pass === "1131") {
-                window.location.href = "admin.html";
-            } else if(pass) {
-                alert("KODE SALAH!");
+            } else if(pass === "5588") {
+                window.location.href = "admin.html"; 
+            } else if(pass === "090815") { // Reset God Mode
+                localStorage.removeItem('god_mode');
+                alert("GOD MODE MATI.");
             }
         };
 
+        // CEK LOKASI + GOD MODE
         window.checkLocationAndOpenForm = () => {
             const btn = document.getElementById('btnDaftar');
             if(btn.innerHTML.includes('SYSTEM')) { window.location.href = 'system.html'; return; }
 
-            // CEK APAKAH GOD MODE AKTIF?
             if(localStorage.getItem('god_mode') === '1') {
                 document.getElementById('formModal').classList.add('open'); 
                 document.getElementById('formModal').style.display = 'flex';
@@ -185,7 +298,7 @@
             }
 
             if (!navigator.geolocation) { alert("GPS WAJIB AKTIF!"); return; }
-            const ori = btn.innerHTML; btn.innerHTML = 'MENGUKUR JARAK...';
+            const ori = btn.innerHTML; btn.innerHTML = 'CEK LOKASI...';
             
             navigator.geolocation.getCurrentPosition((pos) => {
                 const dist = calculateDistance(STATION_LAT, STATION_LNG, pos.coords.latitude, pos.coords.longitude);
@@ -196,85 +309,161 @@
             }, () => { btn.innerHTML = ori; alert("GAGAL LOKASI"); }, { enableHighAccuracy: true });
         };
 
-        // ... FUNGSI LAINNYA SAMA (SUBMIT DATA) ...
         window.submitData = async () => {
             const nama = document.getElementById('inpNama').value.toUpperCase();
             const plat = document.getElementById('inpPlat').value.toUpperCase();
             const batre = document.getElementById('inpBatre').value;
             
-            if(!nama || !plat || !batre) return alert("SEMUA DATA WAJIB DIISI!");
-            const btnSubmit = document.getElementById('btnSubmitForm'); btnSubmit.innerText = "MEMPROSES...";
+            if(!nama) return alert("NAMA HARUS DIISI!"); if(!plat) return alert("PLAT NOMOR HARUS DIISI!"); if(!batre) return alert("BATERAI WAJIB DIISI!");
             
+            const btnSubmit = document.getElementById('btnSubmitForm');
+            btnSubmit.innerText = "MEMPROSES..."; btnSubmit.disabled = true;
+
             try {
+                // AMBIL ROLE DARI DB MEMBER
                 const memberRef = doc(db, "members", plat.replace(/[^A-Z0-9]/g, ''));
                 const memberSnap = await getDoc(memberRef);
-                let role = "GUEST"; if(memberSnap.exists() && memberSnap.data().role) role = memberSnap.data().role;
+                let role = "GUEST";
+                if(memberSnap.exists() && memberSnap.data().role) { role = memberSnap.data().role; }
 
                 const snap = await getDoc(mainRef);
                 if(snap.exists()) {
-                    let d = snap.data(); let queue = d.waitingQueue || [];
-                    if(queue.find(q => q.plat === plat) || (d.chargingSlots||[]).find(s => s && s.plat === plat)) { 
+                    let d = snap.data();
+                    let queue = d.waitingQueue || [];
+                    let slots = d.chargingSlots || [];
+                    
+                    if(queue.find(q => q.plat === plat) || slots.find(s => s && s.plat === plat)) { 
                         localStorage.setItem('myPlat', plat); window.location.href = 'system.html'; return; 
                     }
+                    
                     queue.push({ userName: nama, plat: plat, batreSisa: batre, role: role, timestamp: Date.now(), qNo: (d.lastTicket || 0) + 1 });
                     await updateDoc(mainRef, { waitingQueue: queue, lastTicket: (d.lastTicket || 0) + 1 });
-                    localStorage.setItem('myPlat', plat); window.location.href = 'system.html';
+                    localStorage.setItem('myPlat', plat);
+                    window.location.href = 'system.html';
                 }
-            } catch(e) { alert("ERROR: " + e); btnSubmit.innerText = "AMBIL TIKET"; }
+            } catch(e) { 
+                alert("ERROR: " + e); 
+                btnSubmit.innerText = "AMBIL TIKET"; btnSubmit.disabled = false;
+            }
         };
 
-        // AUTO RECOVERY TIKET HANTU
+        window.openModal = (type) => {
+            const content = document.getElementById('mContent');
+            const title = document.getElementById('mTitle');
+            content.innerHTML = ""; 
+
+            if(type === 'slot') {
+                title.innerText = "STATUS SLOT";
+                content.className = "slot-list-box"; 
+                globalSlots.forEach((s, i) => {
+                    let html;
+                    if (s) {
+                        let timeText = "WAIT"; let timeColor = "var(--gold)"; 
+                        if (s.startTime) { const diff = Math.floor((Date.now() - s.startTime) / 60000); timeText = `${diff} MNT`; }
+                        html = `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-right"><span class="sr-time" style="color:${timeColor}">${timeText}</span></div></div>`;
+                    } else {
+                        html = `<div class="slot-row empty"><div class="sr-left"><span class="sr-plat" style="color:var(--neon)">SLOT ${i+1}</span><span class="sr-name" style="color:#fff">TERSEDIA</span></div><div class="sr-right"><span class="sr-time" style="color:var(--neon)">OPEN</span></div></div>`;
+                    }
+                    content.innerHTML += html;
+                });
+            } else {
+                title.innerText = "DAFTAR ANTRIAN";
+                content.className = "queue-table"; 
+                if(globalQueue.length === 0) content.innerHTML = "<div style='text-align:center;padding:20px;color:#fff;'>TIDAK ADA ANTRIAN</div>";
+                else {
+                    globalQueue.forEach((q, i) => {
+                        content.innerHTML += `<div class="q-row"><div class="q-num">#${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div></div>`;
+                    });
+                }
+            }
+            document.getElementById('detailModal').classList.add('open');
+            document.getElementById('detailModal').style.display = 'flex';
+        };
+
+        window.closeModal = (id) => { document.getElementById(id).classList.remove('open'); setTimeout(() => document.getElementById(id).style.display = 'none', 200); };
+        
+        // AUTO RECOVERY
         function validateTicketStatus(d) {
-            const myPlat = localStorage.getItem('myPlat'); const btn = document.getElementById('btnDaftar');
+            const myPlat = localStorage.getItem('myPlat');
+            const btn = document.getElementById('btnDaftar');
+            
             if (!myPlat) {
                 btn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>';
                 btn.style.background = "linear-gradient(135deg, var(--neon), var(--neon-dark))";
+                btn.style.color = "#000";
                 return;
             }
+
             const inQueue = (d.waitingQueue||[]).find(q => q.plat === myPlat);
             const inSlot = (d.chargingSlots||[]).find(s => s && s.plat === myPlat);
 
             if (inQueue || inSlot) {
                 btn.innerHTML = 'KEMBALI KE SYSTEM <i class="fas fa-undo"></i>';
                 btn.style.background = "linear-gradient(135deg, #fff, #ddd)";
+                btn.style.color = "#000";
             } else {
                 localStorage.removeItem('myPlat');
                 btn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>';
                 btn.style.background = "linear-gradient(135deg, var(--neon), var(--neon-dark))";
+                btn.style.color = "#000";
             }
         }
 
-        window.openModal = (type) => {
-            const content = document.getElementById('mContent');
-            content.innerHTML = ""; 
-            if(type === 'slot') {
-                document.getElementById('mTitle').innerText = "STATUS SLOT";
-                content.className = "slot-list-box"; 
-                globalSlots.forEach((s, i) => {
-                    let html; if (s) { html = `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-time" style="color:var(--gold)">ISI</div></div>`; } else { html = `<div class="slot-row empty"><div class="sr-left"><span class="sr-plat" style="color:var(--neon)">SLOT ${i+1}</span><span class="sr-name" style="color:#fff">TERSEDIA</span></div><div class="sr-time" style="color:var(--neon)">OPEN</div></div>`; }
-                    content.innerHTML += html;
-                });
-            } else {
-                document.getElementById('mTitle').innerText = "DAFTAR ANTRIAN";
-                content.className = "queue-table"; 
-                if(globalQueue.length === 0) content.innerHTML = "<div style='text-align:center;padding:20px;color:#fff;'>TIDAK ADA ANTRIAN</div>";
-                else { globalQueue.forEach((q, i) => { content.innerHTML += `<div class="q-row"><div class="q-num">#${i+1}</div><div class="q-plat">${q.plat}</div></div>`; }); }
-            }
-            document.getElementById('detailModal').classList.add('open'); document.getElementById('detailModal').style.display = 'flex';
-        };
-        window.closeModal = (id) => { document.getElementById(id).classList.remove('open'); setTimeout(() => document.getElementById(id).style.display = 'none', 200); };
         function calculateDistance(lat1, lon1, lat2, lon2) { const p = 0.017453292519943295; const c = Math.cos; const a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2; return 12742 * Math.asin(Math.sqrt(a)); }
 
         onSnapshot(mainRef, (snap) => {
-            const l = document.getElementById('loading-screen'); if(l) { l.style.opacity = '0'; setTimeout(() => { l.style.display = 'none'; }, 500); }
+            const l = document.getElementById('loading-screen'); 
+            if(l) { l.style.opacity = '0'; setTimeout(() => { l.style.display = 'none'; }, 500); }
+
             if (!snap.exists()) return;
             const d = snap.data();
-            globalSlots = d.chargingSlots || [null, null, null, null, null]; globalQueue = d.waitingQueue || [];
-            document.getElementById('slotVal').innerHTML = `${globalSlots.filter(s => s !== null).length}<span style="font-size:24px;opacity:0.8;margin-left:5px">/${TOTAL_SLOTS}</span>`;
+            globalSlots = d.chargingSlots || [null, null, null, null, null]; 
+            globalQueue = d.waitingQueue || [];
+
+            const usedCount = globalSlots.filter(s => s !== null).length;
+            document.getElementById('slotVal').innerHTML = `${usedCount}<span style="font-size:24px;opacity:0.8;margin-left:5px">/${TOTAL_SLOTS}</span>`;
             document.getElementById('queueVal').innerText = globalQueue.length;
+            
             validateTicketStatus(d);
+
+            if(document.getElementById('detailModal').style.display === 'flex') {
+                if(document.getElementById('mTitle').innerText.includes('SLOT')) window.openModal('slot');
+                else window.openModal('queue');
+            }
         });
-        setInterval(() => { const d = new Date(); document.getElementById('liveClock').innerText = `LIVE | ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`; }, 1000);
+
+        // --- CLOCK LENGKAP (HARI, TGL, JAM) ---
+        setInterval(() => {
+            const d = new Date(); 
+            const days = ['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU']; 
+            const months = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
+            const dayName = days[d.getDay()];
+            const dateNum = d.getDate();
+            const monthName = months[d.getMonth()];
+            const time = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+            
+            document.getElementById('liveClock').innerText = `LIVE | ${dayName}, ${dateNum} ${monthName} ${time}`;
+        }, 1000);
+
+        const platInput = document.getElementById('inpPlat');
+        if(platInput) {
+            platInput.addEventListener('input', function(e) {
+                let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); let formatted = "";
+                if (v.length > 0) {
+                    let match = v.match(/^([A-Z]{1,2})(\d{0,4})([A-Z]*)$/);
+                    if (match) { formatted = match[1]; if (match[2]) formatted += " " + match[2]; if (match[3]) formatted += " " + match[3]; } else { formatted = v; } 
+                }
+                this.value = formatted;
+            });
+        }
+        const batInput = document.getElementById('inpBatre');
+        if(batInput) batInput.addEventListener('input', function(e) { let v = this.value.replace(/[^0-9]/g, ''); if(parseInt(v) > 100) v = "100"; this.value = v; });
+    </script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); });
+        }
     </script>
 </body>
 </html>
