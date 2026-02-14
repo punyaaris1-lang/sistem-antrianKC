@@ -83,18 +83,29 @@
             content: ''; width: 12px; height: 12px; background: #111; border-radius: 50%;
         }
 
-        /* USER MARKER (Logo Tanpa Border) */
-        .user-wrap { position: relative; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; }
+        /* === PERBAIKAN LOGO USER === */
+        .user-wrap { 
+            position: relative; 
+            width: 60px !important; 
+            height: 60px !important; 
+            display: flex; align-items: center; justify-content: center; 
+        }
         .user-pulse {
             position: absolute; width: 100%; height: 100%;
-            border-radius: 50%; background: rgba(255, 215, 0, 0.25);
+            border-radius: 50%; background: rgba(255, 215, 0, 0.3);
             opacity: 0; animation: pulse 2s infinite;
         }
         .user-img {
-            width: 55px; height: auto; 
-            border: none; background: transparent; 
-            object-fit: contain; position: relative; z-index: 2;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.8)) drop-shadow(0 0 10px var(--primary-glow));
+            /* KUNCI UKURAN MENGGUNAKAN !important AGAR TIDAK MELAR */
+            width: 45px !important; 
+            height: 45px !important; 
+            max-width: 45px !important;
+            max-height: 45px !important;
+            border: none !important; 
+            background: transparent; 
+            object-fit: contain; 
+            position: relative; z-index: 2;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
         }
         @keyframes pulse { 0% {transform: scale(0.6); opacity: 1;} 100% {transform: scale(2); opacity: 0;} }
 
@@ -207,7 +218,7 @@
             maxZoom: 19, opacity: 1 
         }).addTo(map);
 
-        // 2. ICON USER (logo2.png Tanpa Border)
+        // 2. ICON USER FIX UKURAN
         const userIcon = L.divIcon({
             className: 'custom-user',
             html: `<div class="user-wrap"><div class="user-pulse"></div><img src="logo2.png" class="user-img" onerror="this.src='https://ui-avatars.com/api/?name=U&background=D4AF37&color=000'"></div>`,
@@ -239,7 +250,7 @@
                     results.data.forEach(row => {
                         let lat = null, lng = null, name = "STASIUN FC";
 
-                        // A. CARI NAMA (Prioritas kolom Nama/Station/Lokasi)
+                        // A. CARI NAMA
                         const keys = Object.keys(row);
                         for(let k of keys) {
                             let cleanKey = k.toLowerCase().trim();
@@ -248,7 +259,7 @@
                             }
                         }
 
-                        // B. CARI KOORDINAT (Deteksi Pintar)
+                        // B. CARI KOORDINAT
                         for(let k of keys) {
                             let val = String(row[k]).replace(',', '.').trim();
                             let num = parseFloat(val);
@@ -295,7 +306,7 @@
             document.getElementById('fcName').innerText = name;
             document.getElementById('fcAddr').innerText = addr || "Alamat tidak tersedia";
             
-            // LINK GOOGLE MAPS FIX (Langsung arahkan rute dari lokasi user saat ini)
+            // LINK GOOGLE MAPS FIX
             document.getElementById('btnMaps').href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
             
             document.getElementById('infoCard').classList.add('active');
