@@ -27,9 +27,10 @@
         .btn-red { background: linear-gradient(45deg, #900, #d00); color: #fff; }
         .btn-green { background: linear-gradient(45deg, #050, #090); color: #fff; }
         .btn-blue { background: linear-gradient(45deg, #005, #009); color: #fff; }
-        .btn-gold { background: linear-gradient(45deg, #B8860B, #FFD700); color: #000; }
+        .btn-gold { background: 
+        linear-gradient(45deg, #B8860B, #FFD700); color: #000; }
         .btn-mini { padding: 4px 8px; font-size: 12px; margin: 2px; }
-        input, select { background: #151515; color: #fff; border: 1px solid #444; padding: 10px; border-radius: 4px; font-family: 'Rajdhani'; font-weight:bold; width: 100%; box-sizing: border-box; margin-bottom:5px; text-transform: uppercase; }
+        input, select { background: #151515; color: #fff; border: 1px solid #FFF; padding: 10px; border-radius: 4px; font-family: 'Rajdhani'; font-weight:bold; width: 100%; box-sizing: border-box; margin-bottom:5px; text-transform: uppercase; }
         table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 11px; } td, th { border-bottom: 1px solid #222; padding: 8px; } th { color: var(--gold); }
         .slot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; }
         .slot-item { border: 1px solid #333; padding: 10px; background: #050505; text-align: center; border-radius: 6px; min-height: 140px; display: flex; flex-direction: column; justify-content: space-between; }
@@ -220,12 +221,12 @@
                 } else if(s) {
                     el.className = "slot-item active";
                     el.innerHTML = `<div><div style="font-size:24px; font-family:'Teko'; color:#fff; line-height:1;">${s.plat}</div><div style="font-size:10px; color:#aaa;">${s.userName}</div>${renderAdminBadge(s.role)}</div><div style="display:grid; gap:4px; margin-top:10px;"><button class="btn-red btn-mini" onclick="askConfirm('Stop / Keluarkan?', ()=>forceStop(${i}))">STOP</button><button class="btn-blue btn-mini" onclick="askConfirm('Kembalikan ke Antrian?', ()=>kickToQueue(${i}))">KE ANTRIAN</button></div>`;
-                } else { el.className = "slot-item"; el.innerHTML = `<div style="color:#444; margin:auto; font-family:'Orbitron'; font-size:16px;">KOSONG</div>`; }
+                } else { el.className = "slot-item"; el.innerHTML = `<div style="color:#FFF; margin:auto; font-family:'Orbitron'; font-size:16px;">KOSONG</div>`; }
             });
 
             // Render Antrian
             let h = `<table><tr><th width="20">#</th><th>USER</th><th width="120">KE SLOT</th><th width="40">AKSI</th></tr>`;
-            if(cachedQueue.length === 0) h += `<tr><td colspan="4" style="text-align:center; padding:15px; color:#444;">TIDAK ADA ANTRIAN</td></tr>`;
+            if(cachedQueue.length === 0) h += `<tr><td colspan="4" style="text-align:center; padding:15px; color:#FFF;">TIDAK ADA ANTRIAN</td></tr>`;
             cachedQueue.forEach((q, idx) => {
                 h += `<tr><td style="font-size:16px; font-weight:bold; color:var(--cyan)">${q.qNo}</td><td><b style="color:#fff; font-size:16px; font-family:'Teko';">${q.plat}</b><br><span style="color:#888;">${q.userName}</span><br>${renderAdminBadge(q.role)}</td><td><div style="display:flex; gap:2px; flex-wrap:wrap;">`;
                 for(let i=0; i<5; i++) { h += `<button class="${disabledSlots[i]?'btn-red':'btn-gold'} btn-mini" onclick="forceToSlot('${q.plat}', ${i})">S${i+1}</button>`; }
