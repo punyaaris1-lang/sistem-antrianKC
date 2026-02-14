@@ -28,10 +28,9 @@
         }
         
         * { box-sizing: border-box; user-select: none; outline: none; }
+        
+        /* PADDING BOTTOM DITAMBAH UNTUK DOCK NAV */
         body { font-family: var(--font-tech); background-color: var(--bg); background-image: var(--bg-pattern); background-size: 30px 30px, 30px 30px, 60px 60px; color: #fff; margin: 0; padding: 0 20px 100px 20px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: all 0.5s ease; }
-
-        /* PENGUMUMAN (MARQUEE) */
-        #announcementBar { display: none; background: #FF003C; color: #fff; padding: 8px 15px; font-family: var(--font-tech); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #fff; margin: 0 -20px 15px -20px; box-shadow: 0 5px 15px rgba(255,0,60,0.4); }
 
         /* ORNAMEN RAMADAN */
         .ramadan-ornaments { display: var(--ornament-display); pointer-events: none; position: absolute; width: 100%; height: 200px; top:0; left:0; z-index: 1; overflow: hidden; }
@@ -78,19 +77,43 @@
         
         .btn-cancel-q { margin-top: 20px; background: rgba(255,0,60,0.15); border: 2px solid var(--accent); color: var(--accent); padding: 15px 30px; font-weight: 900; cursor: pointer; width: 100%; }
 
-        /* MODAL */
+        /* MODAL KHUSUS POP-UP PENGUMUMAN */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        
+        .announcement-box { width: 90%; max-width: 350px; background: #111; border: 2px solid #FF003C; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 60, 0.4); animation: zoomIn 0.3s ease-out; }
+        .announcement-box h2 { font-family: 'Teko'; color: #fff; font-size: 32px; margin: 0 0 15px 0; letter-spacing: 2px; }
+        .announcement-box p { font-family: 'Rajdhani'; color: #ccc; font-size: 18px; margin-bottom: 25px; line-height: 1.5; }
+        .btn-mengerti { width: 100%; background: #FF003C; color: #fff; padding: 15px; border: none; border-radius: 8px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255,0,60,0.3); }
+
         .modal-box { width: 85%; max-width: 320px; background: #111; border: 1px solid var(--primary); padding: 25px; border-radius: 10px; text-align: center; }
         .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
         .btn-yes { flex:1; background: var(--primary); color: #000; padding:10px; font-weight:bold; border:none;} .btn-no { flex:1; background: #333; color: #fff; padding:10px; font-weight:bold; border:1px solid #555;}
 
+        /* --- DOCK NAV BAWAH (KARTIKA CHANDRA STYLE) --- */
+        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 99999; }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; cursor: pointer; }
+        .nav-item.center-btn { transform: translateY(-30px); }
+        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--primary-dim); font-size: 26px; color: var(--primary); position: relative; z-index: 10; transition: transform 0.2s; }
+        .center-icon-box:active { transform: scale(0.9); }
+        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 175, 55, 0.5); animation: spin 10s linear infinite; }
+        body.ramadan-mode .center-icon-box::after { border-color: rgba(255, 215, 0, 0.5); }
+        .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+        .nav-text { font-family: var(--font-head); font-size: 10px; letter-spacing: 2px; font-weight: 700; margin-top: 5px; }
+
         @keyframes pulseText { 0%,100% {opacity: 1;} 50% {opacity: 0.5;} }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div id="announcementBar">
-        <marquee id="annText"></marquee>
+    <div id="announcementModal" class="modal-overlay" style="z-index: 99999;">
+        <div class="announcement-box">
+            <div style="font-size: 50px; color: #FF003C; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i></div>
+            <h2>PENGUMUMAN</h2>
+            <p id="annTextPopup">Teks pengumuman di sini...</p>
+            <button class="btn-mengerti" onclick="tutupPengumuman()">SAYA MENGERTI</button>
+        </div>
     </div>
 
     <div class="ramadan-ornaments">
@@ -112,7 +135,7 @@
 
     <div class="slot-container" id="slotsContainer"></div>
 
-    <div style="display:flex; justify-content:center;">
+    <div style="display:flex; justify-content:center; position:relative; z-index:5;">
         <button id="btnCancelQ" class="btn-cancel-q" onclick="cancelQueue()">❌ BATAL ANTRIAN</button>
     </div>
 
@@ -130,6 +153,19 @@
             <div id="qlBody" style="flex:1; overflow-y:auto; padding:15px;"></div>
             <button onclick="document.getElementById('queueListModal').style.display='none'" style="padding:15px; background:#222; color:#fff; border:none; font-family:'Rajdhani'; font-weight:bold;">TUTUP</button>
         </div>
+    </div>
+
+    <div class="dock-container">
+        <a href="lokasifc.html" class="nav-item">
+            <i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:5px;"></i><span class="nav-text">PETA FC</span>
+        </a>
+        <div class="nav-item center-btn active">
+            <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
+            <span class="nav-text" style="color:var(--primary); margin-top:8px;">SYSTEM</span>
+        </div>
+        <a href="plan.html" class="nav-item">
+            <i class="fas fa-route" style="font-size:20px; margin-bottom:5px;"></i><span class="nav-text">TRIP PLAN</span>
+        </a>
     </div>
 
     <script type="module">
@@ -154,14 +190,24 @@
 
         function cleanStr(s) { return s ? s.replace(/[^A-Z0-9]/gi, '').toUpperCase() : ''; }
 
+        // --- SISTEM POP-UP ---
+        let currentAnnId = "";
+        window.tutupPengumuman = () => {
+            $('announcementModal').style.display = 'none';
+            localStorage.setItem('lastAnnId', currentAnnId);
+        };
+
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) return; const d = snap.data();
             
-            // 1. TAMPILKAN PENGUMUMAN BILA ADA
+            // 1. CEK POP-UP PENGUMUMAN
             if(d.announcement && d.announcement.active && d.announcement.text) {
-                $('announcementBar').style.display = 'block';
-                $('annText').innerText = d.announcement.text;
-            } else { $('announcementBar').style.display = 'none'; }
+                currentAnnId = d.announcement.id;
+                if(localStorage.getItem('lastAnnId') !== currentAnnId) {
+                    $('annTextPopup').innerText = d.announcement.text;
+                    $('announcementModal').style.display = 'flex';
+                }
+            } else { $('announcementModal').style.display = 'none'; }
 
             // 2. RENDER SLOT (5 SLOT KARTIKA CHANDRA)
             let slots = d.chargingSlots || [null,null,null,null,null]; while(slots.length<5) slots.push(null);
@@ -175,17 +221,17 @@
             slots.forEach((s, i) => {
                 const isOff = dis[i]; const div = document.createElement('div');
                 
-                if (isOff) { // SLOT RUSAK / DIMATIKAN ADMIN
+                if (isOff) { 
                     div.className = "armor-card maintenance";
                     div.innerHTML = `<div class="armor-inner"><div style="color:#aaa; font-size:10px; width:100%; text-align:left;">SLOT 0${i+1}</div><div style="font-size:32px; color:#f00; font-family:'Teko'; margin-bottom:auto;">MAINTENANCE</div><div style="font-size:10px; color:#fff; background:#f00; width:100%; padding:8px; border-radius:3px;">OFFLINE</div></div>`;
                 } 
-                else if (s) { // SLOT TERISI
+                else if (s) { 
                     div.className = "armor-card active";
                     const isMe = (cleanStr(s.plat) === cleanStr(myPlat));
                     let actBtn = isMe ? `<button onclick="window.stopCharging(${i})" class="btn-stop-me">⛔ STOP / SELESAI</button>` : '';
                     div.innerHTML = `<div class="armor-inner"><div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid #333; margin-bottom:10px;"><span style="color:var(--primary); font-size:10px;">SLOT 0${i+1}</span></div><div style="font-size:28px; font-family:'Teko'; color:#fff; line-height:0.9;">${s.plat}</div><div style="font-size:11px; color:#aaa; margin-bottom:5px;">${s.userName}</div>${getBadgeHTML(s.role)}${actBtn}</div>`;
                 } 
-                else { // SLOT KOSONG
+                else { 
                     div.className = "armor-card";
                     let bHtml = '';
                     if(queue.length===0 || myQIndex===0) bHtml = `<button class="btn-pilih" onclick="window.selectSlot(${i})">PILIH SLOT</button>`;
@@ -207,7 +253,7 @@
         function getBadgeHTML(r) {
             if (!r || r === "GUEST") return ""; 
             let css="b-member"; let icon="fa-user"; let txt="MEMBER"; const ru = r.toUpperCase();
-            if(ru.includes("PRESIDEN MCU")) { css="b-presiden"; icon="fa-globe"; txt="PRESIDEN MCU"; } // BADGE BARU
+            if(ru.includes("PRESIDEN MCU")) { css="b-presiden"; icon="fa-globe"; txt="PRESIDEN MCU"; } 
             else if(ru.includes("KETUM") && !ru.includes("WAKETUM")) { css="b-ketum"; icon="fa-crown"; txt="KETUM"; }
             return `<div class="glamour-badge ${css}" style="margin:5px auto;"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
         }

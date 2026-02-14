@@ -47,14 +47,6 @@
             transition: all 0.5s ease;
         }
 
-        /* --- PENGUMUMAN MARQUEE --- */
-        #announcementBar {
-            display: none; background: #FF003C; color: #fff; padding: 8px 15px; 
-            font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 14px; 
-            text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #fff; 
-            box-shadow: 0 5px 15px rgba(255,0,60,0.4); position: relative; z-index: 100;
-        }
-
         /* --- ORNAMEN RAMADAN --- */
         .ramadan-ornaments { display: var(--ornament-display); pointer-events: none; position: absolute; width: 100%; height: 200px; top:0; left:0; z-index: 1; overflow: hidden; }
         .hanging-item { position: absolute; top: -10px; display: flex; flex-direction: column; align-items: center; transform-origin: top center; animation: swing 3s infinite ease-in-out alternate; }
@@ -87,7 +79,7 @@
         h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(28px, 4vh, 38px); font-weight: 900; margin: 0; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: pointer; letter-spacing: 1px; }
         .sub-text { color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; }
 
-        /* --- WIDGET RAMADAN (CERIA) --- */
+        /* --- WIDGET RAMADAN --- */
         .ramadan-widget {
             display: none; /* Default Hidden */
             background: linear-gradient(135deg, rgba(50,0,80,0.6) 0%, rgba(0,60,30,0.6) 100%);
@@ -163,6 +155,12 @@
         body.ramadan-mode .btn-kirim { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         .btn-batal { width: 100%; padding: 12px; background: transparent; border: 2px solid #500; color: #f55; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; }
 
+        /* MODAL KHUSUS POP-UP PENGUMUMAN */
+        .announcement-box { width: 90%; max-width: 350px; background: #111; border: 2px solid #FF003C; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 60, 0.4); animation: zoomIn 0.3s ease-out; }
+        .announcement-box h2 { font-family: 'Teko'; color: #fff; font-size: 32px; margin: 0 0 15px 0; letter-spacing: 2px; }
+        .announcement-box p { font-family: 'Rajdhani'; color: #ccc; font-size: 18px; margin-bottom: 25px; line-height: 1.5; }
+        .btn-mengerti { width: 100%; background: #FF003C; color: #fff; padding: 15px; border: none; border-radius: 8px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255,0,60,0.3); }
+
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
@@ -171,8 +169,13 @@
 </head>
 <body>
 
-    <div id="announcementBar">
-        <marquee id="annText"></marquee>
+    <div id="announcementModal" class="modal-wrap" style="z-index: 99999;">
+        <div class="announcement-box">
+            <div style="font-size: 50px; color: #FF003C; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i></div>
+            <h2>PENGUMUMAN</h2>
+            <p id="annTextPopup">Teks pengumuman di sini...</p>
+            <button class="btn-mengerti" onclick="tutupPengumuman()">SAYA MENGERTI</button>
+        </div>
     </div>
 
     <div id="loading-screen"><img src="logo1.png" class="load-logo" alt="Loading"><div class="loader-text">SCANNING SYSTEM...</div></div>
@@ -231,6 +234,15 @@
         let globalSlots = [null, null, null, null, null];
         let globalQueue = [];
         let globalDisabled = [false, false, false, false, false];
+        let blockedPlates = [];
+
+        // --- SISTEM POP-UP ---
+        let currentAnnId = "";
+        window.tutupPengumuman = () => {
+            document.getElementById('announcementModal').classList.remove('open');
+            setTimeout(() => document.getElementById('announcementModal').style.display = 'none', 200);
+            localStorage.setItem('lastAnnId', currentAnnId);
+        };
 
         // --- CEK MODE RAMADAN ---
         function checkRamadanMode() {
@@ -303,8 +315,18 @@
         };
 
         window.submitData = async () => {
-            const nama = document.getElementById('inpNama').value.toUpperCase(); const plat = document.getElementById('inpPlat').value.toUpperCase(); const batre = document.getElementById('inpBatre').value;
+            const nama = document.getElementById('inpNama').value.toUpperCase(); 
+            const plat = document.getElementById('inpPlat').value.toUpperCase(); 
+            const batre = document.getElementById('inpBatre').value;
+            
             if(!nama || !plat || !batre) return alert("LENGKAPI DATA!");
+
+            // CEK BLOKIR
+            if(blockedPlates.includes(plat)) {
+                alert("AKSES DITOLAK!\nPlat nomor ini telah diblokir oleh Admin.");
+                return;
+            }
+
             const btn = document.getElementById('btnSubmitForm'); btn.innerText = "PROSES...";
             try {
                 const mSnap = await getDoc(doc(db, "members", plat.replace(/[^A-Z0-9]/g, '')));
@@ -351,17 +373,25 @@
             if (!snap.exists()) return;
             const d = snap.data();
             
-            // Pengumuman Marquee
+            // CEK POP-UP PENGUMUMAN
             if(d.announcement && d.announcement.active && d.announcement.text) {
-                document.getElementById('announcementBar').style.display = 'block';
-                document.getElementById('annText').innerText = d.announcement.text;
-            } else { document.getElementById('announcementBar').style.display = 'none'; }
+                currentAnnId = d.announcement.id;
+                if(localStorage.getItem('lastAnnId') !== currentAnnId) {
+                    document.getElementById('annTextPopup').innerText = d.announcement.text;
+                    document.getElementById('announcementModal').classList.add('open');
+                    document.getElementById('announcementModal').style.display = 'flex';
+                }
+            } else { 
+                document.getElementById('announcementModal').classList.remove('open');
+                document.getElementById('announcementModal').style.display = 'none'; 
+            }
 
             globalSlots = d.chargingSlots || [null, null, null, null, null];
             globalQueue = d.waitingQueue || [];
             globalDisabled = d.disabledSlots || [false, false, false, false, false];
+            blockedPlates = d.blockedPlates || [];
 
-            // Hitung slot tersedia (tidak null DAN tidak maintenance)
+            // Hitung slot tersedia
             let availableCount = 0;
             for(let i=0; i<5; i++) { if(globalSlots[i] !== null || globalDisabled[i]) { availableCount++; } }
             
@@ -385,6 +415,5 @@
         const platInput = document.getElementById('inpPlat'); if(platInput) { platInput.addEventListener('input', function(e) { let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); let f = ""; if (v.length > 0) { let m = v.match(/^([A-Z]{1,2})(\d{0,4})([A-Z]*)$/); if (m) { f = m[1]; if (m[2]) f += " " + m[2]; if (m[3]) f += " " + m[3]; } else { f = v; } } this.value = f; }); }
         const batInput = document.getElementById('inpBatre'); if(batInput) batInput.addEventListener('input', function(e) { let v = this.value.replace(/[^0-9]/g, ''); if(parseInt(v) > 100) v = "100"; this.value = v; });
     </script>
-    <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js'); }); }</script>
 </body>
 </html>

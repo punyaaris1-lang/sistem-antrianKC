@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MAKA - PLAN TRIP KARTIKA CHANDRA</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* === TEMA KARTIKA CHANDRA (GOLD & BLACK) === */
+        :root {
+            --bg: #050505; 
+            --primary: #FFD700;       /* EMAS UTAMA */
+            --primary-dim: rgba(255, 215, 0, 0.15);
+            --primary-glow: rgba(212, 175, 55, 0.4);
+            --red: #FF003C; 
+            --green: #39FF14;
+            --gray: #333;
+            
+            --font-tech: 'Rajdhani', sans-serif;
+            --font-num: 'Teko', sans-serif;
+            --font-head: 'Orbitron', sans-serif;
+        }
+
+        body { 
+            margin: 0; padding: 0; font-family: var(--font-tech); 
+            background: var(--bg); color: #fff; padding-bottom: 90px; 
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        
+        /* --- HEADER --- */
+        .header { 
+            text-align: center; padding: 25px 20px; 
+            background: linear-gradient(180deg, #000 0%, rgba(20, 15, 0, 0.9) 100%);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2); 
+            position: relative; z-index: 10;
+        }
+        .main-title { 
+            font-family: var(--font-head); font-weight: 900; font-size: 28px; 
+            color: #fff; line-height: 1; letter-spacing: 2px;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+        .sub-title { 
+            font-family: var(--font-tech); font-size: 11px; color: var(--primary); 
+            letter-spacing: 3px; font-weight: 800; margin-top: 8px;
+            display: inline-block; border-bottom: 2px solid var(--primary); padding-bottom: 3px;
+        }
+
+        /* --- FORM INPUT --- */
+        .container { padding: 20px; }
+        
+        #db-status {
+            text-align: center; font-size: 11px; color: #555; 
+            margin-bottom: 20px; font-family: var(--font-head); 
+            letter-spacing: 1px; font-weight: bold;
+        }
+
+        .input-group { position: relative; margin-bottom: 15px; }
+        .input-icon { 
+            position: absolute; left: 15px; top: 14px; 
+            color: var(--primary); font-family: var(--font-head); 
+            font-size: 12px; z-index: 2; font-weight: bold; 
+        }
+        
+        .form-control {
+            width: 100%; padding: 14px 10px 14px 60px; 
+            background: rgba(10, 8, 0, 0.8); 
+            border: 1px solid #333; border-radius: 6px;
+            color: #fff; font-family: var(--font-tech); font-weight: 700; font-size: 16px;
+            box-sizing: border-box; transition: 0.3s;
+            text-transform: uppercase;
+        }
+        .form-control:focus { 
+            border-color: var(--primary); outline: none; 
+            background: #000; box-shadow: 0 0 15px var(--primary-dim); 
+        }
+        .form-control::placeholder { color: #666; font-weight: 600; }
+        .form-control.gps-active { border-color: var(--green); color: var(--green); background: rgba(0, 50, 0, 0.2); }
+
+        /* TOMBOL GPS */
+        .gps-trigger {
+            position: absolute; right: 10px; top: 10px;
+            background: rgba(255, 215, 0, 0.1); border: 1px solid var(--primary); color: var(--primary);
+            width: 32px; height: 32px; border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 16px; transition: 0.2s;
+        }
+        .gps-trigger:active { background: var(--primary); color: #000; }
+
+        /* TOMBOL ADD */
+        .btn-add {
+            width: 100%; background: rgba(255,255,255,0.03); 
+            border: 1px dashed #555; color: #888; border-radius: 6px;
+            padding: 12px; font-family: var(--font-tech); font-weight: bold; font-size: 14px; 
+            cursor: pointer; margin-bottom: 20px; transition: 0.2s;
+        }
+        .btn-add:active { background: rgba(255, 215, 0, 0.1); color: var(--primary); border-color: var(--primary); }
+
+        /* TOMBOL UTAMA */
+        .btn-action {
+            width: 100%; padding: 16px; color: #000;
+            background: linear-gradient(135deg, #FFD700 0%, #8B6508 100%);
+            border: none; border-radius: 8px;
+            font-family: var(--font-head); font-weight: 900; font-size: 18px; letter-spacing: 2px;
+            cursor: pointer; text-transform: uppercase; 
+            box-shadow: 0 5px 25px rgba(212, 175, 55, 0.3);
+            transition: 0.2s; margin-top: 10px;
+        }
+        .btn-action:active { transform: scale(0.98); opacity: 0.9; }
+
+        /* --- RESULT CARD --- */
+        .route-card {
+            background: #0a0a0a; border: 1px solid #333; margin-top: 30px;
+            padding: 20px; border-radius: 12px; position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .route-card.aman { border-left: 4px solid var(--green); }
+        .route-card.nekat { border-left: 4px solid var(--red); }
+
+        .card-title { 
+            font-family: var(--font-head); font-size: 16px; color: #fff; 
+            margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid #222; padding-bottom: 12px;
+        }
+        .badge { font-family: var(--font-tech); font-weight: bold; padding: 3px 10px; font-size: 12px; border-radius: 4px; color: #000; letter-spacing: 1px; }
+        .badge.aman { background: var(--green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.4); }
+        .badge.nekat { background: var(--red); color: #fff; box-shadow: 0 0 10px rgba(255, 0, 60, 0.4); }
+
+        /* TIMELINE (Tema Emas) */
+        .timeline { position: relative; padding-left: 25px; border-left: 1px dashed #444; margin-left: 10px; }
+        .t-item { position: relative; margin-bottom: 25px; }
+        .t-dot { 
+            position: absolute; left: -31px; top: 5px; width: 12px; height: 12px; 
+            background: #000; border: 2px solid var(--primary); border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+        .t-info { background: rgba(255, 215, 0, 0.03); padding: 12px; border: 1px solid #222; border-radius: 6px; }
+        .t-name { font-family: var(--font-tech); font-weight: 800; font-size: 18px; color: var(--primary); line-height: 1.2; text-transform: uppercase; }
+        .t-meta { font-size: 12px; color: #aaa; display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--font-tech); font-weight: 600; }
+        .t-bat { font-weight: bold; font-family: var(--font-num); font-size: 18px; }
+        
+        .bat-ok { color: var(--green); }
+        .bat-low { color: var(--red); animation: blink 1s infinite; }
+
+        /* INFO DESTINATION */
+        .dest-info {
+            margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.05); 
+            border: 1px solid var(--primary); border-radius: 6px;
+        }
+        .dest-label { font-size: 10px; color: var(--primary); letter-spacing: 2px; font-weight: bold; margin-bottom: 5px; font-family: var(--font-head); }
+        .dest-val { font-family: var(--font-tech); font-weight: 800; font-size: 20px; color: #fff; text-transform: uppercase; }
+
+        /* MAP RESULT */
+        #map { height: 350px; width: 100%; background: #020202; border: 1px solid #333; margin-top: 25px; border-radius: 12px; }
+        
+        /* LOADING */
+        #loading-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999;
+            display: none; align-items: center; justify-content: center; flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+        .scanner-line { width: 60px; height: 60px; border: 3px solid #222; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 30px var(--primary-glow); }
+        .loading-text { font-family: var(--font-head); color: var(--primary); margin-top: 25px; letter-spacing: 3px; font-size: 14px; animation: blink 1.5s infinite; }
+
+        /* --- DOCK NAV BAWAH (KC STYLE) --- */
+        .dock-container {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary);
+            display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 2000;
+        }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; }
+        
+        /* Menu Kanan Aktif (PLAN) */
+        .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary-glow); }
+        
+        .nav-item.center-btn { transform: translateY(-30px); }
+        .center-icon-box { 
+            width: 65px; height: 65px; background: #000; 
+            border: 2px solid #333; /* Grey Border (Inactive) */
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
+            font-size: 26px; color: #555; /* Grey Icon */
+            position: relative; z-index: 10; transition: transform 0.2s;
+        }
+        .center-icon-box:active { transform: scale(0.9); }
+        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed #333; }
+
+        .nav-icon { font-size: 22px; margin-bottom: 5px; }
+        .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; margin-top: 4px; }
+
+        @keyframes blink { 0%,100% {opacity:1} 50% {opacity:0.4} }
+        @keyframes spin { 100% {transform: rotate(360deg);} }
+
+    </style>
+</head>
+<body>
+
+    <div id="loading-overlay">
+        <div class="scanner-line"></div>
+        <div class="loading-text">ANALISA RUTE...</div>
+    </div>
+
+    <div class="header">
+        <div class="main-title">TACTICAL PLANNER</div>
+        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
+    </div>
+
+    <div class="container">
+        <div id="db-status">MENGHUBUNGKAN SATELIT...</div>
+
+        <div id="waypoints">
+            <div class="input-group">
+                <div class="input-icon">START</div>
+                <input type="text" id="start-input" class="form-control loc-input" placeholder="LOKASI AWAL (Tap Ikon)">
+                <div class="gps-trigger" onclick="useCurrentLocation()"><i class="fas fa-crosshairs"></i></div>
+            </div>
+
+            <div class="input-group">
+                <div class="input-icon">END</div>
+                <input type="text" class="form-control loc-input" placeholder="TUJUAN AKHIR">
+            </div>
+        </div>
+        
+        <button class="btn-add" onclick="addStop()">+ TAMBAH TITIK SINGGAH</button>
+
+        <div class="input-group">
+            <div class="input-icon"><i class="fas fa-bolt"></i></div>
+            <input type="number" id="battery" class="form-control" value="100" placeholder="BATERAI AWAL (%)" style="color:var(--primary); font-family:'Teko'; font-size:24px;">
+        </div>
+
+        <button class="btn-action" onclick="calculateRoute()">ANALISA RUTE</button>
+
+        <div id="result-area"></div>
+        <div id="map" style="display:none;"></div>
+    </div>
+
+    <div class="dock-container">
+        <a href="lokasifc.html" class="nav-item">
+            <i class="fas fa-map-marked-alt nav-icon"></i><span class="nav-text">PETA FC</span>
+        </a>
+        
+        <a href="system.html" class="nav-item center-btn">
+            <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
+            <span class="nav-text" style="margin-top:8px;">SYSTEM</span>
+        </a>
+        
+        <div class="nav-item active">
+            <i class="fas fa-route nav-icon"></i><span class="nav-text">TRIP PLAN</span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <script>
+        // INIT MAP (Dark Mode CartoDB)
+        const map = L.map('map').setView([-6.2, 106.8], 10);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 19, opacity: 0.9 }).addTo(map);
+        
+        let fcLocations = [];
+        let mapLayers = L.layerGroup().addTo(map);
+        const SHEET_ID = '1EJOTMMfGpBMFPqR0LzbMbh7tZUcTCZld4x387OO9aJM'; 
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+
+        let gpsStartCoords = null; 
+
+        window.onload = function() {
+            Papa.parse(CSV_URL, {
+                download: true, header: true,
+                complete: function(res) {
+                    res.data.forEach(row => {
+                        let lat = null, lng = null, name = "FC Station";
+                        Object.values(row).forEach(val => {
+                            if(val) {
+                                let num = parseFloat(val.toString().replace(',','.'));
+                                if(!isNaN(num)) {
+                                    if(num < -5 && num > -11) lat = num;
+                                    if(num > 95 && num < 141) lng = num;
+                                }
+                            }
+                        });
+                        
+                        const keys = Object.keys(row);
+                        for(let k of keys) {
+                            let cleanKey = k.toLowerCase().trim();
+                            if(cleanKey.includes('nama') || cleanKey.includes('lokasi') || cleanKey.includes('station')) {
+                                if(row[k] && row[k].trim() !== "") { name = row[k]; break; }
+                            }
+                        }
+
+                        if(lat && lng) fcLocations.push({ name, lat, lng });
+                    });
+                    document.getElementById('db-status').innerHTML = 'SYSTEM ONLINE - ' + fcLocations.length + ' FC DETECTED';
+                    document.getElementById('db-status').style.color = 'var(--primary)';
+                }
+            });
+        };
+
+        // --- 1. FITUR GPS ---
+        async function useCurrentLocation() {
+            const input = document.getElementById('start-input');
+            if(!navigator.geolocation) return alert("Browser tidak support GPS");
+            
+            input.value = "MENCARI LOKASI...";
+            input.classList.remove('gps-active');
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const { latitude, longitude } = pos.coords;
+                gpsStartCoords = { lat: latitude, lon: longitude, name: "LOKASI SAYA" };
+                
+                try {
+                    const addr = await getAddressFromCoords(latitude, longitude);
+                    gpsStartCoords.name = addr;
+                    input.value = "📍 " + addr; 
+                } catch(e) {
+                    input.value = "[ GPS TERSAMBUNG ]";
+                }
+                
+                input.classList.add('gps-active'); 
+            }, (err) => {
+                alert("Gagal mengambil lokasi GPS. Pastikan GPS nyala.");
+                input.value = "";
+            }, { enableHighAccuracy: true });
+        }
+
+        async function getAddressFromCoords(lat, lon) {
+            const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+            const d = await r.json();
+            return d.display_name.split(',').slice(0, 3).join(',');
+        }
+
+        function addStop() {
+            const div = document.createElement('div');
+            div.className = 'input-group';
+            div.innerHTML = `<div class="input-icon" style="font-size:10px; top:16px;">STOP</div><input type="text" class="form-control loc-input" placeholder="NAMA KOTA / JALAN"><div style="position:absolute; right:12px; top:12px; font-size:18px; color:var(--red); cursor:pointer;" onclick="this.parentElement.remove()"><i class="fas fa-times-circle"></i></div>`;
+            document.getElementById('waypoints').insertBefore(div, document.getElementById('waypoints').lastElementChild);
+        }
+
+        async function calculateRoute() {
+            const inputs = document.querySelectorAll('.loc-input');
+            const batStart = parseInt(document.getElementById('battery').value);
+            const resArea = document.getElementById('result-area');
+            const loading = document.getElementById('loading-overlay');
+            const mapDiv = document.getElementById('map');
+            
+            let inputTexts = [];
+            inputs.forEach(i => { 
+                let val = i.value.trim();
+                if(val.startsWith("📍 ")) val = val.substring(2); 
+                if(val) inputTexts.push(val); 
+            });
+            
+            if(inputTexts.length < 2) return alert("MASUKKAN LOKASI AWAL & TUJUAN!");
+
+            loading.style.display = 'flex';
+            mapLayers.clearLayers();
+            resArea.innerHTML = '';
+            mapDiv.style.display = 'none';
+
+            try {
+                let points = [];
+                for(let i=0; i<inputTexts.length; i++) {
+                    const txt = inputTexts[i];
+                    if(i === 0 && gpsStartCoords && (txt === gpsStartCoords.name || txt === "[ GPS TERSAMBUNG ]")) {
+                        points.push(gpsStartCoords);
+                    } else {
+                        const c = await getGeo(txt);
+                        if(!c) throw new Error(`LOKASI TIDAK DITEMUKAN: ${txt}`);
+                        points.push(c);
+                    }
+                }
+
+                const directRoute = await getOSRM(points);
+                const totalDistKm = directRoute.distance / 1000;
+                const needed = Math.ceil(totalDistKm);
+                const finalBat = batStart - needed;
+
+                const destPoint = points[points.length-1];
+                const nearestFromDest = findNearestFC(destPoint);
+
+                if (finalBat >= 10) {
+                    renderResult('aman', 'RUTE LANGSUNG (AMAN)', points, batStart, null, nearestFromDest);
+                    drawMap(points, '#FFD700'); // Emas untuk rute aman
+                } else {
+                    const bestCharger = await findBestCharger(points[0], points[points.length-1], batStart);
+                    if (bestCharger) {
+                        renderResult('aman', 'RUTE VIA CHARGER', points, batStart, bestCharger, nearestFromDest);
+                        drawComplexRoute(points[0], bestCharger, points[points.length-1]);
+                    } else {
+                        renderResult('nekat', 'PERINGATAN: BATERAI TIDAK CUKUP', points, batStart, null, nearestFromDest);
+                        drawMap(points, '#FF003C'); // Merah untuk bahaya
+                    }
+                }
+                
+                mapDiv.style.display = 'block';
+                setTimeout(() => map.invalidateSize(), 500);
+
+            } catch (e) {
+                alert(e.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function findNearestFC(point) {
+            let minKm = 99999;
+            let nearest = null;
+            fcLocations.forEach(fc => {
+                const d = getCrowDist(point.lat, point.lon, fc.lat, fc.lng);
+                if(d < minKm) { minKm = d; nearest = fc; }
+            });
+            return nearest ? { ...nearest, dist: minKm } : null;
+        }
+
+        async function findBestCharger(start, end, currentBat) {
+            let candidates = [];
+            for (let fc of fcLocations) {
+                const distFromStart = getCrowDist(start.lat, start.lon, fc.lat, fc.lng);
+                if (distFromStart <= (currentBat - 5)) {
+                    candidates.push({ ...fc, distFromStart });
+                }
+            }
+            if (candidates.length === 0) return null; 
+
+            candidates.sort((a,b) => {
+                const distA = getCrowDist(a.lat, a.lng, end.lat, end.lon);
+                const distB = getCrowDist(b.lat, b.lng, end.lat, end.lon);
+                return distA - distB;
+            });
+
+            let bestFC = null;
+            let minTotalDist = 999999;
+            const checkLimit = Math.min(candidates.length, 3);
+            
+            for(let i=0; i<checkLimit; i++) {
+                const fc = candidates[i];
+                const route = await getOSRM([start, {lat: fc.lat, lon: fc.lng}, end]);
+                const totalDist = route.distance / 1000;
+                if (totalDist < minTotalDist) {
+                    minTotalDist = totalDist;
+                    bestFC = fc;
+                }
+            }
+            return bestFC;
+        }
+
+        async function renderResult(type, title, points, startBat, charger, nearestEnd) {
+            const area = document.getElementById('result-area');
+            let html = `<div class="route-card ${type}"><div class="card-title"><span>${title}</span><span class="badge ${type}">${type === 'aman' ? 'RECOMMENDED' : 'WARNING'}</span></div><div class="timeline">`;
+
+            let stops = [];
+            if (charger) stops = [points[0], {name: charger.name + " (CHARGING)", lat: charger.lat, lon: charger.lng, isCharge: true}, points[points.length-1]];
+            else stops = points;
+
+            let currentBat = startBat;
+
+            for (let i = 0; i < stops.length; i++) {
+                const pt = stops[i];
+                let distInfo = "";
+                let batClass = "bat-ok";
+
+                if (i > 0) {
+                    const prev = stops[i-1];
+                    const leg = await getOSRM([prev, pt]);
+                    const dist = leg.distance / 1000;
+                    const used = Math.ceil(dist);
+                    currentBat -= used;
+                    distInfo = `<span style="color:var(--primary); font-size:11px;">⬇ Jarak: ${dist.toFixed(1)} KM (-${used}%)</span>`;
+                }
+
+                if (pt.isCharge) {
+                    currentBat = 100; 
+                    distInfo += ` <span style="color:var(--green); font-weight:bold;">[ ISI PENUH ]</span>`;
+                }
+
+                if (currentBat < 20) batClass = "bat-low";
+
+                html += `<div class="t-item"><div class="t-dot"></div><div class="t-info"><div class="t-name">${pt.name}</div><div class="t-meta"><span>${distInfo}</span><span class="t-bat ${batClass}">${currentBat}%</span></div></div></div>`;
+            }
+
+            if(nearestEnd) {
+                html += `
+                <div class="dest-info">
+                    <div class="dest-label"><i class="fas fa-plug"></i> CHARGER TERDEKAT DARI TUJUAN</div>
+                    <div class="dest-val">${nearestEnd.name}</div>
+                    <div style="font-size:12px; color:#aaa; margin-top:3px;">Jarak: ${nearestEnd.dist.toFixed(1)} KM (Garis Lurus)</div>
+                    <a href="https://www.google.com/maps/search/?api=1&query=${nearestEnd.lat},${nearestEnd.lng}" target="_blank" style="color:var(--primary); font-size:12px; font-weight:bold; display:block; margin-top:8px; text-decoration:none;"><i class="fas fa-location-arrow"></i> BUKA ARAH GOOGLE MAPS →</a>
+                </div>`;
+            }
+
+            let gmapsLink = `https://www.google.com/maps/dir/?api=1&destination=$`;
+            stops.forEach(s => gmapsLink += `${s.lat},${s.lon}/`);
+
+            html += `</div><a href="${gmapsLink}" target="_blank" class="btn-action" style="margin-top:20px; text-decoration:none; display:block; text-align:center; font-size:18px;"><i class="fas fa-map"></i> MULAI NAVIGASI</a></div>`;
+            area.innerHTML = html;
+        }
+
+        async function drawMap(points, color) {
+            const r = await getOSRM(points);
+            const coords = decodePolyline(r.geometry);
+            L.polyline(coords, {color: color, weight: 4, opacity: 0.8}).addTo(mapLayers);
+            points.forEach((p, i) => {
+                const iconColor = i === 0 ? '#39FF14' : (i === points.length-1 ? '#FF003C' : '#FFD700');
+                L.circleMarker([p.lat, p.lon], {radius: 6, color: '#000', weight: 2, fillColor: iconColor, fillOpacity: 1}).addTo(mapLayers).bindPopup(p.name);
+            });
+            map.fitBounds(L.polyline(coords).getBounds(), {padding:[30,30]});
+        }
+
+        async function drawComplexRoute(start, mid, end) {
+            drawMap([start, {lat:mid.lat, lon:mid.lng, name:mid.name}, end], '#FFD700'); // Emas
+        }
+
+        // --- GEO & OSRM ---
+        async function getGeo(q) {
+            try {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=id&limit=1&addressdetails=1`;
+                const r = await fetch(url);
+                const d = await r.json();
+                if(d[0]) {
+                    let cleanName = d[0].display_name.split(',')[0];
+                    return { lat: parseFloat(d[0].lat), lon: parseFloat(d[0].lon), name: cleanName };
+                }
+            } catch(e) { console.log("Error Geo:", e); }
+            return null;
+        }
+
+        async function getOSRM(pts) {
+            const s = pts.map(p => `${p.lon},${p.lat}`).join(';');
+            const r = await fetch(`https://router.project-osrm.org/route/v1/driving/${s}?overview=full`);
+            const d = await r.json();
+            return d.routes[0];
+        }
+
+        function getCrowDist(lat1, lon1, lat2, lon2) {
+            const R = 6371; const p = Math.PI/180;
+            const a = 0.5 - Math.cos((lat2-lat1)*p)/2 + Math.cos(lat1*p)*Math.cos(lat2*p)*(1-Math.cos((lon2-lon1)*p))/2;
+            return 2 * R * Math.asin(Math.sqrt(a));
+        }
+
+        function decodePolyline(str) {
+            let index=0,lat=0,lng=0,coordinates=[],shift=0,result=0,byte=null,latitude_change,longitude_change,factor=1e5;
+            while(index<str.length){
+                byte=null;shift=0;result=0;
+                do{byte=str.charCodeAt(index++)-63;result|=(byte&0x1f)<<shift;shift+=5;}while(byte>=0x20);
+                latitude_change=((result&1)?~(result>>1):(result>>1)); shift=result=0;
+                do{byte=str.charCodeAt(index++)-63;result|=(byte&0x1f)<<shift;shift+=5;}while(byte>=0x20);
+                longitude_change=((result&1)?~(result>>1):(result>>1));
+                lat+=latitude_change;lng+=longitude_change;
+                coordinates.push([lat/factor,lng/factor]);
+            }
+            return coordinates;
+        }
+    </script>
+</body>
+</html>
