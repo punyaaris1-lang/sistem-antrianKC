@@ -1,21 +1,21 @@
 {
-  "name": "FC Kartika Chandra",
+  "name": "FC KARTIKA CHANDRA",
   "short_name": "FC KC",
-  "description": "Sistem Antrian & Monitor Fast Charging",
-  "start_url": "https://punyaaris1-lang.github.io/sistem-antrianKC/antrian.html",
-  "scope": "/",
+  "description": "Sistem Antrian Fast Charging Maka Lintas",
+  "start_url": "./antrian.html",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#D4AF37",
+  "background_color": "#050505",
+  "theme_color": "#D4FF00",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "logo1.png",
+      "src": "logo2.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "logo1.png",
+      "src": "logo2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
