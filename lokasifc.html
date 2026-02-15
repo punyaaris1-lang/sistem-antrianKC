@@ -48,7 +48,7 @@
         }
 
         /* MAP */
-        #map { width: 100%; height: 100vh; z-index: 1; background: #050505; }
+        #map { width: 100%; height: 100vh; z-index: 1; background: #111; }
         .leaflet-control-attribution { display: none; }
 
         /* --- NEW MARKER DESIGN (Modern Pin Emas) --- */
@@ -212,16 +212,25 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
-        // 1. INIT MAP (Dark Mode)
-        const map = L.map('map', {zoomControl: false}).setView([-6.2285953, 106.819502], 12); // Default ke KC Center
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { 
-            maxZoom: 19, opacity: 1 
+        // 1. INIT MAP (Theme Dark Matter Asli - Terlihat Jalan)
+        const map = L.map('map', {zoomControl: false}).setView([-6.2285953, 106.819502], 12); 
+        
+        // Memakai Tile Layer Dark Matter
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 19,
+            opacity: 1 
         }).addTo(map);
+        
+        // --- NAIKKAN KECERAHAN (BRIGHTNESS) KE 250% DAN CONTRAST 150% ---
+        document.querySelector('.leaflet-tile-pane').style.filter = "brightness(250%) contrast(150%)";
 
-        // 2. ICON USER FIX UKURAN
+        // 2. ICON USER FIX UKURAN (Kunci Mati)
         const userIcon = L.divIcon({
             className: 'custom-user',
-            html: `<div class="user-wrap"><div class="user-pulse"></div><img src="logo2.png" class="user-img" onerror="this.src='https://ui-avatars.com/api/?name=U&background=D4AF37&color=000'"></div>`,
+            html: `<div style="position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center;">
+                      <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(255,215,0,0.3); animation:pulse 2s infinite;"></div>
+                      <img src="logo2.png" style="width:45px !important; height:45px !important; max-width:45px !important; object-fit:contain; position:relative; z-index:2; filter:drop-shadow(0 2px 5px rgba(0,0,0,0.8));" onerror="this.src='https://ui-avatars.com/api/?name=U&background=D4AF37&color=000'">
+                   </div>`,
             iconSize: [60, 60], iconAnchor: [30, 30]
         });
         
@@ -307,7 +316,7 @@
             document.getElementById('fcAddr').innerText = addr || "Alamat tidak tersedia";
             
             // LINK GOOGLE MAPS FIX
-            document.getElementById('btnMaps').href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+            document.getElementById('btnMaps').href = `http://googleusercontent.com/maps.google.com/maps?daddr=${lat},${lng}`;
             
             document.getElementById('infoCard').classList.add('active');
         }
