@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "2.5_NeonTheme"; // Update Tema Neon & Sorefalto & TikTok
+        const CURRENT_VERSION = "2.6_PaddingFix"; 
         if (localStorage.getItem("app_version") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -88,10 +88,11 @@
         .bottom-panel {
             flex: 1; width: 100%; background: var(--glass-panel); backdrop-filter: blur(10px);
             border-top: 2px solid var(--primary); border-radius: 35px 35px 0 0;
-            padding: 25px 20px 100px 20px; /* Jaga jarak aman dari dock */
+            /* PADDING BAWAH DITAMBAH JADI 130px AGAR SOREFALTO BISA NAIK SEDIKIT SAAT DI SCROLL */
+            padding: 25px 20px 130px 20px; 
             box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;
             box-shadow: 0 -10px 50px rgba(0,0,0,0.8); position: relative; z-index: 2;
-            overflow-y: auto; /* Agar bisa di-scroll jika layar kecil */
+            overflow-y: auto; 
         }
 
         .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
@@ -115,7 +116,7 @@
 
         /* --- WIDGET RAMADAN --- */
         .ramadan-widget {
-            display: none; /* Default Hidden */
+            display: none; 
             background: linear-gradient(135deg, rgba(50,0,80,0.6) 0%, rgba(0,60,30,0.6) 100%);
             border: 1px solid var(--primary); border-radius: 15px; padding: 12px 15px;
             align-items: center; justify-content: space-between; position: relative; overflow: hidden;
@@ -270,10 +271,6 @@
             <div class="live-tag"><i class="fas fa-circle" style="font-size:8px; vertical-align:middle; margin-right:5px; color:#f00;"></i> <span id="liveClock">ONLINE</span></div>
             <h1 ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
             <div class="sub-text">MAKA LINTAS KARTIKA CHANDRA</div>
-            
-            <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge">
-                <i class="fab fa-tiktok"></i> @maka_ojol
-            </a>
         </div>
 
         <div class="ramadan-widget">
@@ -290,7 +287,9 @@
         <button id="btnDaftar" class="btn-main" onclick="checkLocationAndOpenForm()">MEMUAT DATA...</button>
         <button id="btnMonitor" class="btn-monitor" onclick="window.location.href='system.html'"><i class="fas fa-tv"></i> BUKA MONITOR</button>
 
-        <img src="sore.jpg" alt="Sorefalto" style="width: 100%; border-radius: 12px; margin-top: 15px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: contain;">
+        <div style="padding-top: 15px; padding-bottom: 10px; text-align: center; position:relative; z-index:5;">
+            <img src="sore.jpg" alt="Sorefalto" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: contain;">
+        </div>
     </div>
 
     <div id="detailModal" class="modal-wrap"><div class="modal-panel"><div class="modal-head"><div class="modal-h-title" id="mTitle">STATUS SLOT</div><button class="close-x" onclick="closeModal('detailModal')">✕</button></div><div id="mContent" class="slot-list-box"></div></div></div>
