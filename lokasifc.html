@@ -5,24 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PETA LOKASI - KARTIKA CHANDRA</title>
     
+    <script>
+        const CURRENT_VERSION = "7.0_NeonMapFix"; 
+        if (localStorage.getItem("app_version_map") !== CURRENT_VERSION) {
+            if (window.caches) { caches.keys().then((k) => Promise.all(k.map((key) => caches.delete(key)))); }
+            localStorage.setItem("app_version_map", CURRENT_VERSION);
+            window.location.reload(true);
+        }
+    </script>
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root { 
             --bg: #050505; 
-            --primary: #FFD700;       /* Emas Terang */
-            --primary-dim: rgba(255, 215, 0, 0.15);
-            --primary-glow: rgba(212, 175, 55, 0.4);
+            --primary: #D4FF00;       /* Kuning Neon / Lime Baru */
+            --primary-dim: rgba(212, 255, 0, 0.15);
+            --primary-glow: rgba(212, 255, 0, 0.4);
             --card-bg: #111111;
             --text-main: #ffffff;
             --text-sub: #aaaaaa;
             
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
+            --font-ui: 'Inter', sans-serif;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -36,161 +44,136 @@
         }
         .main-title { 
             font-family: var(--font-head); font-weight: 800; font-size: 26px; color: #fff; 
-            letter-spacing: 2px; text-transform: uppercase;
-            text-shadow: 0 4px 15px var(--primary-glow);
+            letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 4px 15px var(--primary-glow);
         }
         .sub-title { 
             font-family: var(--font-body); font-size: 11px; color: var(--primary); 
             font-weight: 800; text-transform: uppercase; letter-spacing: 3px;
-            margin-top: 5px; display: inline-block;
-            background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.4); 
-            padding: 4px 12px; border-radius: 20px;
+            margin-top: 5px; display: inline-block; background: rgba(212, 255, 0, 0.1); 
+            border: 1px solid rgba(212, 255, 0, 0.4); padding: 4px 12px; border-radius: 20px;
         }
 
-        /* MAP */
-        #map { width: 100%; height: 100vh; z-index: 1; background: #111; }
-        .leaflet-control-attribution { display: none; }
+        /* --- TIKTOK BADGE --- */
+        .tiktok-badge {
+            pointer-events: auto; /* Agar bisa diklik di dalam area header pointer-events:none */
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            margin-top: 10px; padding: 6px 15px; background: linear-gradient(45deg, #000000, #111111);
+            border: 1px solid var(--primary); border-radius: 20px; color: #fff; text-decoration: none;
+            font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800;
+            letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(212, 255, 0, 0.2);
+        }
+        .tiktok-badge:active { transform: scale(0.95); }
+        .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
 
-        /* --- NEW MARKER DESIGN (Modern Pin Emas) --- */
+        /* MAP */
+        #map { width: 100%; height: 100vh; z-index: 1; background: #000; }
+        .leaflet-control-attribution { display: none; }
+        
+        /* === RAHASIA PETA HIJAU NEON (Filter CSS) === */
+        /* Mengubah jalan abu-abu terang menjadi hijau neon/teal seperti cyberpunk */
+        .leaflet-tile-pane {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(120%) sepia(100%) hue-rotate(130deg) saturate(300%) brightness(80%);
+        }
+
+        /* --- NEW MARKER DESIGN --- */
         .marker-wrapper {
             display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            width: 150px !important; height: auto !important;
-            transform: translate(-50%, -100%); 
+            width: 150px !important; height: auto !important; transform: translate(-50%, -100%); 
         }
 
         /* LABEL NAMA */
         .pin-label-box {
-            background: #fff; color: #000;
-            font-family: var(--font-body); font-weight: 800; font-size: 14px;
-            padding: 5px 12px; border-radius: 6px; margin-bottom: 8px;
-            white-space: nowrap; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            text-align: center; opacity: 0.95; transform: translateY(5px);
-            border-bottom: 2px solid var(--primary);
+            background: #fff; color: #000; font-family: var(--font-body); font-weight: 800; font-size: 14px;
+            padding: 5px 12px; border-radius: 6px; margin-bottom: 8px; white-space: nowrap; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center; opacity: 0.95; 
+            transform: translateY(5px); border-bottom: 2px solid var(--primary);
         }
         
-        /* PIN BODY (Emas KC) */
+        /* PIN BODY (Kuning Neon KC) */
         .pin-body {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, #FFD700 0%, #8B6508 100%);
-            border: 2px solid #fff;
-            border-radius: 50% 50% 50% 0; /* Bentuk Teardrop */
-            transform: rotate(-45deg); 
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.5);
-            position: relative;
+            width: 36px; height: 36px; background: linear-gradient(135deg, #D4FF00 0%, #668000 100%);
+            border: 2px solid #fff; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); 
+            box-shadow: 0 10px 20px rgba(212, 255, 0, 0.5); position: relative;
             display: flex; align-items: center; justify-content: center;
         }
-        .pin-body::after {
-            content: ''; width: 12px; height: 12px; background: #111; border-radius: 50%;
-        }
+        .pin-body::after { content: ''; width: 12px; height: 12px; background: #111; border-radius: 50%; }
 
-        /* === PERBAIKAN LOGO USER === */
-        .user-wrap { 
-            position: relative; 
-            width: 60px !important; 
-            height: 60px !important; 
-            display: flex; align-items: center; justify-content: center; 
-        }
-        .user-pulse {
-            position: absolute; width: 100%; height: 100%;
-            border-radius: 50%; background: rgba(255, 215, 0, 0.3);
-            opacity: 0; animation: pulse 2s infinite;
-        }
-        .user-img {
-            /* KUNCI UKURAN MENGGUNAKAN !important AGAR TIDAK MELAR */
-            width: 45px !important; 
-            height: 45px !important; 
-            max-width: 45px !important;
-            max-height: 45px !important;
-            border: none !important; 
-            background: transparent; 
-            object-fit: contain; 
-            position: relative; z-index: 2;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
-        }
-        @keyframes pulse { 0% {transform: scale(0.6); opacity: 1;} 100% {transform: scale(2); opacity: 0;} }
+        /* LOGO USER */
+        .user-wrap { position: relative; width: 60px !important; height: 60px !important; display: flex; align-items: center; justify-content: center; }
+        .user-pulse { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: rgba(212, 255, 0, 0.4); opacity: 0; animation: pulse 2s infinite; }
+        .user-img { width: 45px !important; height: 45px !important; max-width: 45px !important; max-height: 45px !important; border: none !important; background: transparent; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8)); }
 
-        /* INFO CARD (KC STYLE) */
+        /* --- INFO CARD BARU (SESUAI REFERENSI GAMBAR) --- */
         .info-card {
-            position: fixed; bottom: 100px; left: 16px; right: 16px; 
-            background: var(--card-bg); border-top: 2px solid var(--primary);
-            border-radius: 20px; padding: 25px; z-index: 1500; 
+            position: fixed; bottom: 85px; /* Pas di atas Menu Dock */
+            left: 0; right: 0; background: var(--card-bg); 
+            border-top: 1px solid #333; border-radius: 20px 20px 0 0; 
+            padding: 25px 20px 30px 20px; z-index: 1500; 
             transform: translateY(150%); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 -5px 40px rgba(0,0,0,0.8);
         }
         .info-card.active { transform: translateY(0); }
         .close-btn { 
-            position: absolute; top: 15px; right: 15px; 
-            background: rgba(255,255,255,0.05); width: 28px; height: 28px;
-            border-radius: 50%; text-align: center; line-height: 28px;
-            color: #fff; font-size: 18px; cursor: pointer; border: 1px solid #333;
+            position: absolute; top: 15px; right: 20px; color: #fff; font-size: 24px; font-weight: bold; cursor: pointer; font-family: sans-serif;
         }
         
-        .card-label { 
-            font-size: 11px; color: var(--primary); font-weight: 800; 
-            letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; 
-            font-family: var(--font-head);
-        }
-        .card-title { 
-            font-family: 'Teko', sans-serif; font-weight: 700; font-size: 32px; 
-            line-height: 1; margin-bottom: 5px; color: #fff; letter-spacing: 1px;
-        }
-        .card-sub { 
-            font-size: 15px; color: var(--text-sub); margin-bottom: 25px; 
-            line-height: 1.4; font-weight: 600;
-        }
+        .card-title { font-family: var(--font-ui); font-weight: 900; font-size: 24px; color: #fff; margin-bottom: 5px; padding-right: 30px; line-height: 1.2; }
+        
+        .card-distance { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui); font-size: 14px; color: #aaa; margin-bottom: 20px; }
+        .dist-bar { width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
         
         .btn-nav {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             width: 100%; padding: 16px; border-radius: 12px;
-            background: linear-gradient(135deg, #D4AF37 0%, #8B6508 100%); color: #000;
-            font-family: var(--font-body); font-weight: 900; font-size: 18px; letter-spacing: 1px;
-            text-transform: uppercase; text-decoration: none; transition: 0.2s;
-            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+            background: var(--primary); color: #000;
+            font-family: var(--font-ui); font-weight: 900; font-size: 16px; 
+            text-transform: uppercase; text-decoration: none; transition: 0.2s; 
         }
         .btn-nav:active { transform: scale(0.97); }
 
-        /* DOCK NAV BAWAH */
+        /* --- DOCK NAV BAWAH --- */
         .dock-container {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
             background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary);
             display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 2000;
         }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; }
-        
         .nav-item.center-btn { transform: translateY(-30px); }
         .center-icon-box { 
-            width: 65px; height: 65px; background: #000; 
-            border: 2px solid var(--primary); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 26px; color: #666; position: relative; z-index: 10;
-            box-shadow: 0 0 25px var(--primary-dim);
+            width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; font-size: 26px; color: #666; position: relative; z-index: 10; box-shadow: 0 0 25px var(--primary-dim);
         }
-        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 175, 55, 0.3); animation: spin 10s linear infinite; }
-        
+        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 255, 0, 0.3); animation: spin 10s linear infinite; }
         .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
         .nav-item.active .center-icon-box { color: var(--primary); }
         .nav-icon { font-size: 20px; margin-bottom: 5px; }
         .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulse { 0% {transform: scale(0.6); opacity: 1;} 100% {transform: scale(2); opacity: 0;} }
     </style>
 </head>
 <body>
 
     <div class="header-fixed">
-        <div class="main-title">Peta Lokasi FC</div>
+        <div class="main-title">PETA LOKASI FC</div>
         <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
+        <br>
+        <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge">
+            <i class="fab fa-tiktok"></i> @maka_ojol
+        </a>
     </div>
 
     <div id="map"></div>
 
     <div id="infoCard" class="info-card">
         <div class="close-btn" onclick="closeCard()">×</div>
-        <div class="card-label">LOKASI FAST CHARGING</div>
-        <div class="card-title" id="fcName">...</div>
-        <div class="card-sub" id="fcAddr">...</div>
+        <div class="card-title" id="fcName">MAKA Gading Serpong</div>
+        <div class="card-distance">
+            <div class="dist-bar"></div> Jarak: <span id="fcDist">...</span> KM
+        </div>
         <a href="#" id="btnMaps" target="_blank" class="btn-nav">
-            <i class="fas fa-location-arrow"></i> ARAHKAN KE LOKASI
+            MULAI JALAN (GOOGLE MAPS) ↗
         </a>
     </div>
 
@@ -212,35 +195,44 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
-        // 1. INIT MAP (Theme Dark Matter Asli - Terlihat Jalan)
+        // 1. INIT MAP
         const map = L.map('map', {zoomControl: false}).setView([-6.2285953, 106.819502], 12); 
         
-        // Memakai Tile Layer Dark Matter
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 19,
+        // Memakai Tile Layer CartoDB Light yang kita INVERT menjadi Neon menggunakan CSS di atas
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            maxZoom: 20,
             opacity: 1 
         }).addTo(map);
-        
-        // --- NAIKKAN KECERAHAN (BRIGHTNESS) KE 250% DAN CONTRAST 150% ---
-        document.querySelector('.leaflet-tile-pane').style.filter = "brightness(250%) contrast(150%)";
 
-        // 2. ICON USER FIX UKURAN (Kunci Mati)
+        // 2. ICON USER FIX UKURAN
         const userIcon = L.divIcon({
             className: 'custom-user',
             html: `<div style="position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center;">
-                      <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(255,215,0,0.3); animation:pulse 2s infinite;"></div>
-                      <img src="logo2.png" style="width:45px !important; height:45px !important; max-width:45px !important; object-fit:contain; position:relative; z-index:2; filter:drop-shadow(0 2px 5px rgba(0,0,0,0.8));" onerror="this.src='https://ui-avatars.com/api/?name=U&background=D4AF37&color=000'">
+                      <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(212, 255, 0, 0.4); animation:pulse 2s infinite;"></div>
+                      <img src="logo2.png" style="width:45px !important; height:45px !important; max-width:45px !important; object-fit:contain; position:relative; z-index:2; filter:drop-shadow(0 2px 5px rgba(0,0,0,0.8));" onerror="this.src='https://ui-avatars.com/api/?name=U&background=D4FF00&color=000'">
                    </div>`,
             iconSize: [60, 60], iconAnchor: [30, 30]
         });
         
-        // 3. DATA (Link Spreadsheet Bapak)
+        // 3. DATA & LOKASI
         const SHEET_ID = '1EJOTMMfGpBMFPqR0LzbMbh7tZUcTCZld4x387OO9aJM'; 
         const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
 
         let userLat = null, userLng = null;
 
-        // 4. GPS & LOGIC
+        // FUNGSI HITUNG JARAK (Haversine Formula)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius Bumi dalam KM
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            return R * c; // Hasil dalam KM
+        }
+
+        // 4. GET GPS
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
                 userLat = pos.coords.latitude;
@@ -259,7 +251,7 @@
                     results.data.forEach(row => {
                         let lat = null, lng = null, name = "STASIUN FC";
 
-                        // A. CARI NAMA
+                        // CARI NAMA
                         const keys = Object.keys(row);
                         for(let k of keys) {
                             let cleanKey = k.toLowerCase().trim();
@@ -268,7 +260,7 @@
                             }
                         }
 
-                        // B. CARI KOORDINAT
+                        // CARI KOORDINAT
                         for(let k of keys) {
                             let val = String(row[k]).replace(',', '.').trim();
                             let num = parseFloat(val);
@@ -279,7 +271,6 @@
                             if ((cleanKey.includes('long') || cleanKey.includes('lng')) && num > 95 && num < 141) { lng = num; }
                         }
 
-                        // Fallback Koordinat
                         if (lat === null || lng === null) {
                             Object.values(row).forEach(val => {
                                 let v = String(val).replace(',', '.').trim(); let num = parseFloat(v);
@@ -290,7 +281,7 @@
                             });
                         }
 
-                        // C. RENDER MARKER EMAS
+                        // RENDER MARKER LOKASI FC
                         if (lat && lng) {
                             const fcIcon = L.divIcon({ 
                                 className: 'custom-pin', 
@@ -304,18 +295,26 @@
                             });
 
                             const m = L.marker([lat, lng], {icon: fcIcon}).addTo(map);
-                            m.on('click', () => showInfo(name, row['Alamat'] || "Klik navigasi untuk detail rute", lat, lng));
+                            m.on('click', () => {
+                                // Hitung Jarak Realtime Saat di Klik
+                                let distText = "N/A";
+                                if(userLat && userLng) {
+                                    let distanceKM = calculateDistance(userLat, userLng, lat, lng);
+                                    distText = distanceKM.toFixed(1);
+                                }
+                                showInfo(name, distText, lat, lng);
+                            });
                         }
                     });
                 }
             });
         }
 
-        function showInfo(name, addr, lat, lng) {
+        function showInfo(name, dist, lat, lng) {
             document.getElementById('fcName').innerText = name;
-            document.getElementById('fcAddr').innerText = addr || "Alamat tidak tersedia";
+            document.getElementById('fcDist').innerText = dist;
             
-            // LINK GOOGLE MAPS FIX
+            // Link Routing Google Maps API agar memandu jalan
             document.getElementById('btnMaps').href = `http://googleusercontent.com/maps.google.com/maps?daddr=${lat},${lng}`;
             
             document.getElementById('infoCard').classList.add('active');

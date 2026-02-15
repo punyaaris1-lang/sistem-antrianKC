@@ -5,24 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FC KARTIKA CHANDRA - SYSTEM</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#D4FF00">
+
+    <script>
+        const CURRENT_VERSION = "2.5_NeonSystem"; 
+        if (localStorage.getItem("app_version_system") !== CURRENT_VERSION) {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) { registration.unregister(); }
+                });
+            }
+            if (window.caches) {
+                caches.keys().then((keyList) => {
+                    return Promise.all(keyList.map((key) => caches.delete(key)));
+                });
+            }
+            localStorage.setItem("app_version_system", CURRENT_VERSION);
+            window.location.reload(true);
+        }
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === TEMA DEFAULT KC (GOLD/BLACK) === */
+        /* === TEMA BARU KC (NEON YELLOW/LIME & BLACK) === */
         :root { 
-            --bg: #050505; --primary: #D4AF37; --primary-dim: rgba(212, 175, 55, 0.15); --accent: #FF003C;        
+            --bg: #050505; 
+            --primary: #D4FF00; /* Kuning Neon / Lime Logo Baru */
+            --primary-dim: rgba(212, 255, 0, 0.15); 
+            --accent: #FF003C;        
             --font-tech: 'Rajdhani', sans-serif; --font-num: 'Teko', sans-serif; --font-head: 'Orbitron', sans-serif;
             --ornament-display: none;
-            --bg-pattern: linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+            --bg-pattern: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
         }
 
         /* === TEMA RAMADAN KC (HIJAU ZAMRUD/EMAS) - AKTIF 19 FEB === */
         body.ramadan-mode {
-            --primary: #FFD700; /* Tetap Emas */
+            --primary: #FFD700; 
             --primary-dim: rgba(255, 215, 0, 0.15);
-            --bg: #011205; /* Hijau Gelap Zamrud */
+            --bg: #011205; 
             --ornament-display: block;
             --bg-pattern: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px), radial-gradient(rgba(255,215,0,0.15) 1px, transparent 2px);
         }
@@ -42,12 +64,26 @@
         @keyframes swing { 0% { transform: rotate(5deg); } 100% { transform: rotate(-5deg); } }
 
         /* HEADER & QUEUE BAR */
-        .header { text-align: center; margin-bottom: 20px; margin-top: 15px; position: relative; z-index: 5; } 
+        .header { text-align: center; margin-bottom: 5px; margin-top: 15px; position: relative; z-index: 5; } 
         .main-title { font-family: var(--font-tech); font-weight: 900; font-size: 42px; line-height: 0.9; color: #fff; text-shadow: 0 0 25px var(--primary-dim); letter-spacing: 2px; text-transform: uppercase; }
-        .sub-title { font-family: var(--font-head); font-size: 10px; color: var(--primary); letter-spacing: 4px; font-weight: 800; text-transform: uppercase; margin-top: 10px; background: rgba(212, 175, 55, 0.1); padding: 4px 15px; display: inline-block; }
+        .sub-title { font-family: var(--font-head); font-size: 10px; color: var(--primary); letter-spacing: 4px; font-weight: 800; text-transform: uppercase; margin-top: 10px; background: rgba(212, 255, 0, 0.1); padding: 4px 15px; display: inline-block; }
+
+        /* --- TIKTOK BADGE --- */
+        .tiktok-badge {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            margin-top: 10px; margin-bottom: 20px; padding: 6px 15px;
+            background: linear-gradient(45deg, #000000, #111111);
+            border: 1px solid var(--primary);
+            border-radius: 20px; color: #fff; text-decoration: none;
+            font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800;
+            letter-spacing: 1px; transition: 0.3s;
+            box-shadow: 0 0 10px rgba(212, 255, 0, 0.2);
+        }
+        .tiktok-badge:active { transform: scale(0.95); }
+        .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
 
         .queue-bar-wrapper { width: 100%; margin-bottom: 25px; position: relative; z-index: 5; }
-        .queue-bar { background: linear-gradient(90deg, rgba(30, 25, 0, 0.9), rgba(0,0,0,0.9)); clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); border-left: 6px solid var(--primary); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .queue-bar { background: linear-gradient(90deg, rgba(30, 35, 0, 0.9), rgba(0,0,0,0.9)); clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); border-left: 6px solid var(--primary); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .qb-lbl { font-size: 11px; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; font-weight: 800; font-family: var(--font-head); }
         .qb-val { font-family: var(--font-tech); font-weight:700; font-size: 24px; color: #fff; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
         .qb-tot { font-family: var(--font-tech); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
@@ -60,7 +96,7 @@
         .armor-card::before { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px #333; pointer-events: none; z-index: 3; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
         .armor-card.active::before { box-shadow: inset 0 0 0 2px var(--primary); }
         .armor-card.maintenance::before { box-shadow: inset 0 0 0 2px #f00; }
-        .armor-card.active { background: rgba(212, 175, 55, 0.05); }
+        .armor-card.active { background: rgba(212, 255, 0, 0.05); }
         .armor-card.maintenance { background: rgba(255, 0, 0, 0.1); }
         .armor-inner { display: flex; flex-direction: column; align-items: center; height: 100%; width: 100%; padding: 15px 12px; position: relative; z-index: 4; text-align: center; }
 
@@ -69,14 +105,15 @@
         .gb-icon { width: 35px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 13px; background: var(--b-gradient); color: var(--icon-color, #000); clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); }
         .gb-text { flex: 1; font-size: 11px; font-weight: 900; letter-spacing: 1.5px; color: var(--b-color-main); }
         
-        .b-presiden { --b-color-main: #FFD700; --b-glow: rgba(255, 215, 0, 0.6); --b-gradient: linear-gradient(135deg, #8B0000, #FF0000); --icon-color: #FFD700; }
-        .b-ketum { --b-color-main: #FFDF00; --b-glow: rgba(255, 223, 0, 0.4); --b-gradient: linear-gradient(135deg, #FFF380, #D4AF37); }
-        .b-member { --b-color-main: #D4AF37; --b-glow: rgba(212, 175, 55, 0.2); --b-gradient: linear-gradient(135deg, #D4AF37, #8B6508); }
+        .b-presiden { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.6); --b-gradient: linear-gradient(135deg, #8B0000, #FF0000); --icon-color: #D4FF00; }
+        .b-ketum { --b-color-main: #E5FF66; --b-glow: rgba(229, 255, 102, 0.4); --b-gradient: linear-gradient(135deg, #FFF380, #D4FF00); }
+        .b-member { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.2); --b-gradient: linear-gradient(135deg, #D4FF00, #668000); }
 
         .btn-stop-me { background: linear-gradient(135deg, #ff0000, #990000); color: #fff; width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ff5555; border-radius: 4px; font-weight: 800; cursor: pointer; animation: pulseText 1s infinite; }
-        .btn-pilih { width: 100%; padding: 10px 0; margin-top: auto; background: linear-gradient(135deg, #DFFF00, #AACC00); color: #000; border: none; border-radius: 4px; font-weight: 900; cursor: pointer; }
+        .btn-pilih { width: 100%; padding: 10px 0; margin-top: auto; background: linear-gradient(135deg, #D4FF00, #AACC00); color: #000; border: none; border-radius: 4px; font-weight: 900; cursor: pointer; }
         
-        .btn-cancel-q { margin-top: 20px; background: rgba(255,0,60,0.15); border: 2px solid var(--accent); color: var(--accent); padding: 15px 30px; font-weight: 900; cursor: pointer; width: 100%; }
+        .btn-cancel-q { margin-top: 20px; background: rgba(255,0,60,0.15); border: 2px solid var(--accent); color: var(--accent); padding: 15px 30px; font-weight: 900; cursor: pointer; width: 100%; border-radius: 8px; transition: 0.3s; }
+        .btn-cancel-q:active { background: var(--accent); color: #fff; }
 
         /* MODAL KHUSUS POP-UP PENGUMUMAN */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
@@ -90,16 +127,16 @@
         .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
         .btn-yes { flex:1; background: var(--primary); color: #000; padding:10px; font-weight:bold; border:none;} .btn-no { flex:1; background: #333; color: #fff; padding:10px; font-weight:bold; border:1px solid #555;}
 
-        /* --- DOCK NAV BAWAH (KARTIKA CHANDRA STYLE) --- */
+        /* --- DOCK NAV BAWAH --- */
         .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 99999; }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; cursor: pointer; }
-        .nav-item.center-btn { transform: translateY(-30px); }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; transition: 0.3s; height: 100%; cursor: pointer; }
+        .nav-item.active { opacity: 1; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+        .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
         .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--primary-dim); font-size: 26px; color: var(--primary); position: relative; z-index: 10; transition: transform 0.2s; }
         .center-icon-box:active { transform: scale(0.9); }
-        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 175, 55, 0.5); animation: spin 10s linear infinite; }
+        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 255, 0, 0.5); animation: spin 10s linear infinite; }
         body.ramadan-mode .center-icon-box::after { border-color: rgba(255, 215, 0, 0.5); }
-        .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
-        .nav-text { font-family: var(--font-head); font-size: 10px; letter-spacing: 2px; font-weight: 700; margin-top: 5px; }
+        .nav-text { font-family: var(--font-head); font-size: 10px; letter-spacing: 2px; font-weight: 900; margin-top: 5px; }
 
         @keyframes pulseText { 0%,100% {opacity: 1;} 50% {opacity: 0.5;} }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -124,7 +161,11 @@
 
     <div class="header" ondblclick="toggleAdmin()">
         <div class="main-title">FC KARTIKA CHANDRA</div>
-        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
+        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div><br>
+        
+        <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge">
+            <i class="fab fa-tiktok"></i> @maka_ojol
+        </a>
     </div>
 
     <div class="queue-bar-wrapper" onclick="document.getElementById('queueListModal').style.display='flex'">
@@ -138,6 +179,10 @@
 
     <div style="display:flex; justify-content:center; position:relative; z-index:5;">
         <button id="btnCancelQ" class="btn-cancel-q" onclick="cancelQueue()">❌ BATAL ANTRIAN</button>
+    </div>
+
+    <div style="padding: 20px 0; text-align: center; position:relative; z-index:5;">
+        <img src="sore.jpg" alt="Sorefalto" style="width: 100%; max-width:400px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: contain;">
     </div>
 
     <div id="customModal" class="modal-overlay">
@@ -185,7 +230,6 @@
         const myPlat = localStorage.getItem('myPlat');
         if(!myPlat && !localStorage.getItem('sa_sess')) window.location.href = 'antrian.html';
 
-        // === UPDATE FUNGSI LOGIN ADMIN/GODMODE DI SINI ===
         window.toggleAdmin = () => { 
             const pass = prompt("KODE AKSES:"); 
             if (pass === "090815") { 
@@ -206,7 +250,6 @@
         let currentAnnId = "";
         window.tutupPengumuman = () => {
             $('announcementModal').style.display = 'none';
-            // Simpan ID agar tidak muncul lagi kecuali Admin update
             localStorage.setItem('lastAnnId', currentAnnId);
         };
 
@@ -216,13 +259,11 @@
             // 1. CEK POP-UP PENGUMUMAN
             if(d.announcement && d.announcement.active && d.announcement.text) {
                 currentAnnId = d.announcement.id;
-                // Munculkan hanya jika ID berbeda dengan yang sudah ditutup user
                 if(localStorage.getItem('lastAnnId') !== currentAnnId) {
                     $('annTextPopup').innerText = d.announcement.text;
                     $('announcementModal').style.display = 'flex';
                 }
             } else {
-                // Admin mematikan pengumuman
                 $('announcementModal').style.display = 'none';
             }
 
@@ -252,7 +293,7 @@
                     div.className = "armor-card";
                     let bHtml = '';
                     if(queue.length===0 || myQIndex===0) bHtml = `<button class="btn-pilih" onclick="window.selectSlot(${i})">PILIH SLOT</button>`;
-                    else if(myQIndex>0) bHtml = `<div style="font-size:10px; color:#000; background:#DFFF00; width:100%; padding:8px; font-weight:bold;">ANTRIAN ${myQIndex+1}</div>`;
+                    else if(myQIndex>0) bHtml = `<div style="font-size:10px; color:#000; background:var(--primary); width:100%; padding:8px; font-weight:bold;">ANTRIAN ${myQIndex+1}</div>`;
                     else bHtml = `<div style="font-size:10px; color:#aaa; background:#333; width:100%; padding:8px;">LOCKED</div>`;
                     div.innerHTML = `<div class="armor-inner"><div style="color:#aaa; font-size:10px; width:100%; text-align:left;">SLOT 0${i+1}</div><div style="font-size:32px; color:#ccc; font-family:'Teko'; margin-bottom:auto;">OPEN</div>${bHtml}</div>`;
                 }
@@ -270,7 +311,7 @@
         function getBadgeHTML(r) {
             if (!r || r === "GUEST") return ""; 
             let css="b-member"; let icon="fa-user"; let txt="MEMBER"; const ru = r.toUpperCase();
-            if(ru.includes("PRESIDEN MCU")) { css="b-presiden"; icon="fa-globe"; txt="PRESIDEN MCU"; } // BADGE BARU
+            if(ru.includes("PRESIDEN MCU")) { css="b-presiden"; icon="fa-globe"; txt="PRESIDEN MCU"; }
             else if(ru.includes("KETUM") && !ru.includes("WAKETUM")) { css="b-ketum"; icon="fa-crown"; txt="KETUM"; }
             return `<div class="glamour-badge ${css}" style="margin:5px auto;"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
         }

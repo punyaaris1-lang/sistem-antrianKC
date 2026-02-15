@@ -6,10 +6,10 @@
     <title>KARTIKA CHANDRA - DASHBOARD</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#D4AF37">
+    <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "2.4_AddDock"; // Update Penambahan Menu Bawah
+        const CURRENT_VERSION = "2.5_NeonTheme"; // Update Tema Neon & Sorefalto & TikTok
         if (localStorage.getItem("app_version") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -30,27 +30,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* === TEMA DEFAULT KC (GOLD/BLACK) === */
+        /* === TEMA BARU KC (NEON YELLOW/LIME & BLACK) === */
         :root {
-            --primary: #D4AF37;       /* Emas KC */
-            --secondary: #FFD700;     /* Emas Terang */
+            --primary: #D4FF00;       /* Kuning Neon / Lime Logo Baru */
+            --secondary: #E5FF66;     /* Neon Terang */
             --bg-dark: #050505;
             --glass-panel: rgba(12, 12, 15, 0.95);
-            --border-color: rgba(212, 175, 55, 0.3);
+            --border-color: rgba(212, 255, 0, 0.3);
             --text-color: #fff;
-            --btn-grad: linear-gradient(135deg, #D4AF37 0%, #8B6508 100%);
+            --btn-grad: linear-gradient(135deg, #D4FF00 0%, #668000 100%);
             --ornament-display: none; 
-            --bg-pattern: linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+            --bg-pattern: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
         }
 
         /* === TEMA RAMADAN KC (HIJAU ZAMRUD/EMAS) - AKTIF 19 FEB === */
         body.ramadan-mode {
-            --primary: #FFD700;       /* Emas */
-            --secondary: #00FF88;     /* Hijau Aksen */
-            --bg-dark: #011205;       /* Hijau Zamrud Gelap */
+            --primary: #FFD700;       
+            --secondary: #00FF88;     
+            --bg-dark: #011205;       
             --glass-panel: rgba(5, 20, 10, 0.95);
             --border-color: rgba(0, 255, 136, 0.4);
-            --btn-grad: linear-gradient(135deg, #00b09b, #96c93d); /* Hijau Ketupat Ceria */
+            --btn-grad: linear-gradient(135deg, #00b09b, #96c93d); 
             --ornament-display: block; 
             --bg-pattern: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px), radial-gradient(rgba(255,215,0,0.15) 1px, transparent 2px);
         }
@@ -80,17 +80,18 @@
 
         /* HEADER */
         .top-area { height: 22vh; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; padding-top: 10px; }
-        .logo-main-box { width: 65%; max-width: 200px; display: flex; align-items: center; justify-content: center; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4)); }
+        .logo-main-box { width: 65%; max-width: 200px; display: flex; align-items: center; justify-content: center; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.4)); }
         body.ramadan-mode .logo-main-box { filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.4)); }
         .logo-img-main { width: 100%; height: auto; object-fit: contain; }
 
-        /* PANEL BAWAH (Padding bawah ditambah agar tidak tertutup Menu Dock) */
+        /* PANEL BAWAH */
         .bottom-panel {
             flex: 1; width: 100%; background: var(--glass-panel); backdrop-filter: blur(10px);
             border-top: 2px solid var(--primary); border-radius: 35px 35px 0 0;
-            padding: 25px 20px 100px 20px; /* <--- PADDING BAWAH 100px AGAR AMAN DARI MENU TAB */
+            padding: 25px 20px 100px 20px; /* Jaga jarak aman dari dock */
             box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;
             box-shadow: 0 -10px 50px rgba(0,0,0,0.8); position: relative; z-index: 2;
+            overflow-y: auto; /* Agar bisa di-scroll jika layar kecil */
         }
 
         .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
@@ -98,16 +99,31 @@
         h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(28px, 4vh, 38px); font-weight: 900; margin: 0; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: pointer; letter-spacing: 1px; }
         .sub-text { color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; }
 
+        /* --- TIKTOK BADGE --- */
+        .tiktok-badge {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            margin-top: 10px; padding: 6px 15px;
+            background: linear-gradient(45deg, #000000, #111111);
+            border: 1px solid var(--primary);
+            border-radius: 20px; color: #fff; text-decoration: none;
+            font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800;
+            letter-spacing: 1px; transition: 0.3s;
+            box-shadow: 0 0 10px rgba(212, 255, 0, 0.2);
+        }
+        .tiktok-badge:active { transform: scale(0.95); }
+        .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
+
         /* --- WIDGET RAMADAN --- */
         .ramadan-widget {
-            display: none; 
+            display: none; /* Default Hidden */
             background: linear-gradient(135deg, rgba(50,0,80,0.6) 0%, rgba(0,60,30,0.6) 100%);
             border: 1px solid var(--primary); border-radius: 15px; padding: 12px 15px;
             align-items: center; justify-content: space-between; position: relative; overflow: hidden;
             box-shadow: 0 5px 20px rgba(0, 255, 136, 0.15); margin-bottom: 5px;
         }
         body.ramadan-mode .ramadan-widget { display: flex; }
-        .ramadan-widget::before { content:''; position: absolute; top:0; left:-100%; width:50%; height:100%; background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent); transform: skewX(-20deg); animation: shine 3s infinite; pointer-events: none; }
+        
+        .ramadan-widget::before { content:''; position: absolute; top:0; left:-100%; width:50%; height:100%; background: linear-gradient(90deg, transparent, rgba(212, 255, 0, 0.2), transparent); transform: skewX(-20deg); animation: shine 3s infinite; pointer-events: none; }
         .rw-icon { font-size: 24px; color: var(--primary); filter: drop-shadow(0 0 10px var(--primary)); margin-right: 10px; animation: float 3s infinite ease-in-out; }
         .rw-center { flex: 1; }
         .rw-label { font-size: 10px; color: #ccc; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
@@ -133,12 +149,12 @@
             text-transform: uppercase; cursor: pointer;
             box-shadow: 0 5px 25px rgba(0,0,0,0.3);
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-top: 25px; margin-bottom: 10px; transition: 0.3s;
+            margin-top: 25px; margin-bottom: 5px; transition: 0.3s; flex-shrink: 0;
         }
         .btn-main:active { transform: scale(0.96); opacity: 0.9; }
         body.ramadan-mode .btn-main { box-shadow: 0 5px 25px rgba(0, 255, 136, 0.3); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         
-        .btn-monitor { display: none; width: 100%; padding: 15px; background: linear-gradient(90deg, #D4AF37, #AA8C27); color: #000; border: none; border-radius: 15px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3); margin-bottom: 10px; }
+        .btn-monitor { display: none; width: 100%; padding: 15px; background: linear-gradient(90deg, #D4FF00, #7A9900); color: #000; border: none; border-radius: 15px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 20px rgba(212, 255, 0, 0.3); margin-bottom: 10px; }
 
         /* MODALS */
         .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 30000; display: none; align-items: center; justify-content: center; }
@@ -179,7 +195,7 @@
         .announcement-box p { font-family: 'Rajdhani'; color: #ccc; font-size: 18px; margin-bottom: 25px; line-height: 1.5; }
         .btn-mengerti { width: 100%; background: #FF003C; color: #fff; padding: 15px; border: none; border-radius: 8px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255,0,60,0.3); }
 
-        /* === MODAL GPS ERROR (BARU - DENGAN GAMBAR) === */
+        /* === MODAL GPS ERROR === */
         .gps-modal-box {
             width: 100%; max-width: 380px; background: #050505; 
             border: 3px solid #FF003C; padding: 30px 20px; border-radius: 20px; text-align: center; 
@@ -191,7 +207,7 @@
         .gps-error-title { font-family: var(--font-head); font-size: 26px; color: #FF003C; font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 10px #FF003C; }
         .gps-error-desc { color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; }
 
-        /* --- DOCK NAV BAWAH (BARU DITAMBAHKAN) --- */
+        /* --- DOCK NAV BAWAH --- */
         .dock-container {
             position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
             background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary);
@@ -204,7 +220,7 @@
             width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; 
             display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--primary); position: relative; z-index: 10; box-shadow: 0 0 25px var(--primary-dim);
         }
-        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 175, 55, 0.3); animation: spin 10s linear infinite; }
+        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 255, 0, 0.3); animation: spin 10s linear infinite; }
         .nav-icon { font-size: 20px; margin-bottom: 5px; }
         .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; }
 
@@ -254,6 +270,10 @@
             <div class="live-tag"><i class="fas fa-circle" style="font-size:8px; vertical-align:middle; margin-right:5px; color:#f00;"></i> <span id="liveClock">ONLINE</span></div>
             <h1 ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
             <div class="sub-text">MAKA LINTAS KARTIKA CHANDRA</div>
+            
+            <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge">
+                <i class="fab fa-tiktok"></i> @maka_ojol
+            </a>
         </div>
 
         <div class="ramadan-widget">
@@ -269,6 +289,8 @@
 
         <button id="btnDaftar" class="btn-main" onclick="checkLocationAndOpenForm()">MEMUAT DATA...</button>
         <button id="btnMonitor" class="btn-monitor" onclick="window.location.href='system.html'"><i class="fas fa-tv"></i> BUKA MONITOR</button>
+
+        <img src="sore.jpg" alt="Sorefalto" style="width: 100%; border-radius: 12px; margin-top: 15px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: contain;">
     </div>
 
     <div id="detailModal" class="modal-wrap"><div class="modal-panel"><div class="modal-head"><div class="modal-h-title" id="mTitle">STATUS SLOT</div><button class="close-x" onclick="closeModal('detailModal')">✕</button></div><div id="mContent" class="slot-list-box"></div></div></div>
