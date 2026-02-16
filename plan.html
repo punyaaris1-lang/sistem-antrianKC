@@ -6,18 +6,9 @@
     <title>MAKA - PLAN TRIP KARTIKA CHANDRA</title>
     
     <script>
-        const CURRENT_VERSION = "2.7_ParserDewa"; 
+        const CURRENT_VERSION = "2.9_OriginalScript"; 
         if (localStorage.getItem("app_version_plan") !== CURRENT_VERSION) {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    for(let registration of registrations) { registration.unregister(); }
-                });
-            }
-            if (window.caches) {
-                caches.keys().then((keyList) => {
-                    return Promise.all(keyList.map((key) => caches.delete(key)));
-                });
-            }
+            if (window.caches) { caches.keys().then((k) => Promise.all(k.map((key) => caches.delete(key)))); }
             localStorage.setItem("app_version_plan", CURRENT_VERSION);
             window.location.reload(true);
         }
@@ -28,16 +19,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === TEMA BARU KC (NEON YELLOW/LIME & BLACK) === */
         :root {
             --bg: #050505; 
-            --primary: #D4FF00;       /* LIME / KUNING NEON BARU */
+            --primary: #D4FF00;       
             --primary-dim: rgba(212, 255, 0, 0.15);
             --primary-glow: rgba(212, 255, 0, 0.4);
             --red: #FF003C; 
             --green: #39FF14;
             --gray: #333;
-            
             --font-tech: 'Rajdhani', sans-serif;
             --font-num: 'Teko', sans-serif;
             --font-head: 'Orbitron', sans-serif;
@@ -46,132 +35,51 @@
         body { 
             margin: 0; padding: 0; font-family: var(--font-tech); 
             background: var(--bg); color: #fff; padding-bottom: 90px; 
-            background-image: 
-                linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
             background-size: 30px 30px;
         }
         
-        /* --- HEADER --- */
         .header { 
             text-align: center; padding: 25px 20px; 
             background: linear-gradient(180deg, #000 0%, rgba(20, 25, 0, 0.9) 100%);
-            border-bottom: 1px solid rgba(212, 255, 0, 0.2); 
-            position: relative; z-index: 10;
+            border-bottom: 1px solid rgba(212, 255, 0, 0.2); position: relative; z-index: 10;
         }
-        .main-title { 
-            font-family: var(--font-head); font-weight: 900; font-size: 28px; 
-            color: #fff; line-height: 1; letter-spacing: 2px;
-            text-shadow: 0 0 20px var(--primary-glow);
-        }
-        .sub-title { 
-            font-family: var(--font-tech); font-size: 11px; color: var(--primary); 
-            letter-spacing: 3px; font-weight: 800; margin-top: 8px;
-            display: inline-block; border-bottom: 2px solid var(--primary); padding-bottom: 3px;
-        }
+        .main-title { font-family: var(--font-head); font-weight: 900; font-size: 28px; color: #fff; line-height: 1; letter-spacing: 2px; text-shadow: 0 0 20px var(--primary-glow); }
+        .sub-title { font-family: var(--font-tech); font-size: 11px; color: var(--primary); letter-spacing: 3px; font-weight: 800; margin-top: 8px; display: inline-block; border-bottom: 2px solid var(--primary); padding-bottom: 3px; }
 
-        /* --- TIKTOK BADGE --- */
-        .tiktok-badge {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            margin-top: 15px; padding: 6px 15px;
-            background: linear-gradient(45deg, #000000, #111111);
-            border: 1px solid var(--primary);
-            border-radius: 20px; color: #fff; text-decoration: none;
-            font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800;
-            letter-spacing: 1px; transition: 0.3s;
-            box-shadow: 0 0 10px rgba(212, 255, 0, 0.2);
-        }
+        .tiktok-badge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 15px; padding: 6px 15px; background: linear-gradient(45deg, #000000, #111111); border: 1px solid var(--primary); border-radius: 20px; color: #fff; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(212, 255, 0, 0.2); }
         .tiktok-badge:active { transform: scale(0.95); }
         .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
 
-        /* --- FORM INPUT --- */
         .container { padding: 20px; }
-        
-        #db-status {
-            text-align: center; font-size: 11px; color: #555; 
-            margin-bottom: 20px; font-family: var(--font-head); 
-            letter-spacing: 1px; font-weight: bold;
-        }
-
+        #db-status { text-align: center; font-size: 11px; color: #555; margin-bottom: 20px; font-family: var(--font-head); letter-spacing: 1px; font-weight: bold; }
         .input-group { position: relative; margin-bottom: 15px; }
-        .input-icon { 
-            position: absolute; left: 15px; top: 14px; 
-            color: var(--primary); font-family: var(--font-head); 
-            font-size: 12px; z-index: 2; font-weight: bold; 
-        }
+        .input-icon { position: absolute; left: 15px; top: 14px; color: var(--primary); font-family: var(--font-head); font-size: 12px; z-index: 2; font-weight: bold; }
         
-        .form-control {
-            width: 100%; padding: 14px 10px 14px 60px; 
-            background: rgba(10, 12, 0, 0.8); 
-            border: 1px solid #333; border-radius: 6px;
-            color: #fff; font-family: var(--font-tech); font-weight: 700; font-size: 16px;
-            box-sizing: border-box; transition: 0.3s;
-            text-transform: uppercase;
-        }
-        .form-control:focus { 
-            border-color: var(--primary); outline: none; 
-            background: #000; box-shadow: 0 0 15px var(--primary-dim); 
-        }
+        .form-control { width: 100%; padding: 14px 10px 14px 60px; background: rgba(10, 12, 0, 0.8); border: 1px solid #333; border-radius: 6px; color: #fff; font-family: var(--font-tech); font-weight: 700; font-size: 16px; box-sizing: border-box; transition: 0.3s; text-transform: uppercase; }
+        .form-control:focus { border-color: var(--primary); outline: none; background: #000; box-shadow: 0 0 15px var(--primary-dim); }
         .form-control::placeholder { color: #666; font-weight: 600; }
         .form-control.gps-active { border-color: var(--green); color: var(--green); background: rgba(0, 50, 0, 0.2); }
 
-        /* TOMBOL GPS */
-        .gps-trigger {
-            position: absolute; right: 10px; top: 10px;
-            background: rgba(212, 255, 0, 0.1); border: 1px solid var(--primary); color: var(--primary);
-            width: 32px; height: 32px; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 16px; transition: 0.2s;
-        }
+        .gps-trigger { position: absolute; right: 10px; top: 10px; background: rgba(212, 255, 0, 0.1); border: 1px solid var(--primary); color: var(--primary); width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: 0.2s; }
         .gps-trigger:active { background: var(--primary); color: #000; }
-
-        /* TOMBOL ADD */
-        .btn-add {
-            width: 100%; background: rgba(255,255,255,0.03); 
-            border: 1px dashed #555; color: #888; border-radius: 6px;
-            padding: 12px; font-family: var(--font-tech); font-weight: bold; font-size: 14px; 
-            cursor: pointer; margin-bottom: 20px; transition: 0.2s;
-        }
+        .btn-add { width: 100%; background: rgba(255,255,255,0.03); border: 1px dashed #555; color: #888; border-radius: 6px; padding: 12px; font-family: var(--font-tech); font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 20px; transition: 0.2s; }
         .btn-add:active { background: rgba(212, 255, 0, 0.1); color: var(--primary); border-color: var(--primary); }
 
-        /* TOMBOL UTAMA */
-        .btn-action {
-            width: 100%; padding: 16px; color: #000;
-            background: linear-gradient(135deg, var(--primary) 0%, #668000 100%);
-            border: none; border-radius: 8px;
-            font-family: var(--font-head); font-weight: 900; font-size: 18px; letter-spacing: 2px;
-            cursor: pointer; text-transform: uppercase; 
-            box-shadow: 0 5px 25px rgba(212, 255, 0, 0.3);
-            transition: 0.2s; margin-top: 10px;
-        }
+        .btn-action { width: 100%; padding: 16px; color: #000; background: linear-gradient(135deg, var(--primary) 0%, #668000 100%); border: none; border-radius: 8px; font-family: var(--font-head); font-weight: 900; font-size: 18px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 25px rgba(212, 255, 0, 0.3); transition: 0.2s; margin-top: 10px; }
         .btn-action:active { transform: scale(0.98); opacity: 0.9; }
 
-        /* --- RESULT CARD --- */
-        .route-card {
-            background: #0a0a0a; border: 1px solid #333; margin-top: 30px;
-            padding: 20px; border-radius: 12px; position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
+        .route-card { background: #0a0a0a; border: 1px solid #333; margin-top: 30px; padding: 20px; border-radius: 12px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .route-card.aman { border-left: 4px solid var(--green); }
         .route-card.nekat { border-left: 4px solid var(--red); }
-
-        .card-title { 
-            font-family: var(--font-head); font-size: 16px; color: #fff; 
-            margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid #222; padding-bottom: 12px;
-        }
+        .card-title { font-family: var(--font-head); font-size: 16px; color: #fff; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 12px; }
         .badge { font-family: var(--font-tech); font-weight: bold; padding: 3px 10px; font-size: 12px; border-radius: 4px; color: #000; letter-spacing: 1px; }
         .badge.aman { background: var(--green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.4); }
         .badge.nekat { background: var(--red); color: #fff; box-shadow: 0 0 10px rgba(255, 0, 60, 0.4); }
 
-        /* TIMELINE (Tema Emas -> Neon) */
         .timeline { position: relative; padding-left: 25px; border-left: 1px dashed #444; margin-left: 10px; }
         .t-item { position: relative; margin-bottom: 25px; }
-        .t-dot { 
-            position: absolute; left: -31px; top: 5px; width: 12px; height: 12px; 
-            background: #000; border: 2px solid var(--primary); border-radius: 50%;
-            box-shadow: 0 0 10px var(--primary-glow);
-        }
+        .t-dot { position: absolute; left: -31px; top: 5px; width: 12px; height: 12px; background: #000; border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary-glow); }
         .t-info { background: rgba(212, 255, 0, 0.03); padding: 12px; border: 1px solid #222; border-radius: 6px; }
         .t-name { font-family: var(--font-tech); font-weight: 800; font-size: 18px; color: var(--primary); line-height: 1.2; text-transform: uppercase; }
         .t-meta { font-size: 12px; color: #aaa; display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--font-tech); font-weight: 600; }
@@ -180,54 +88,28 @@
         .bat-ok { color: var(--green); }
         .bat-low { color: var(--red); animation: blink 1s infinite; }
 
-        /* INFO DESTINATION */
-        .dest-info {
-            margin-top: 20px; padding: 15px; background: rgba(212, 255, 0, 0.05); 
-            border: 1px solid var(--primary); border-radius: 6px;
-        }
+        .dest-info { margin-top: 20px; padding: 15px; background: rgba(212, 255, 0, 0.05); border: 1px solid var(--primary); border-radius: 6px; }
         .dest-label { font-size: 10px; color: var(--primary); letter-spacing: 2px; font-weight: bold; margin-bottom: 5px; font-family: var(--font-head); }
         .dest-val { font-family: var(--font-tech); font-weight: 800; font-size: 20px; color: #fff; text-transform: uppercase; }
 
-        /* MAP RESULT (PETA HASIL PENCARIAN) */
         #map { height: 350px; width: 100%; background: #e5e5e5; border: 1px solid #333; margin-top: 25px; border-radius: 12px; }
         
-        /* LOADING */
-        #loading-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999;
-            display: none; align-items: center; justify-content: center; flex-direction: column;
-            backdrop-filter: blur(5px);
-        }
+        #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999; display: none; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px); }
         .scanner-line { width: 60px; height: 60px; border: 3px solid #222; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 30px var(--primary-glow); }
         .loading-text { font-family: var(--font-head); color: var(--primary); margin-top: 25px; letter-spacing: 3px; font-size: 14px; animation: blink 1.5s infinite; }
 
-        /* --- DOCK NAV BAWAH --- */
-        .dock-container {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary);
-            display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 2000;
-        }
+        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 2000; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; }
-        
         .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary-glow); }
-        
         .nav-item.center-btn { transform: translateY(-30px); }
-        .center-icon-box { 
-            width: 65px; height: 65px; background: #000; 
-            border: 2px solid #333; 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-            font-size: 26px; color: #555; 
-            position: relative; z-index: 10; transition: transform 0.2s;
-        }
+        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 26px; color: #555; position: relative; z-index: 10; transition: transform 0.2s; }
         .center-icon-box:active { transform: scale(0.9); }
         .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed #333; }
-
         .nav-icon { font-size: 22px; margin-bottom: 5px; }
         .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; margin-top: 4px; }
 
         @keyframes blink { 0%,100% {opacity:1} 50% {opacity:0.4} }
         @keyframes spin { 100% {transform: rotate(360deg);} }
-
     </style>
 </head>
 <body>
@@ -279,80 +161,57 @@
         <a href="lokasifc.html" class="nav-item">
             <i class="fas fa-map-marked-alt nav-icon"></i><span class="nav-text">PETA FC</span>
         </a>
-        
         <a href="system.html" class="nav-item center-btn">
             <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
             <span class="nav-text" style="margin-top:8px;">SYSTEM</span>
         </a>
-        
         <div class="nav-item active">
             <i class="fas fa-route nav-icon"></i><span class="nav-text">TRIP PLAN</span>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
     <script>
-        // INIT MAP (Versi Siang Hari / OpenStreetMap Standard)
         const map = L.map('map').setView([-6.2, 106.8], 10);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
-            maxZoom: 19, 
-            opacity: 1 
-        }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, opacity: 1 }).addTo(map);
         
         let fcLocations = [];
         let mapLayers = L.layerGroup().addTo(map);
-        const SHEET_ID = '1EJOTMMfGpBMFPqR0LzbMbh7tZUcTCZld4x387OO9aJM'; 
-        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
+        
+        // KITA GUNAKAN URL ASLI DARI INDEX.HTML
+        const URL_LOKASI = "https://docs.google.com/spreadsheets/d/1EJOTMMfGpBMFPqR0LzbMbh7tZUcTCZld4x387OO9aJM/export?format=csv";
 
         let gpsStartCoords = null; 
 
-        window.onload = function() {
-            Papa.parse(CSV_URL, {
-                download: true, header: true,
-                complete: function(res) {
-                    res.data.forEach(row => {
-                        let lat = null, lng = null, name = "FC Station";
+        window.onload = async function() {
+            try {
+                const txtLoc = await fetch(URL_LOKASI).then(r=>r.text());
+                const rows = txtLoc.split('\n').slice(1);
+                
+                rows.forEach(r => {
+                    const c = r.split(',');
+                    
+                    let name = c[0] ? c[0].replace(/"/g, '').trim() : "STASIUN FC";
+                    let latStr = c[4] ? c[4].replace(/"/g, '').replace(',', '.') : '';
+                    let lngStr = c[5] ? c[5].replace(/"/g, '').replace(',', '.') : '';
+                    
+                    let latVal = parseFloat(latStr);
+                    let lngVal = parseFloat(lngStr);
+                    
+                    // Validasi ketat persis seperti index.html
+                    if(c.length < 5 || isNaN(latVal) || isNaN(lngVal)) return;
 
-                        // SCRIPT PARSER DEWA (Sapu Bersih Semua Kesalahan Pengetikan Koordinat)
-                        Object.keys(row).forEach(k => {
-                            let cleanKey = k.toLowerCase().trim();
-                            let val = row[k] ? String(row[k]).trim() : "";
-                            if(cleanKey.includes('nama') || cleanKey.includes('station') || cleanKey.includes('lokasi')) {
-                                if(val) name = val; 
-                            }
-                        });
-
-                        Object.values(row).forEach(val => {
-                            if (!val) return;
-                            let str = String(val).trim();
-                            const combinedMatch = str.match(/(-?\d{1,2}[.,]\d+)[^0-9a-zA-Z-]+(1\d{2}[.,]\d+)/);
-                            if (combinedMatch && lat === null) {
-                                lat = parseFloat(combinedMatch[1].replace(',', '.'));
-                                lng = parseFloat(combinedMatch[2].replace(',', '.'));
-                            }
-                            let numStr = str.replace(/[^\d.-]/g, ''); 
-                            if(numStr && !isNaN(parseFloat(numStr))) {
-                                let num = parseFloat(str.replace(',', '.'));
-                                if (!isNaN(num)) {
-                                    if (num > 4 && num < 15 && lat === null) num = -num; 
-                                    if (num < -5 && num > -15 && lat === null) lat = num;
-                                    else if (num > 95 && num < 145 && lng === null) lng = num;
-                                }
-                            }
-                        });
-
-                        if(lat && lng) fcLocations.push({ name, lat, lng });
-                    });
-                    document.getElementById('db-status').innerHTML = 'SYSTEM ONLINE - ' + fcLocations.length + ' FC DETECTED';
-                    document.getElementById('db-status').style.color = 'var(--primary)';
-                }
-            });
+                    fcLocations.push({ name: name, lat: latVal, lng: lngVal });
+                });
+                document.getElementById('db-status').innerHTML = 'SYSTEM ONLINE - ' + fcLocations.length + ' FC DETECTED';
+                document.getElementById('db-status').style.color = 'var(--primary)';
+            } catch(e) {
+                document.getElementById('db-status').innerHTML = 'GAGAL TERHUBUNG KE SATELIT';
+                document.getElementById('db-status').style.color = 'red';
+            }
         };
 
-        // --- 1. FITUR GPS ---
         async function useCurrentLocation() {
             const input = document.getElementById('start-input');
             if(!navigator.geolocation) return alert("Browser tidak support GPS");
@@ -371,7 +230,6 @@
                 } catch(e) {
                     input.value = "[ GPS TERSAMBUNG ]";
                 }
-                
                 input.classList.add('gps-active'); 
             }, (err) => {
                 alert("Gagal mengambil lokasi GPS. Pastikan GPS nyala.");
@@ -444,7 +302,7 @@
                         drawComplexRoute(points[0], bestCharger, points[points.length-1]);
                     } else {
                         renderResult('nekat', 'PERINGATAN: BATERAI TIDAK CUKUP', points, batStart, null, nearestFromDest);
-                        drawMap(points, '#FF003C'); // Merah
+                        drawMap(points, '#FF003C');
                     }
                 }
                 
@@ -548,7 +406,7 @@
             stops.forEach((s, idx) => {
                 if (idx > 0) gmapsLink += `${s.lat},${s.lon}+to:`;
             });
-            gmapsLink = gmapsLink.slice(0, -4); // Remove last '+to:'
+            gmapsLink = gmapsLink.slice(0, -4); 
 
             html += `</div><a href="${gmapsLink}" target="_blank" class="btn-action" style="margin-top:20px; text-decoration:none; display:block; text-align:center; font-size:18px;"><i class="fas fa-map"></i> MULAI NAVIGASI</a></div>`;
             area.innerHTML = html;
@@ -566,10 +424,9 @@
         }
 
         async function drawComplexRoute(start, mid, end) {
-            drawMap([start, {lat:mid.lat, lon:mid.lng, name:mid.name}, end], '#0088FF'); // Biru agar kontras
+            drawMap([start, {lat:mid.lat, lon:mid.lng, name:mid.name}, end], '#0088FF');
         }
 
-        // --- GEO & OSRM ---
         async function getGeo(q) {
             try {
                 const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&countrycodes=id&limit=1&addressdetails=1`;
