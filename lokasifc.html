@@ -6,7 +6,7 @@
     <title>PETA LOKASI - KARTIKA CHANDRA</title>
     
     <script>
-        const CURRENT_VERSION = "7.0_NeonMapFix"; 
+        const CURRENT_VERSION = "8.0_JawgRouting"; 
         if (localStorage.getItem("app_version_map") !== CURRENT_VERSION) {
             if (window.caches) { caches.keys().then((k) => Promise.all(k.map((key) => caches.delete(key)))); }
             localStorage.setItem("app_version_map", CURRENT_VERSION);
@@ -15,6 +15,8 @@
     </script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -26,7 +28,6 @@
             --primary-glow: rgba(212, 255, 0, 0.4);
             --card-bg: #111111;
             --text-main: #ffffff;
-            --text-sub: #aaaaaa;
             
             --font-head: 'Orbitron', sans-serif;
             --font-body: 'Rajdhani', sans-serif;
@@ -55,7 +56,7 @@
 
         /* --- TIKTOK BADGE --- */
         .tiktok-badge {
-            pointer-events: auto; /* Agar bisa diklik di dalam area header pointer-events:none */
+            pointer-events: auto; 
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             margin-top: 10px; padding: 6px 15px; background: linear-gradient(45deg, #000000, #111111);
             border: 1px solid var(--primary); border-radius: 20px; color: #fff; text-decoration: none;
@@ -66,67 +67,48 @@
         .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
 
         /* MAP */
-        #map { width: 100%; height: 100vh; z-index: 1; background: #000; }
-        .leaflet-control-attribution { display: none; }
-        
-        /* === RAHASIA PETA HIJAU NEON (Filter CSS) === */
-        /* Mengubah jalan abu-abu terang menjadi hijau neon/teal seperti cyberpunk */
-        .leaflet-tile-pane {
-            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(120%) sepia(100%) hue-rotate(130deg) saturate(300%) brightness(80%);
-        }
+        #map { width: 100%; height: 100vh; z-index: 1; background: #111; }
+        .leaflet-control-attribution { display: none !important; }
+        .leaflet-routing-container { display: none !important; } /* Sembunyikan teks instruksi jalan */
 
-        /* --- NEW MARKER DESIGN --- */
-        .marker-wrapper {
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            width: 150px !important; height: auto !important; transform: translate(-50%, -100%); 
+        /* TITIK GPS SAYA (Hijau Neon Persis Referensi) */
+        .gps-dot { 
+            width: 15px; height: 15px; background: var(--primary); 
+            border-radius: 50%; box-shadow: 0 0 15px var(--primary); 
+            animation: pulseGps 1.5s infinite; border: 2px solid #fff;
         }
+        @keyframes pulseGps { 0% {transform: scale(0.8); opacity: 1;} 50% {transform: scale(1.2); opacity: 0.8;} 100% {transform: scale(0.8); opacity: 1;} }
 
-        /* LABEL NAMA */
-        .pin-label-box {
-            background: #fff; color: #000; font-family: var(--font-body); font-weight: 800; font-size: 14px;
-            padding: 5px 12px; border-radius: 6px; margin-bottom: 8px; white-space: nowrap; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center; opacity: 0.95; 
-            transform: translateY(5px); border-bottom: 2px solid var(--primary);
-        }
-        
-        /* PIN BODY (Kuning Neon KC) */
-        .pin-body {
-            width: 36px; height: 36px; background: linear-gradient(135deg, #D4FF00 0%, #668000 100%);
-            border: 2px solid #fff; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); 
-            box-shadow: 0 10px 20px rgba(212, 255, 0, 0.5); position: relative;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .pin-body::after { content: ''; width: 12px; height: 12px; background: #111; border-radius: 50%; }
-
-        /* LOGO USER */
-        .user-wrap { position: relative; width: 60px !important; height: 60px !important; display: flex; align-items: center; justify-content: center; }
-        .user-pulse { position: absolute; width: 100%; height: 100%; border-radius: 50%; background: rgba(212, 255, 0, 0.4); opacity: 0; animation: pulse 2s infinite; }
-        .user-img { width: 45px !important; height: 45px !important; max-width: 45px !important; max-height: 45px !important; border: none !important; background: transparent; object-fit: contain; position: relative; z-index: 2; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8)); }
-
-        /* --- INFO CARD BARU (SESUAI REFERENSI GAMBAR) --- */
+        /* INFO CARD BAWAH (PERSIS REFERENSI INDEX.HTML) */
         .info-card {
-            position: fixed; bottom: 85px; /* Pas di atas Menu Dock */
+            position: fixed; bottom: 80px; /* Pas di atas Menu Dock */
             left: 0; right: 0; background: var(--card-bg); 
-            border-top: 1px solid #333; border-radius: 20px 20px 0 0; 
-            padding: 25px 20px 30px 20px; z-index: 1500; 
-            transform: translateY(150%); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 -5px 40px rgba(0,0,0,0.8);
+            border-top: 1px solid #333; padding: 25px 20px 30px 20px; 
+            z-index: 1500; transform: translateY(150%); 
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
         }
         .info-card.active { transform: translateY(0); }
-        .close-btn { 
-            position: absolute; top: 15px; right: 20px; color: #fff; font-size: 24px; font-weight: bold; cursor: pointer; font-family: sans-serif;
+        
+        /* Tombol Close Bulet Kiri Atas Peta */
+        .btn-map-close { 
+            position: absolute; top: -60px; left: 20px; 
+            background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333;
+            width: 40px; height: 40px; border-radius: 50%; font-weight: 700; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            z-index: 10001; font-size: 1.2rem;
+            opacity: 0; transition: 0.3s; pointer-events: none;
         }
+        .info-card.active .btn-map-close { opacity: 1; pointer-events: auto; }
         
-        .card-title { font-family: var(--font-ui); font-weight: 900; font-size: 24px; color: #fff; margin-bottom: 5px; padding-right: 30px; line-height: 1.2; }
-        
-        .card-distance { display: flex; align-items: center; gap: 8px; font-family: var(--font-ui); font-size: 14px; color: #aaa; margin-bottom: 20px; }
-        .dist-bar { width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
+        .card-title { font-family: var(--font-ui); font-weight: 900; font-size: 1.6rem; color: #fff; margin: 0 0 8px 0; line-height: 1.1; }
+        .card-distance { font-family: var(--font-ui); font-size: 0.9rem; color: #aaa; margin: 0 0 20px 0; border-left: 3px solid var(--primary); padding-left: 10px; }
         
         .btn-nav {
             display: flex; align-items: center; justify-content: center; gap: 10px;
             width: 100%; padding: 16px; border-radius: 12px;
             background: var(--primary); color: #000;
-            font-family: var(--font-ui); font-weight: 900; font-size: 16px; 
+            font-family: var(--font-ui); font-weight: 900; font-size: 1rem; 
             text-transform: uppercase; text-decoration: none; transition: 0.2s; 
         }
         .btn-nav:active { transform: scale(0.97); }
@@ -150,7 +132,6 @@
         .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulse { 0% {transform: scale(0.6); opacity: 1;} 100% {transform: scale(2); opacity: 0;} }
     </style>
 </head>
 <body>
@@ -167,11 +148,11 @@
     <div id="map"></div>
 
     <div id="infoCard" class="info-card">
-        <div class="close-btn" onclick="closeCard()">×</div>
-        <div class="card-title" id="fcName">MAKA Gading Serpong</div>
-        <div class="card-distance">
-            <div class="dist-bar"></div> Jarak: <span id="fcDist">...</span> KM
-        </div>
+        <button class="btn-map-close" onclick="closeCard()">✕</button>
+        
+        <h3 class="card-title" id="fcName">Nama Lokasi</h3>
+        <p class="card-distance" id="fcDist">Jarak: -- KM</p>
+        
         <a href="#" id="btnMaps" target="_blank" class="btn-nav">
             MULAI JALAN (GOOGLE MAPS) ↗
         </a>
@@ -193,52 +174,44 @@
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
     <script>
-        // 1. INIT MAP
-        const map = L.map('map', {zoomControl: false}).setView([-6.2285953, 106.819502], 12); 
+        // 1. INIT MAP JAWG MATRIX (API DARI INDEX.HTML BAPAK)
+        const JAWG_API = "l1PdBwk1arfZcY7wECff2jE2Ts7qpJyMqGGqHK8cjCxcLb6m0FPHm1sExB5NvLyA";
+        const map = L.map('map', {zoomControl: false}).setView([-6.200000, 106.816666], 11); 
         
-        // Memakai Tile Layer CartoDB Light yang kita INVERT menjadi Neon menggunakan CSS di atas
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            maxZoom: 20,
-            opacity: 1 
+        L.tileLayer(`https://tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token=${JAWG_API}`, {
+            maxZoom: 22
         }).addTo(map);
 
-        // 2. ICON USER FIX UKURAN
-        const userIcon = L.divIcon({
-            className: 'custom-user',
-            html: `<div style="position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center;">
-                      <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(212, 255, 0, 0.4); animation:pulse 2s infinite;"></div>
-                      <img src="logo2.png" style="width:45px !important; height:45px !important; max-width:45px !important; object-fit:contain; position:relative; z-index:2; filter:drop-shadow(0 2px 5px rgba(0,0,0,0.8));" onerror="this.src='https://ui-avatars.com/api/?name=U&background=D4FF00&color=000'">
-                   </div>`,
-            iconSize: [60, 60], iconAnchor: [30, 30]
-        });
-        
-        // 3. DATA & LOKASI
+        // 2. DATA SPREADSHEET
         const SHEET_ID = '1EJOTMMfGpBMFPqR0LzbMbh7tZUcTCZld4x387OO9aJM'; 
         const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Sheet1`;
 
         let userLat = null, userLng = null;
+        let routingControl = null;
+        let userMarker = null;
 
-        // FUNGSI HITUNG JARAK (Haversine Formula)
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius Bumi dalam KM
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = 
-                Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-            return R * c; // Hasil dalam KM
+        // FUNGSI HITUNG JARAK
+        function getDist(lat1, lon1, lat2, lon2) {
+            const R=6371; const dLat=(lat2-lat1)*Math.PI/180; const dLon=(lon2-lon1)*Math.PI/180;
+            const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+            return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);
         }
 
-        // 4. GET GPS
+        // 3. GET GPS (TITIK HIJAU NEON)
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(pos => {
                 userLat = pos.coords.latitude;
                 userLng = pos.coords.longitude;
-                L.marker([userLat, userLng], {icon: userIcon, zIndexOffset: 1000}).addTo(map);
-                map.setView([userLat, userLng], 13); 
+                
+                // Icon Titik SAYA (Hijau Neon Standard)
+                const uIcon = L.divIcon({className: 'gps-dot', iconSize: [15,15]});
+                userMarker = L.marker([userLat, userLng], {icon: uIcon, zIndexOffset: 1000}).addTo(map);
+                
+                map.setView([userLat, userLng], 12); 
                 loadFCData();
             }, () => { loadFCData(); });
         } else { loadFCData(); }
@@ -251,7 +224,6 @@
                     results.data.forEach(row => {
                         let lat = null, lng = null, name = "STASIUN FC";
 
-                        // CARI NAMA
                         const keys = Object.keys(row);
                         for(let k of keys) {
                             let cleanKey = k.toLowerCase().trim();
@@ -260,7 +232,6 @@
                             }
                         }
 
-                        // CARI KOORDINAT
                         for(let k of keys) {
                             let val = String(row[k]).replace(',', '.').trim();
                             let num = parseFloat(val);
@@ -281,27 +252,15 @@
                             });
                         }
 
-                        // RENDER MARKER LOKASI FC
+                        // RENDER MARKER FC (Default Pin Biru Leaflet seperti referensi)
                         if (lat && lng) {
-                            const fcIcon = L.divIcon({ 
-                                className: 'custom-pin', 
-                                html: `
-                                    <div class="marker-wrapper">
-                                        <div class="pin-label-box">${name}</div>
-                                        <div class="pin-body"></div>
-                                    </div>
-                                `, 
-                                iconSize: [150, 60], iconAnchor: [75, 60] 
-                            });
-
-                            const m = L.marker([lat, lng], {icon: fcIcon}).addTo(map);
+                            const m = L.marker([lat, lng]).addTo(map);
+                            m.bindPopup(`<b>${name}</b><br><span style="color:#888; font-size:10px;">Klik untuk melihat rute</span>`);
+                            
                             m.on('click', () => {
-                                // Hitung Jarak Realtime Saat di Klik
-                                let distText = "N/A";
-                                if(userLat && userLng) {
-                                    let distanceKM = calculateDistance(userLat, userLng, lat, lng);
-                                    distText = distanceKM.toFixed(1);
-                                }
+                                m.openPopup();
+                                let distText = "--";
+                                if(userLat && userLng) { distText = getDist(userLat, userLng, lat, lng); }
                                 showInfo(name, distText, lat, lng);
                             });
                         }
@@ -312,14 +271,38 @@
 
         function showInfo(name, dist, lat, lng) {
             document.getElementById('fcName').innerText = name;
-            document.getElementById('fcDist').innerText = dist;
-            
-            // Link Routing Google Maps API agar memandu jalan
+            document.getElementById('fcDist').innerText = `Jarak: ${dist} KM`;
             document.getElementById('btnMaps').href = `http://googleusercontent.com/maps.google.com/maps?daddr=${lat},${lng}`;
             
             document.getElementById('infoCard').classList.add('active');
+
+            // HAPUS RUTE LAMA JIKA ADA
+            if (routingControl) { map.removeControl(routingControl); }
+
+            // GAMBAR RUTE BARU (GARIS CYAN/BIRU TERANG)
+            if (userLat && userLng) {
+                routingControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(userLat, userLng),
+                        L.latLng(lat, lng)
+                    ],
+                    lineOptions: { styles: [{color: '#00d2ff', opacity: 0.8, weight: 5}] },
+                    createMarker: function() { return null; }, // Jangan buat marker duplikat
+                    addWaypoints: false, draggableWaypoints: false, fitSelectedRoutes: true, show: false
+                }).addTo(map);
+            }
         }
-        function closeCard() { document.getElementById('infoCard').classList.remove('active'); }
+
+        function closeCard() { 
+            document.getElementById('infoCard').classList.remove('active'); 
+            if (routingControl) { 
+                map.removeControl(routingControl); 
+                routingControl = null;
+            }
+            if (userLat && userLng) {
+                map.setView([userLat, userLng], 12); // Balik ke posisi awal
+            }
+        }
     </script>
 </body>
 </html>
