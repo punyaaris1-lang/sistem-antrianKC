@@ -6,7 +6,7 @@
     <title>PETA LOKASI - KARTIKA CHANDRA</title>
     
     <script>
-        const CURRENT_VERSION = "8.3_FixGmaps"; 
+        const CURRENT_VERSION = "8.4_RealDistance"; 
         if (localStorage.getItem("app_version_map") !== CURRENT_VERSION) {
             if (window.caches) { caches.keys().then((k) => Promise.all(k.map((key) => caches.delete(key)))); }
             localStorage.setItem("app_version_map", CURRENT_VERSION);
@@ -76,6 +76,7 @@
         
         /* ANIMASI GELOMBANG RADAR DI BELAKANG LOGO */
         @keyframes pulseRadar { 0% {transform: scale(0.6); opacity: 1;} 100% {transform: scale(1.8); opacity: 0;} }
+        @keyframes blinkText { 0%,100% {opacity:1;} 50% {opacity:0.5;} }
 
         /* INFO CARD BAWAH */
         .info-card {
@@ -101,6 +102,7 @@
         
         .card-title { font-family: var(--font-ui); font-weight: 900; font-size: 1.6rem; color: #fff; margin: 0 0 8px 0; line-height: 1.1; }
         .card-distance { font-family: var(--font-ui); font-size: 0.9rem; color: #aaa; margin: 0 0 20px 0; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .dist-loading { color: var(--primary); font-style: italic; animation: blinkText 1s infinite; }
         
         .btn-nav {
             display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -147,10 +149,8 @@
 
     <div id="infoCard" class="info-card">
         <button class="btn-map-close" onclick="closeCard()">✕</button>
-        
         <h3 class="card-title" id="fcName">Nama Lokasi</h3>
         <p class="card-distance" id="fcDist">Jarak: -- KM</p>
-        
         <a href="#" id="btnMaps" target="_blank" class="btn-nav">
             MULAI JALAN (GOOGLE MAPS) ↗
         </a>
@@ -176,7 +176,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
     <script>
-        // 1. INIT MAP JAWG MATRIX (API DARI INDEX.HTML BAPAK)
+        // 1. INIT MAP JAWG MATRIX
         const JAWG_API = "l1PdBwk1arfZcY7wECff2jE2Ts7qpJyMqGGqHK8cjCxcLb6m0FPHm1sExB5NvLyA";
         const map = L.map('map', {zoomControl: false}).setView([-6.200000, 106.816666], 11); 
         
@@ -192,8 +192,8 @@
         let routingControl = null;
         let userMarker = null;
 
-        // FUNGSI HITUNG JARAK
-        function getDist(lat1, lon1, lat2, lon2) {
+        // FUNGSI HITUNG JARAK LURUS (SEBAGAI BACKUP/FALLBACK)
+        function getStraightDist(lat1, lon1, lat2, lon2) {
             const R=6371; const dLat=(lat2-lat1)*Math.PI/180; const dLon=(lon2-lon1)*Math.PI/180;
             const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
             return (R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))).toFixed(1);
@@ -206,7 +206,6 @@
                     userLat = pos.coords.latitude;
                     userLng = pos.coords.longitude;
                     
-                    // ICON USER MENGGUNAKAN LOGO2.PNG DENGAN RADAR NEON
                     const uIcon = L.divIcon({
                         className: 'clear-icon', 
                         html: `
@@ -243,17 +242,14 @@
                         const keys = Object.keys(row);
                         for(let k of keys) {
                             let cleanKey = k.toLowerCase().trim();
-                            // Ambil Nama
                             if(cleanKey.includes('nama') || cleanKey.includes('station') || cleanKey.includes('lokasi')) {
                                 if(row[k] && row[k].trim() !== "") { name = row[k]; }
                             }
-                            // Ambil Link Gmaps
                             if(cleanKey.includes('link') || cleanKey.includes('url') || cleanKey.includes('map')) {
                                 if(row[k] && row[k].trim() !== "") { mapLink = row[k].trim(); }
                             }
                         }
 
-                        // Ambil Kordinat
                         for(let k of keys) {
                             let val = String(row[k]).replace(',', '.').trim();
                             let num = parseFloat(val);
@@ -264,7 +260,6 @@
                             if ((cleanKey.includes('long') || cleanKey.includes('lng')) && num > 95 && num < 141) { lng = num; }
                         }
 
-                        // Fallback Kordinat jika format kolom berantakan
                         if (lat === null || lng === null) {
                             Object.values(row).forEach(val => {
                                 let v = String(val).replace(',', '.').trim(); let num = parseFloat(v);
@@ -275,16 +270,15 @@
                             });
                         }
 
-                        // RENDER MARKER FC (Pin Biru Leaflet)
                         if (lat && lng) {
                             const m = L.marker([lat, lng]).addTo(map);
                             m.bindPopup(`<b>${name}</b><br><span style="color:#888; font-size:10px;">Klik untuk melihat rute</span>`);
                             
                             m.on('click', () => {
                                 m.openPopup();
-                                let distText = "--";
-                                if(userLat && userLng) { distText = getDist(userLat, userLng, lat, lng); }
-                                showInfo(name, distText, lat, lng, mapLink);
+                                let distStraight = "--";
+                                if(userLat && userLng) { distStraight = getStraightDist(userLat, userLng, lat, lng); }
+                                showInfo(name, distStraight, lat, lng, mapLink);
                             });
                         }
                     });
@@ -293,41 +287,48 @@
         }
 
         // --- FUNGSI TAMPILKAN INFO DAN ARAHKAN GOOGLE MAPS ---
-        function showInfo(name, dist, lat, lng, mapLink) {
+        function showInfo(name, distStraight, lat, lng, mapLink) {
             document.getElementById('fcName').innerText = name;
-            document.getElementById('fcDist').innerText = `Jarak: ${dist} KM`;
             
-            // PRIORITAS LINK:
-            // 1. Jika di Spreadsheet ada Link asli, pakai itu!
-            // 2. Jika tidak ada, buat link navigasi otomatis menggunakan API Google Maps (yang dijamin jalan).
+            // JIKA GPS AKTIF, TAMPILKAN STATUS LOADING JARAK RUTE
+            if(userLat && userLng) {
+                document.getElementById('fcDist').innerHTML = `<span class="dist-loading">Mengambil jarak rute asli...</span>`;
+            } else {
+                document.getElementById('fcDist').innerText = `Jarak: -- KM (Nyalakan GPS!)`;
+            }
+            
             let finalLink = "";
             if (mapLink && mapLink.startsWith("http")) {
                 finalLink = mapLink;
             } else if (userLat && userLng) {
-                // Rute dari Lokasi User ke Lokasi FC (Mode Navigasi Motor/Mobil)
-                finalLink = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${lat},${lng}`;
+                finalLink = `http://googleusercontent.com/maps.google.com/maps?saddr=${userLat},${userLng}&daddr=${lat},${lng}`;
             } else {
-                // Jika user tidak kasih izin GPS, arahkan ke titik lokasinya saja
-                finalLink = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+                finalLink = `http://googleusercontent.com/maps.google.com/maps?q=${lat},${lng}`;
             }
             
             document.getElementById('btnMaps').href = finalLink;
             document.getElementById('infoCard').classList.add('active');
 
-            // HAPUS RUTE LAMA
             if (routingControl) { map.removeControl(routingControl); }
 
-            // TARIK GARIS RUTE BIRU DI PETA APLIKASI
+            // PANGGIL MESIN RUTE & AMBIL JARAK ASLINYA
             if (userLat && userLng) {
                 routingControl = L.Routing.control({
-                    waypoints: [
-                        L.latLng(userLat, userLng),
-                        L.latLng(lat, lng)
-                    ],
+                    waypoints: [ L.latLng(userLat, userLng), L.latLng(lat, lng) ],
                     lineOptions: { styles: [{color: '#00d2ff', opacity: 0.8, weight: 5}] },
                     createMarker: function() { return null; }, 
                     addWaypoints: false, draggableWaypoints: false, fitSelectedRoutes: true, show: false
-                }).addTo(map);
+                })
+                .on('routesfound', function(e) {
+                    // Berhasil menggambar rute di peta -> Ambil Jarak Tempuh Jalan Asli
+                    const distanceRouteKm = (e.routes[0].summary.totalDistance / 1000).toFixed(1);
+                    document.getElementById('fcDist').innerText = `Jarak Rute: ${distanceRouteKm} KM`;
+                })
+                .on('routingerror', function(e) {
+                    // Jika gagal gambar rute (misal server down), gunakan jarak lurus
+                    document.getElementById('fcDist').innerText = `Jarak Udara: ${distStraight} KM`;
+                })
+                .addTo(map);
             }
         }
 
