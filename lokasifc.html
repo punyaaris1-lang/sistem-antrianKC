@@ -6,7 +6,7 @@
     <title>PETA LOKASI - KARTIKA CHANDRA</title>
     
     <script>
-        const CURRENT_VERSION = "8.2_LogoUser"; 
+        const CURRENT_VERSION = "8.3_FixGmaps"; 
         if (localStorage.getItem("app_version_map") !== CURRENT_VERSION) {
             if (window.caches) { caches.keys().then((k) => Promise.all(k.map((key) => caches.delete(key)))); }
             localStorage.setItem("app_version_map", CURRENT_VERSION);
@@ -208,7 +208,7 @@
                     
                     // ICON USER MENGGUNAKAN LOGO2.PNG DENGAN RADAR NEON
                     const uIcon = L.divIcon({
-                        className: 'clear-icon', // Class ini membuang background putih bawaan Leaflet
+                        className: 'clear-icon', 
                         html: `
                             <div style="position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center;">
                                 <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(212, 255, 0, 0.4); animation:pulseRadar 2s infinite;"></div>
@@ -238,16 +238,22 @@
                 download: true, header: true, skipEmptyLines: true,
                 complete: function(results) {
                     results.data.forEach(row => {
-                        let lat = null, lng = null, name = "STASIUN FC";
+                        let lat = null, lng = null, name = "STASIUN FC", mapLink = "";
 
                         const keys = Object.keys(row);
                         for(let k of keys) {
                             let cleanKey = k.toLowerCase().trim();
+                            // Ambil Nama
                             if(cleanKey.includes('nama') || cleanKey.includes('station') || cleanKey.includes('lokasi')) {
-                                if(row[k] && row[k].trim() !== "") { name = row[k]; break; }
+                                if(row[k] && row[k].trim() !== "") { name = row[k]; }
+                            }
+                            // Ambil Link Gmaps
+                            if(cleanKey.includes('link') || cleanKey.includes('url') || cleanKey.includes('map')) {
+                                if(row[k] && row[k].trim() !== "") { mapLink = row[k].trim(); }
                             }
                         }
 
+                        // Ambil Kordinat
                         for(let k of keys) {
                             let val = String(row[k]).replace(',', '.').trim();
                             let num = parseFloat(val);
@@ -258,6 +264,7 @@
                             if ((cleanKey.includes('long') || cleanKey.includes('lng')) && num > 95 && num < 141) { lng = num; }
                         }
 
+                        // Fallback Kordinat jika format kolom berantakan
                         if (lat === null || lng === null) {
                             Object.values(row).forEach(val => {
                                 let v = String(val).replace(',', '.').trim(); let num = parseFloat(v);
@@ -277,7 +284,7 @@
                                 m.openPopup();
                                 let distText = "--";
                                 if(userLat && userLng) { distText = getDist(userLat, userLng, lat, lng); }
-                                showInfo(name, distText, lat, lng);
+                                showInfo(name, distText, lat, lng, mapLink);
                             });
                         }
                     });
@@ -285,17 +292,32 @@
             });
         }
 
-        function showInfo(name, dist, lat, lng) {
+        // --- FUNGSI TAMPILKAN INFO DAN ARAHKAN GOOGLE MAPS ---
+        function showInfo(name, dist, lat, lng, mapLink) {
             document.getElementById('fcName').innerText = name;
             document.getElementById('fcDist').innerText = `Jarak: ${dist} KM`;
-            document.getElementById('btnMaps').href = `http://googleusercontent.com/maps.google.com/maps?daddr=${lat},${lng}`;
             
+            // PRIORITAS LINK:
+            // 1. Jika di Spreadsheet ada Link asli, pakai itu!
+            // 2. Jika tidak ada, buat link navigasi otomatis menggunakan API Google Maps (yang dijamin jalan).
+            let finalLink = "";
+            if (mapLink && mapLink.startsWith("http")) {
+                finalLink = mapLink;
+            } else if (userLat && userLng) {
+                // Rute dari Lokasi User ke Lokasi FC (Mode Navigasi Motor/Mobil)
+                finalLink = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLng}&destination=${lat},${lng}`;
+            } else {
+                // Jika user tidak kasih izin GPS, arahkan ke titik lokasinya saja
+                finalLink = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            }
+            
+            document.getElementById('btnMaps').href = finalLink;
             document.getElementById('infoCard').classList.add('active');
 
             // HAPUS RUTE LAMA
             if (routingControl) { map.removeControl(routingControl); }
 
-            // TARIK GARIS RUTE BIRU
+            // TARIK GARIS RUTE BIRU DI PETA APLIKASI
             if (userLat && userLng) {
                 routingControl = L.Routing.control({
                     waypoints: [
