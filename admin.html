@@ -45,13 +45,21 @@
         .slot-item.active { border-color: var(--gold); background: rgba(255, 215, 0, 0.05); }
         .slot-item.maintenance { border-color: #f00; background: rgba(255, 0, 0, 0.1); }
         
+        /* === DESAIN BADGE LENGKAP === */
         .glamour-badge { width: 110px; height: 26px; border-radius: 4px; display: flex; align-items: center; background: linear-gradient(135deg, #151515, #050505); border: 1px solid var(--b-color-main); overflow: hidden; margin-top: 5px; }
         .gb-icon { width: 26px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; background: var(--b-gradient); color: var(--icon-color, #000); border-radius: 3px 0 0 3px; }
-        .gb-text { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; color: var(--b-color-main); }
+        .gb-text { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; color: var(--b-color-main); text-shadow: 0 0 5px rgba(0,0,0,0.8); }
+        
         .b-presiden { --b-color-main: #FFD700; --b-gradient: linear-gradient(135deg, #8B0000, #FF0000); --icon-color: #FFD700; }
         .b-ketum { --b-color-main: #FFDF00; --b-gradient: linear-gradient(135deg, #FFF380, #D4AF37); }
-        .b-member { --b-color-main: #D4AF37; --b-gradient: linear-gradient(135deg, #D4AF37, #8B6508); }
-        
+        .b-waketum { --b-color-main: #E5E4E2; --b-gradient: linear-gradient(135deg, #E5E4E2, #838996); --icon-color: #000; } /* Platinum / Perak */
+        .b-sekretaris { --b-color-main: #00FFFF; --b-gradient: linear-gradient(135deg, #00BFFF, #00008B); --icon-color: #FFF; } /* Biru / Cyan */
+        .b-bendahara { --b-color-main: #39FF14; --b-gradient: linear-gradient(135deg, #32CD32, #006400); --icon-color: #FFF; } /* Hijau */
+        .b-humas { --b-color-main: #BF00FF; --b-gradient: linear-gradient(135deg, #DA70D6, #4B0082); --icon-color: #FFF; } /* Ungu */
+        .b-kreatif { --b-color-main: #FF00FF; --b-gradient: linear-gradient(135deg, #FF69B4, #C71585); --icon-color: #FFF; } /* Pink / Magenta */
+        .b-urc { --b-color-main: #FF0000; --b-gradient: linear-gradient(135deg, #FF4500, #8B0000); --icon-color: #FFF; } /* Merah */
+        .b-member { --b-color-main: #D4AF37; --b-gradient: linear-gradient(135deg, #D4AF37, #8B6508); } /* Emas Gelap */
+
         #customModal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999; justify-content: center; align-items: center; } 
         .modal-box { background: #111; border: 1px solid var(--gold); padding: 25px; border-radius: 10px; text-align: center; } 
         .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
@@ -183,10 +191,10 @@
                     <option value="PRESIDEN MCU">PRESIDEN MCU (Merah Emas)</option>
                     <option value="KETUM">KETUM (Emas)</option>
                     <option value="WAKETUM">WAKETUM (Platinum)</option>
-                    <option value="SEKERTARIS">SEKERTARIS (Cyan)</option>
+                    <option value="SEKERTARIS">SEKRETARIS (Cyan)</option>
                     <option value="BENDAHARA">BENDAHARA (Hijau)</option>
                     <option value="HUMAS">HUMAS (Ungu)</option>
-                    <option value="KREATIF">TIM KREATIF</option>
+                    <option value="KREATIF">TIM KREATIF (Pink)</option>
                     <option value="URC">URC (Merah)</option>
                 </select>
                 <button onclick="saveMember()" class="btn-blue" style="width:100%; margin-top:5px;">SIMPAN DATA</button>
@@ -236,11 +244,22 @@
         let cCallback=null; window.askConfirm = (t, cb) => { document.getElementById('modalText').innerText=t; document.getElementById('customModal').style.display='flex'; cCallback=cb; };
         document.getElementById('btnYes').onclick = () => { if(cCallback)cCallback(); closeModal(); }; window.closeModal = () => document.getElementById('customModal').style.display='none';
 
+        // === FUNGSI PEMBUAT BADGE YANG SUDAH DIPERBAIKI ===
         function renderAdminBadge(r) {
-            if (!r || r==="GUEST") return `<span style="color:#fff;">[NON-MEMBER]</span>`; 
-            let css="b-member"; let icon="fa-user"; let txt="MEMBER"; const ru=r.toUpperCase();
-            if(ru.includes("PRESIDEN MCU")){css="b-presiden";icon="fa-globe";txt="PRESIDEN MCU";}
-            else if(ru.includes("KETUM")){css="b-ketum";icon="fa-crown";txt="KETUM";}
+            if (!r || r === "GUEST") return `<span style="color:#fff;">[NON-MEMBER]</span>`; 
+            
+            let css = "b-member"; let icon = "fa-user"; let txt = "MEMBER"; 
+            const ru = r.toUpperCase();
+            
+            if(ru.includes("PRESIDEN MCU")) { css = "b-presiden"; icon = "fa-globe"; txt = "PRESIDEN MCU"; }
+            else if(ru.includes("WAKETUM")) { css = "b-waketum"; icon = "fa-star"; txt = "WAKETUM"; }
+            else if(ru.includes("KETUM")) { css = "b-ketum"; icon = "fa-crown"; txt = "KETUM"; }
+            else if(ru.includes("SEKERTARIS") || ru.includes("SEKRETARIS")) { css = "b-sekretaris"; icon = "fa-pen-nib"; txt = "SEKRETARIS"; }
+            else if(ru.includes("BENDAHARA")) { css = "b-bendahara"; icon = "fa-wallet"; txt = "BENDAHARA"; }
+            else if(ru.includes("HUMAS")) { css = "b-humas"; icon = "fa-bullhorn"; txt = "HUMAS"; }
+            else if(ru.includes("KREATIF")) { css = "b-kreatif"; icon = "fa-camera"; txt = "TIM KREATIF"; }
+            else if(ru.includes("URC")) { css = "b-urc"; icon = "fa-ambulance"; txt = "URC"; }
+            
             return `<div class="glamour-badge ${css}"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
         }
 
@@ -343,7 +362,7 @@
             } catch(e) { console.log("Gagal memuat statistik:", e); }
         }
 
-        // --- SISTEM DOWNLOAD EXCEL (HARIAN / MINGGUAN / BULANAN) ---
+        // --- SISTEM DOWNLOAD EXCEL ---
         window.downloadExcel = async (type) => {
             const now = new Date();
             let startTime, endTime, fileNamePrefix;
@@ -353,19 +372,16 @@
                 endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).getTime();
                 fileNamePrefix = 'Harian';
             } else if (type === 'mingguan') {
-                // 7 Hari Terakhir
                 startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6, 0, 0, 0).getTime();
                 endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).getTime();
                 fileNamePrefix = 'Mingguan';
             } else if (type === 'bulanan') {
-                // Bulan Ini (Tgl 1 sampai akhir bulan)
                 startTime = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0).getTime();
                 endTime = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59).getTime(); 
                 fileNamePrefix = 'Bulanan';
             }
 
             try {
-                // Alert popup agar admin tahu sistem sedang memproses
                 alert(`Mengumpulkan data ${fileNamePrefix}... Klik OK untuk melanjutkan.`);
 
                 const q = query(historyRef, orderBy("finishTime", "desc"));
@@ -394,9 +410,7 @@
                     }
                 });
 
-                if(dataCount === 0) {
-                    return alert(`Tidak ada riwayat charging untuk laporan ${fileNamePrefix} ini.`);
-                }
+                if(dataCount === 0) return alert(`Tidak ada riwayat charging untuk laporan ${fileNamePrefix} ini.`);
 
                 const encodedUri = encodeURI(csvContent);
                 const link = document.createElement("a");
@@ -414,7 +428,6 @@
             }
         };
 
-        // --- SISTEM POP-UP PENGUMUMAN ---
         window.setAnn = (isActive) => {
             const txt = document.getElementById('annInput').value;
             if(isActive && !txt) return alert("Isi teks pengumuman dulu!");
@@ -422,7 +435,6 @@
             runTransaction(db, async(t) => { t.update(mainRef, { announcement: { text: txt, active: isActive, id: annId } }); }).then(() => alert(isActive ? "Pop-Up Pengumuman DITAYANGKAN ke semua User!" : "Pop-Up Pengumuman DIMATIKAN."));
         };
 
-        // --- SISTEM BLOKIR ---
         window.blockPlat = () => {
             let p = document.getElementById('inpBlock').value.toUpperCase().trim();
             if(!p) return alert("Isi plat nomor dulu!");
