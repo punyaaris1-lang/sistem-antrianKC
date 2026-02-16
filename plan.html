@@ -6,7 +6,7 @@
     <title>MAKA - PLAN TRIP KARTIKA CHANDRA</title>
     
     <script>
-        const CURRENT_VERSION = "2.6_NeonPlan"; 
+        const CURRENT_VERSION = "2.7_ParserDewa"; 
         if (localStorage.getItem("app_version_plan") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -189,7 +189,6 @@
         .dest-val { font-family: var(--font-tech); font-weight: 800; font-size: 20px; color: #fff; text-transform: uppercase; }
 
         /* MAP RESULT (PETA HASIL PENCARIAN) */
-        /* Karena Bapak mau peta "siang hari" (bukan cyberpunk gelap gulita lagi) */
         #map { height: 350px; width: 100%; background: #e5e5e5; border: 1px solid #333; margin-top: 25px; border-radius: 12px; }
         
         /* LOADING */
@@ -209,16 +208,15 @@
         }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; }
         
-        /* Menu Kanan Aktif (PLAN) */
         .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary-glow); }
         
         .nav-item.center-btn { transform: translateY(-30px); }
         .center-icon-box { 
             width: 65px; height: 65px; background: #000; 
-            border: 2px solid #333; /* Grey Border (Inactive) */
+            border: 2px solid #333; 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-            font-size: 26px; color: #555; /* Grey Icon */
+            font-size: 26px; color: #555; 
             position: relative; z-index: 10; transition: transform 0.2s;
         }
         .center-icon-box:active { transform: scale(0.9); }
@@ -296,10 +294,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
     <script>
-        // INIT MAP (Versi Siang Hari / OpenStreetMap Standard - Sama seperti request Peta Bapak)
+        // INIT MAP (Versi Siang Hari / OpenStreetMap Standard)
         const map = L.map('map').setView([-6.2, 106.8], 10);
         
-        // Memakai Tile Layer OpenStreetMap Standard agar terang dan berwarna
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
             maxZoom: 19, 
             opacity: 1 
@@ -318,23 +315,34 @@
                 complete: function(res) {
                     res.data.forEach(row => {
                         let lat = null, lng = null, name = "FC Station";
+
+                        // SCRIPT PARSER DEWA (Sapu Bersih Semua Kesalahan Pengetikan Koordinat)
+                        Object.keys(row).forEach(k => {
+                            let cleanKey = k.toLowerCase().trim();
+                            let val = row[k] ? String(row[k]).trim() : "";
+                            if(cleanKey.includes('nama') || cleanKey.includes('station') || cleanKey.includes('lokasi')) {
+                                if(val) name = val; 
+                            }
+                        });
+
                         Object.values(row).forEach(val => {
-                            if(val) {
-                                let num = parseFloat(val.toString().replace(',','.'));
-                                if(!isNaN(num)) {
-                                    if(num < -5 && num > -11) lat = num;
-                                    if(num > 95 && num < 141) lng = num;
+                            if (!val) return;
+                            let str = String(val).trim();
+                            const combinedMatch = str.match(/(-?\d{1,2}[.,]\d+)[^0-9a-zA-Z-]+(1\d{2}[.,]\d+)/);
+                            if (combinedMatch && lat === null) {
+                                lat = parseFloat(combinedMatch[1].replace(',', '.'));
+                                lng = parseFloat(combinedMatch[2].replace(',', '.'));
+                            }
+                            let numStr = str.replace(/[^\d.-]/g, ''); 
+                            if(numStr && !isNaN(parseFloat(numStr))) {
+                                let num = parseFloat(str.replace(',', '.'));
+                                if (!isNaN(num)) {
+                                    if (num > 4 && num < 15 && lat === null) num = -num; 
+                                    if (num < -5 && num > -15 && lat === null) lat = num;
+                                    else if (num > 95 && num < 145 && lng === null) lng = num;
                                 }
                             }
                         });
-                        
-                        const keys = Object.keys(row);
-                        for(let k of keys) {
-                            let cleanKey = k.toLowerCase().trim();
-                            if(cleanKey.includes('nama') || cleanKey.includes('lokasi') || cleanKey.includes('station')) {
-                                if(row[k] && row[k].trim() !== "") { name = row[k]; break; }
-                            }
-                        }
 
                         if(lat && lng) fcLocations.push({ name, lat, lng });
                     });
@@ -427,7 +435,6 @@
                 const nearestFromDest = findNearestFC(destPoint);
 
                 if (finalBat >= 10) {
-                    // Warna garis rute diubah ke Neon / Biru agar kelihatan di peta terang
                     renderResult('aman', 'RUTE LANGSUNG (AMAN)', points, batStart, null, nearestFromDest);
                     drawMap(points, '#0088FF'); 
                 } else {
@@ -437,7 +444,7 @@
                         drawComplexRoute(points[0], bestCharger, points[points.length-1]);
                     } else {
                         renderResult('nekat', 'PERINGATAN: BATERAI TIDAK CUKUP', points, batStart, null, nearestFromDest);
-                        drawMap(points, '#FF003C'); // Merah untuk bahaya
+                        drawMap(points, '#FF003C'); // Merah
                     }
                 }
                 
@@ -514,7 +521,7 @@
                     const dist = leg.distance / 1000;
                     const used = Math.ceil(dist);
                     currentBat -= used;
-                    distInfo = `<span style="color:var(--primary); font-size:11px;">⬇ Jarak: ${dist.toFixed(1)} KM (-${used}%)</span>`;
+                    distInfo = `<span style="color:var(--primary); font-size:11px;">⬇ Jarak Tempuh: ${dist.toFixed(1)} KM (-${used}%)</span>`;
                 }
 
                 if (pt.isCharge) {
@@ -532,13 +539,16 @@
                 <div class="dest-info">
                     <div class="dest-label"><i class="fas fa-plug"></i> CHARGER TERDEKAT DARI TUJUAN</div>
                     <div class="dest-val">${nearestEnd.name}</div>
-                    <div style="font-size:12px; color:#aaa; margin-top:3px;">Jarak: ${nearestEnd.dist.toFixed(1)} KM (Garis Lurus)</div>
-                    <a href="https://www.google.com/maps/search/?api=1&query=${nearestEnd.lat},${nearestEnd.lng}" target="_blank" style="color:var(--primary); font-size:12px; font-weight:bold; display:block; margin-top:8px; text-decoration:none;"><i class="fas fa-location-arrow"></i> BUKA ARAH GOOGLE MAPS →</a>
+                    <div style="font-size:12px; color:#aaa; margin-top:3px;">Jarak Udara: ${nearestEnd.dist.toFixed(1)} KM</div>
+                    <a href="http://googleusercontent.com/maps.google.com/maps?q=${nearestEnd.lat},${nearestEnd.lng}" target="_blank" style="color:var(--primary); font-size:12px; font-weight:bold; display:block; margin-top:8px; text-decoration:none;"><i class="fas fa-location-arrow"></i> BUKA MAPS →</a>
                 </div>`;
             }
 
-            let gmapsLink = `https://www.google.com/maps/dir/?api=1&destination=$`;
-            stops.forEach(s => gmapsLink += `${s.lat},${s.lon}/`);
+            let gmapsLink = `http://googleusercontent.com/maps.google.com/maps?daddr=`;
+            stops.forEach((s, idx) => {
+                if (idx > 0) gmapsLink += `${s.lat},${s.lon}+to:`;
+            });
+            gmapsLink = gmapsLink.slice(0, -4); // Remove last '+to:'
 
             html += `</div><a href="${gmapsLink}" target="_blank" class="btn-action" style="margin-top:20px; text-decoration:none; display:block; text-align:center; font-size:18px;"><i class="fas fa-map"></i> MULAI NAVIGASI</a></div>`;
             area.innerHTML = html;
