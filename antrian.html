@@ -335,7 +335,7 @@
              if(isError) {
                  document.getElementById('gpsDistanceVal').innerText = "Mohon aktifkan GPS & Izinkan Akses Lokasi Browser!";
              } else {
-                 document.getElementById('gpsDistanceVal').innerText = `Jarak Terdeteksi: ${dist.toFixed(0)} Meter (Max 200m)`;
+                 document.getElementById('gpsDistanceVal').innerText = `Jarak Terdeteksi: ${dist.toFixed(0)} Meter (Max 75m)`;
              }
              document.getElementById('gpsErrorModal').classList.add('open');
              document.getElementById('gpsErrorModal').style.display = 'flex';
