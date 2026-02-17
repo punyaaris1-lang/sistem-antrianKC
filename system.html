@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "2.5_NeonSystem"; 
+        const CURRENT_VERSION = "2.6_NeonSystem_FullBadge"; 
         if (localStorage.getItem("app_version_system") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -32,7 +32,7 @@
         /* === TEMA BARU KC (NEON YELLOW/LIME & BLACK) === */
         :root { 
             --bg: #050505; 
-            --primary: #D4FF00; /* Kuning Neon / Lime Logo Baru */
+            --primary: #D4FF00; 
             --primary-dim: rgba(212, 255, 0, 0.15); 
             --accent: #FF003C;        
             --font-tech: 'Rajdhani', sans-serif; --font-num: 'Teko', sans-serif; --font-head: 'Orbitron', sans-serif;
@@ -68,7 +68,6 @@
         .main-title { font-family: var(--font-tech); font-weight: 900; font-size: 42px; line-height: 0.9; color: #fff; text-shadow: 0 0 25px var(--primary-dim); letter-spacing: 2px; text-transform: uppercase; }
         .sub-title { font-family: var(--font-head); font-size: 10px; color: var(--primary); letter-spacing: 4px; font-weight: 800; text-transform: uppercase; margin-top: 10px; background: rgba(212, 255, 0, 0.1); padding: 4px 15px; display: inline-block; }
 
-        /* --- TIKTOK BADGE --- */
         .tiktok-badge {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             margin-top: 10px; margin-bottom: 20px; padding: 6px 15px;
@@ -100,13 +99,19 @@
         .armor-card.maintenance { background: rgba(255, 0, 0, 0.1); }
         .armor-inner { display: flex; flex-direction: column; align-items: center; height: 100%; width: 100%; padding: 15px 12px; position: relative; z-index: 4; text-align: center; }
 
-        /* BADGE PRESIDEN MCU DLL */
+        /* === DESAIN BADGE LENGKAP === */
         .glamour-badge { width: 130px; height: 32px; border-radius: 6px; display: flex; align-items: center; background: linear-gradient(135deg, #151515, #050505); border: 1px solid var(--b-color-main); box-shadow: 0 0 10px var(--b-glow); position: relative; overflow: hidden; margin-top:5px; }
         .gb-icon { width: 35px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 13px; background: var(--b-gradient); color: var(--icon-color, #000); clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); }
-        .gb-text { flex: 1; font-size: 11px; font-weight: 900; letter-spacing: 1.5px; color: var(--b-color-main); }
+        .gb-text { flex: 1; font-size: 11px; font-weight: 900; letter-spacing: 1.5px; color: var(--b-color-main); text-shadow: 0 0 5px rgba(0,0,0,0.8); }
         
         .b-presiden { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.6); --b-gradient: linear-gradient(135deg, #8B0000, #FF0000); --icon-color: #D4FF00; }
         .b-ketum { --b-color-main: #E5FF66; --b-glow: rgba(229, 255, 102, 0.4); --b-gradient: linear-gradient(135deg, #FFF380, #D4FF00); }
+        .b-waketum { --b-color-main: #E5E4E2; --b-glow: rgba(229, 228, 226, 0.4); --b-gradient: linear-gradient(135deg, #E5E4E2, #838996); --icon-color: #000; } 
+        .b-sekretaris { --b-color-main: #00FFFF; --b-glow: rgba(0, 255, 255, 0.4); --b-gradient: linear-gradient(135deg, #00BFFF, #00008B); --icon-color: #FFF; } 
+        .b-bendahara { --b-color-main: #39FF14; --b-glow: rgba(57, 255, 20, 0.4); --b-gradient: linear-gradient(135deg, #32CD32, #006400); --icon-color: #FFF; } 
+        .b-humas { --b-color-main: #BF00FF; --b-glow: rgba(191, 0, 255, 0.4); --b-gradient: linear-gradient(135deg, #DA70D6, #4B0082); --icon-color: #FFF; } 
+        .b-kreatif { --b-color-main: #FF00FF; --b-glow: rgba(255, 0, 255, 0.4); --b-gradient: linear-gradient(135deg, #FF69B4, #C71585); --icon-color: #FFF; } 
+        .b-urc { --b-color-main: #FF0000; --b-glow: rgba(255, 0, 0, 0.6); --b-gradient: linear-gradient(135deg, #FF4500, #8B0000); --icon-color: #FFF; } 
         .b-member { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.2); --b-gradient: linear-gradient(135deg, #D4FF00, #668000); }
 
         .btn-stop-me { background: linear-gradient(135deg, #ff0000, #990000); color: #fff; width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ff5555; border-radius: 4px; font-weight: 800; cursor: pointer; animation: pulseText 1s infinite; }
@@ -129,7 +134,7 @@
 
         /* --- DOCK NAV BAWAH --- */
         .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 99999; }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; transition: 0.3s; height: 100%; cursor: pointer; }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; transition: 0.3s; height: 100%; cursor: pointer; position: relative; }
         .nav-item.active { opacity: 1; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
         .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
         .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--primary-dim); font-size: 26px; color: var(--primary); position: relative; z-index: 10; transition: transform 0.2s; }
@@ -138,9 +143,13 @@
         body.ramadan-mode .center-icon-box::after { border-color: rgba(255, 215, 0, 0.5); }
         .nav-text { font-family: var(--font-head); font-size: 10px; letter-spacing: 2px; font-weight: 900; margin-top: 5px; }
 
+        /* NOTIFIKASI DOT MERAH */
+        .notif-dot { position: absolute; top: 15px; right: 25px; width: 10px; height: 10px; background: #FF003C; border-radius: 50%; border: 2px solid #000; box-shadow: 0 0 8px #FF003C; animation: blinkNotif 1.5s infinite; }
+
         @keyframes pulseText { 0%,100% {opacity: 1;} 50% {opacity: 0.5;} }
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes blinkNotif { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
     </style>
 </head>
 <body>
@@ -203,6 +212,7 @@
 
     <div class="dock-container">
         <a href="lokasifc.html" class="nav-item">
+            <div class="notif-dot"></div>
             <i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:5px;"></i><span class="nav-text">PETA FC</span>
         </a>
         <div class="nav-item center-btn active">
@@ -305,14 +315,25 @@
             // RENDER QUEUE MODAL
             const qb = $('qlBody'); qb.innerHTML = '';
             if(queue.length===0) qb.innerHTML = `<div style="text-align:center; color:#666;">KOSONG</div>`;
-            else queue.forEach((q,i) => { qb.innerHTML += `<div style="background:#111; padding:15px; border-left:4px solid var(--primary); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;"><div><div style="font-family:'Teko'; font-size:28px; color:#fff; line-height:1;">${q.plat}</div><div style="color:#aaa; font-size:12px;">${q.userName}</div></div><div style="font-weight:bold; color:var(--primary);">#${i+1}</div></div>`; });
+            else queue.forEach((q,i) => { qb.innerHTML += `<div style="background:#111; padding:15px; border-left:4px solid var(--primary); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;"><div><div style="font-family:'Teko'; font-size:28px; color:#fff; line-height:1;">${q.plat}</div><div style="color:#aaa; font-size:12px;">${q.userName}</div>${getBadgeHTML(q.role)}</div><div style="font-weight:bold; color:var(--primary); font-size:24px;">#${i+1}</div></div>`; });
         });
 
+        // === FUNGSI BADGE LENGKAP SINKRON DENGAN ADMIN ===
         function getBadgeHTML(r) {
             if (!r || r === "GUEST") return ""; 
-            let css="b-member"; let icon="fa-user"; let txt="MEMBER"; const ru = r.toUpperCase();
-            if(ru.includes("PRESIDEN MCU")) { css="b-presiden"; icon="fa-globe"; txt="PRESIDEN MCU"; }
-            else if(ru.includes("KETUM") && !ru.includes("WAKETUM")) { css="b-ketum"; icon="fa-crown"; txt="KETUM"; }
+            
+            let css = "b-member"; let icon = "fa-user"; let txt = "MEMBER"; 
+            const ru = r.toUpperCase();
+            
+            if(ru.includes("PRESIDEN MCU")) { css = "b-presiden"; icon = "fa-globe"; txt = "PRESIDEN MCU"; }
+            else if(ru.includes("WAKETUM")) { css = "b-waketum"; icon = "fa-star"; txt = "WAKETUM"; }
+            else if(ru.includes("KETUM")) { css = "b-ketum"; icon = "fa-crown"; txt = "KETUM"; }
+            else if(ru.includes("SEKERTARIS") || ru.includes("SEKRETARIS")) { css = "b-sekretaris"; icon = "fa-pen-nib"; txt = "SEKRETARIS"; }
+            else if(ru.includes("BENDAHARA")) { css = "b-bendahara"; icon = "fa-wallet"; txt = "BENDAHARA"; }
+            else if(ru.includes("HUMAS")) { css = "b-humas"; icon = "fa-bullhorn"; txt = "HUMAS"; }
+            else if(ru.includes("KREATIF")) { css = "b-kreatif"; icon = "fa-camera"; txt = "TIM KREATIF"; }
+            else if(ru.includes("URC")) { css = "b-urc"; icon = "fa-ambulance"; txt = "URC"; }
+            
             return `<div class="glamour-badge ${css}" style="margin:5px auto;"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
         }
 
