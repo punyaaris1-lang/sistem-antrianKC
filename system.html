@@ -233,7 +233,7 @@
         const mainRef = doc(db, "antrian", "utama"); const historyRef = collection(db, "riwayatCharging");
 
         // === KONFIGURASI TEMA RAMADAN ===
-        const RAMADAN_START = new Date("2026-02-19");
+        const RAMADAN_START = new Date("2026/02/19 00:00:00");
         if(new Date() >= RAMADAN_START) document.body.classList.add('ramadan-mode');
 
         const $ = (id) => document.getElementById(id);
