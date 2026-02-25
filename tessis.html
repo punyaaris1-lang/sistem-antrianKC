@@ -42,52 +42,54 @@
         .qb-val { font-family: var(--font-tech); font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1;}
         .qb-tot { font-family: var(--font-num); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.5); }
 
-        /* --- EFEK ANIMASI LOGO LIGHT SCAN (SEPERTI VIDEO) --- */
+        /* --- EFEK ANIMASI LOGO REVEAL SCAN (GELAP TOTAL LALU CAHAYA) --- */
         .sore-img-wrapper {
-            margin: 10px auto 25px; 
+            margin: 5px auto 25px; 
             text-align: center; 
-            position: relative; /* Penting untuk posisi absolut cahaya */
-            width: 80%;
-            max-width: 250px;
-            overflow: hidden; /* Agar cahaya tidak keluar dari area gambar */
-            border-radius: 8px; 
+            position: relative; 
+            width: 70%;
+            max-width: 220px;
             z-index: 10;
         }
         
-        .logo-hologram-effect {
+        /* Lapis 1: Logo Gelap Total (Bayangan mati) */
+        .logo-dark {
             width: 100%; 
             height: auto;
             display: block;
-            filter: brightness(0.8) drop-shadow(0 0 5px rgba(212, 255, 0, 0.3));
+            filter: brightness(0.05) grayscale(100%); /* Membuat logo hampir hitam pekat */
         }
 
-        .sore-img-wrapper::after {
-            content: '';
+        /* Lapis 2: Logo Menyala (Ditutupi Masking) */
+        .logo-light {
             position: absolute;
-            top: 0;
-            left: -150%; 
-            width: 100%; 
-            height: 100%;
-            background: linear-gradient(
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: block;
+            filter: brightness(1.2) drop-shadow(0 0 15px var(--kc-lime));
+            
+            /* Teknik Masking untuk cahaya menyapu */
+            -webkit-mask-image: linear-gradient(
                 115deg, 
-                transparent 25%, 
-                rgba(212, 255, 0, 0.6) 45%, 
-                #ffffff 50%, 
-                rgba(212, 255, 0, 0.6) 55%, 
-                transparent 75%
+                transparent 0%, 
+                transparent 40%, 
+                rgba(0,0,0,0.5) 47%, 
+                rgba(0,0,0,1) 50%, 
+                rgba(0,0,0,0.5) 53%, 
+                transparent 60%, 
+                transparent 100%
             );
-            mix-blend-mode: hard-light; 
-            animation: light-sweep 3s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
-            z-index: 2;
+            -webkit-mask-size: 300% 100%;
+            -webkit-mask-repeat: no-repeat;
+            
+            /* Animasi maju-mundur cahaya */
+            animation: scan-reveal 4s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
         }
 
-        @keyframes light-sweep {
-            0% {
-                left: -150%;
-            }
-            50%, 100% {
-                left: 150%; 
-            }
+        /* Keyframes agar diam gelap -> tersapu cahaya -> diam gelap lagi */
+        @keyframes scan-reveal {
+            0%, 15% { -webkit-mask-position: 100% 0; } /* Di luar kiri (gelap total) */
+            85%, 100% { -webkit-mask-position: 0% 0; }   /* Di luar kanan (gelap total) */
         }
 
         /* --- SLOT CONTAINER --- */
@@ -163,6 +165,11 @@
         </div>
     </div>
 
+    <div class="sore-img-wrapper">
+        <img src="logo2.png" alt="SYSTEM LOGO" class="logo-dark">
+        <img src="logo2.png" alt="SYSTEM LOGO" class="logo-light" onerror="this.style.display='none'; alert('Pastikan ada file logo2.png di folder yang sama ya, Pak.');">
+    </div>
+
     <div class="slot-container">
         
         <div class="slot-card active">
@@ -200,10 +207,6 @@
             <div class="sc-action-zone"><button class="btn-action btn-disabled">IN PROGRESS...</button></div>
         </div>
 
-    </div>
-
-    <div class="sore-img-wrapper">
-        <img src="logo2.png" alt="SYSTEM LOGO" class="logo-hologram-effect" onerror="this.style.display='none'; alert('Pastikan ada file logo2.png di folder yang sama ya, Pak.');">
     </div>
 
     <div class="dock-container">
