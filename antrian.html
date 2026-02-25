@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "4.3_Critical_Fix_Transaction_Logo"; 
+        const CURRENT_VERSION = "4.4_ManualSlot_SmartGreeting"; 
         if (localStorage.getItem("app_version") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -168,7 +168,7 @@
         /* MODAL SUCCESS (GREETING) */
         .success-box { text-align: center; }
         #succTitle { font-family: var(--font-logo); font-style: italic; color: var(--kc-lime); font-size: 24px; margin-bottom: 15px; position: relative; z-index: 2; text-shadow: 0 0 10px rgba(212,255,0,0.5);}
-        #succMsg { font-family: var(--font-data); color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 25px; position: relative; z-index: 2; line-height: 1.5;}
+        #succMsg { font-family: var(--font-data); color: #fff; font-size: 16px; font-weight: 600; margin-bottom: 25px; position: relative; z-index: 2; line-height: 1.5;}
 
         /* MODAL CONFIRM (CUSTOM) */
         .confirm-modal-box { text-align: center; }
@@ -181,7 +181,6 @@
         /* --- ANIMASI SCANNING LOGO (LOADING SCREEN) --- */
         #loading-screen { position: fixed; inset: 0; background: #030405; z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);}
         .scanner-container { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-        /* LOGO2.PNG UNTUK SCANNER */
         .scanner-logo { width: 80px; height: auto; object-fit: contain; }
         .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--kc-lime); box-shadow: 0 0 15px 2px var(--kc-lime); opacity: 0; }
         .loading-text { font-family: var(--font-head); font-style: italic; font-weight:900; color: var(--kc-lime); font-size: 14px; letter-spacing: 4px; animation: blink 1s infinite; text-shadow: 0 0 10px var(--kc-lime);}
@@ -381,7 +380,6 @@
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        // BUG FIX: runTransaction di-import dengan benar!
         import { getFirestore, doc, onSnapshot, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // === KONFIGURASI KARTIKA CHANDRA (5 SLOT) ===
@@ -408,19 +406,19 @@
              } else {
                  document.getElementById('gpsDistanceVal').innerText = `Jarak Terdeteksi: ${dist.toFixed(0)} Meter (Max 70m)`;
              }
-             document.getElementById('gpsErrorModal').classList.add('open');
              document.getElementById('gpsErrorModal').style.display = 'flex';
+             setTimeout(() => document.getElementById('gpsErrorModal').classList.add('open'), 10);
         }
         window.closeGpsModal = () => {
             document.getElementById('gpsErrorModal').classList.remove('open');
-            setTimeout(() => document.getElementById('gpsErrorModal').style.display = 'none', 200);
+            setTimeout(() => document.getElementById('gpsErrorModal').style.display = 'none', 300);
         };
 
         // --- SISTEM POP-UP PENGUMUMAN ADMIN ---
         let currentAnnId = "";
         window.tutupPengumuman = () => {
             document.getElementById('announcementModal').classList.remove('open');
-            setTimeout(() => document.getElementById('announcementModal').style.display = 'none', 200);
+            setTimeout(() => document.getElementById('announcementModal').style.display = 'none', 300);
             localStorage.setItem('lastAnnId', currentAnnId);
         };
 
@@ -498,8 +496,8 @@
             const btn = document.getElementById('btnDaftar');
             if(btn.innerHTML.includes('SYSTEM')) { window.location.href = 'system.html'; return; }
             if(localStorage.getItem('super_admin_kc')) { 
-                document.getElementById('formModal').classList.add('open'); 
                 document.getElementById('formModal').style.display = 'flex'; 
+                setTimeout(() => document.getElementById('formModal').classList.add('open'), 10);
                 return; 
             } 
             
@@ -515,8 +513,8 @@
                 screen.style.display = 'none';
                 
                 if (dist <= MAX_DIST_KM) { 
-                    document.getElementById('formModal').classList.add('open'); 
                     document.getElementById('formModal').style.display = 'flex'; 
+                    setTimeout(() => document.getElementById('formModal').classList.add('open'), 10);
                 } else { showGpsErrorModal(dist * 1000, false); }
             }, () => { 
                 screen.classList.remove('scanning-active');
@@ -539,7 +537,7 @@
         };
 
         // --- FUNGSI SAPAAN CERDAS (AI GREETING) ---
-        function generateGreeting(role, dbName, inputName, isSlot, slotNo, queueNo) {
+        function generateGreeting(role, dbName, inputName, isSlotAvailable, queueNo) {
             const now = new Date();
             const hour = now.getHours();
             let greeting = "";
@@ -568,8 +566,9 @@
 
             // 4. Tentukan Status Masuk
             let statusMsg = "";
-            if (isSlot) {
-                statusMsg = `Mantap, langsung masuk <span style="color:var(--kc-lime); font-size:22px;">SLOT 0${slotNo+1}</span> ya.`;
+            if (isSlotAvailable) {
+                // Pesan dirubah sesuai instruksi: user disuruh milih slot sendiri.
+                statusMsg = `Mantap, ada slot kosong tuh. Setelah ini langsung klik <span style="color:var(--kc-lime); font-size:18px;">PILIH SLOT</span> sendiri di halaman System ya.`;
             } else {
                 statusMsg = `Mohon maaf slot penuh. Anda masuk <span style="color:var(--kc-lime); font-size:22px;">ANTRIAN #${queueNo}</span>.`;
             }
@@ -595,11 +594,8 @@
             if(blockedPlates.includes(plat)) { return showConfirm("AKSES DITOLAK!\nPlat nomor ini telah diblokir.", () => {}); }
 
             const btn = document.getElementById('btnSubmitForm'); 
-            btn.innerText = "PROSES...";
+            btn.innerText = "PROSES SINKRONISASI...";
             
-            let finalGreetingMsg = ""; // Variabel penampung sapaan cerdas
-            let isDuplicate = false;   // Flag deteksi duplikat
-
             try {
                 // 1. Cek Database Member untuk nama asli dan role
                 const mSnap = await getDoc(doc(db, "members", plat.replace(/[^A-Z0-9]/g, '')));
@@ -612,24 +608,23 @@
                     if (mData.nama) realName = mData.nama;
                 }
 
-                // 2. Transaksi Firebase (Sistem Eksekusi Anti-Tabrakan)
-                await runTransaction(db, async (t) => {
+                // 2. Transaksi Firebase yang AMAN (tanpa throw di dalam)
+                const txResult = await runTransaction(db, async (t) => {
                     const d = (await t.get(mainRef)).data();
                     
                     // Cek Duplikasi di Antrian maupun Slot
                     if([...(d.chargingSlots||[]), ...(d.waitingQueue||[])].some(u => u && u.plat === plat)) {
-                        isDuplicate = true;
-                        return; // Hentikan eksekusi transaksi jika data dobel
+                        return { status: 'DUPLICATE' }; // Kembalikan status object
                     }
 
-                    // Logika Cari Slot Kosong (AUTO-SLOT)
-                    let targetSlot = -1;
+                    // Cek ketersediaan Slot (Hanya untuk keperluan Sapaan, TIDAK dimasukkan langsung)
+                    let isSlotAvailable = false;
                     let slots = d.chargingSlots || [null,null,null,null,null];
                     let dis = d.disabledSlots || [false,false,false,false,false];
                     
                     for(let i=0; i<5; i++) {
                         if(slots[i] === null && !dis[i]) {
-                            targetSlot = i;
+                            isSlotAvailable = true;
                             break;
                         }
                     }
@@ -645,42 +640,35 @@
                         qNo: newTicket 
                     };
 
-                    if (targetSlot !== -1) {
-                        // LANGSUNG MASUK SLOT JIKA KOSONG
-                        userData.startTime = Date.now();
-                        slots[targetSlot] = userData;
-                        t.update(mainRef, { chargingSlots: slots, lastTicket: newTicket });
-                        
-                        // Setup Sapaan Cerdas untuk masuk Slot
-                        finalGreetingMsg = generateGreeting(role, realName, namaInput, true, targetSlot, 0);
-                        
-                    } else {
-                        // MASUK ANTRIAN JIKA SLOT PENUH
-                        let q = d.waitingQueue || [];
-                        q.push(userData);
-                        t.update(mainRef, { waitingQueue: q, lastTicket: newTicket });
-                        
-                        // Setup Sapaan Cerdas untuk masuk Antrian
-                        finalGreetingMsg = generateGreeting(role, realName, namaInput, false, 0, newTicket);
-                    }
-                }); // <-- Akhir dari block runTransaction
+                    // SELALU MASUK ANTRIAN SESUAI REQUEST BAPAK
+                    let q = d.waitingQueue || [];
+                    q.push(userData);
+                    t.update(mainRef, { waitingQueue: q, lastTicket: newTicket });
+                    
+                    // Kembalikan info sukses ke luar block transaction
+                    return { status: 'SUCCESS', slotAvailable: isSlotAvailable, queueNo: newTicket };
+                });
 
-                // 3. Eksekusi Modal Jika Sukses (Di Luar Transaksi)
-                if (isDuplicate) {
+                // 3. Eksekusi Modal Setelah Transaksi Selesai 100%
+                if (txResult.status === 'DUPLICATE') {
                     localStorage.setItem('myPlat', plat);
                     window.location.href = 'system.html';
-                } else if (finalGreetingMsg) {
+                } 
+                else if (txResult.status === 'SUCCESS') {
+                    // Generate pesan di luar transaksi
+                    const finalGreetingMsg = generateGreeting(role, realName, namaInput, txResult.slotAvailable, txResult.queueNo);
+                    
                     // Set identitas ke perangkat user
                     localStorage.setItem('myPlat', plat);
                     
-                    // Tutup Form Input
+                    // Tutup Form Input dengan smooth
                     document.getElementById('formModal').classList.remove('open');
-                    setTimeout(() => { document.getElementById('formModal').style.display = 'none'; }, 200);
+                    setTimeout(() => { document.getElementById('formModal').style.display = 'none'; }, 300);
                     
                     // Tampilkan Modal Sapaan Cerdas
                     document.getElementById('succMsg').innerHTML = finalGreetingMsg;
-                    document.getElementById('successModal').classList.add('open');
                     document.getElementById('successModal').style.display = 'flex';
+                    setTimeout(() => { document.getElementById('successModal').classList.add('open'); }, 10);
                 }
 
             } catch (e) { 
@@ -708,18 +696,18 @@
                 if(globalQueue.length === 0) c.innerHTML = "<div style='text-align:center;padding:20px;color:#888;'>TIDAK ADA ANTRIAN</div>";
                 else globalQueue.forEach((q, i) => { c.innerHTML += `<div class="q-row"><div class="q-num">#${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div></div>`; });
             }
-            document.getElementById('detailModal').classList.add('open'); 
             document.getElementById('detailModal').style.display = 'flex';
+            setTimeout(() => document.getElementById('detailModal').classList.add('open'), 10);
         };
 
         window.closeModal = (id) => { 
             document.getElementById(id).classList.remove('open'); 
-            setTimeout(() => document.getElementById(id).style.display = 'none', 200); 
+            setTimeout(() => document.getElementById(id).style.display = 'none', 300); 
         };
         
         function calculateDistance(lat1, lon1, lat2, lon2) { const p = 0.017453292519943295; const c = Math.cos; const a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2; return 12742 * Math.asin(Math.sqrt(a)); }
         
-        // --- REALTIME DATA ---
+        // --- REALTIME DATA (LOGIKA 4/5 TERPAKAI) ---
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) return;
             const d = snap.data();
@@ -729,12 +717,12 @@
                 const showOnce = d.announcement.showOnce !== undefined ? d.announcement.showOnce : true; 
                 if(!showOnce || localStorage.getItem('lastAnnId') !== currentAnnId) {
                     document.getElementById('annTextPopup').innerText = d.announcement.text;
-                    document.getElementById('announcementModal').classList.add('open');
                     document.getElementById('announcementModal').style.display = 'flex';
+                    setTimeout(() => document.getElementById('announcementModal').classList.add('open'), 10);
                 }
             } else { 
                 document.getElementById('announcementModal').classList.remove('open');
-                setTimeout(() => { document.getElementById('announcementModal').style.display = 'none'; }, 200);
+                setTimeout(() => { document.getElementById('announcementModal').style.display = 'none'; }, 300);
             }
 
             globalSlots = d.chargingSlots || [null, null, null, null, null];
