@@ -6,7 +6,7 @@
     <title>PETA LOKASI - KARTIKA CHANDRA</title>
     
     <script>
-        const CURRENT_VERSION = "9.0_OriginalScript"; 
+        const CURRENT_VERSION = "9.1_Tactical_Map_UI"; 
         if (localStorage.getItem("app_version_map") !== CURRENT_VERSION) {
             if (window.caches) { caches.keys().then((k) => Promise.all(k.map((key) => caches.delete(key)))); }
             localStorage.setItem("app_version_map", CURRENT_VERSION);
@@ -17,119 +17,119 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,700;1,900&family=Rajdhani:wght@500;600;700;800;900&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* === TEMA TACTICAL LUXURY (NEON LIME + TITANIUM) === */
         :root { 
-            --bg: #050505; 
-            --primary: #D4FF00;       
-            --primary-dim: rgba(212, 255, 0, 0.15);
-            --primary-glow: rgba(212, 255, 0, 0.4);
-            --card-bg: #111111;
-            --text-main: #ffffff;
-            
+            --kc-lime: #D4FF00;  
+            --bg-dark: #050505; 
+            --danger: #FF003C;
+            --metal-dark: linear-gradient(145deg, #1A1D24 0%, #0D0F12 100%);
+            --border-metal: 1px solid rgba(255,255,255,0.08);
             --font-head: 'Orbitron', sans-serif;
-            --font-body: 'Rajdhani', sans-serif;
-            --font-ui: 'Inter', sans-serif;
+            --font-tech: 'Rajdhani', sans-serif; 
+            --font-num: 'Teko', sans-serif; 
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; background: var(--bg); overflow: hidden; font-family: var(--font-body); color: var(--text-main); }
+        body { margin: 0; padding: 0; background: var(--bg-dark); overflow: hidden; font-family: var(--font-tech); color: #fff; }
 
+        /* --- HEADER FIXED --- */
         .header-fixed {
             position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
             background: linear-gradient(180deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0) 100%);
             padding: 20px 20px 40px 20px; text-align: center; pointer-events: none;
         }
-        .main-title { 
-            font-family: var(--font-head); font-weight: 800; font-size: 26px; color: #fff; 
-            letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 4px 15px var(--primary-glow);
+        
+        .main-title {
+            font-family: var(--font-head); font-style: italic; font-weight: 900;
+            font-size: clamp(22px, 7.5vw, 34px); white-space: nowrap; 
+            color: #fff; letter-spacing: 1px; margin: 0; text-transform: uppercase; line-height: 1; 
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            background: linear-gradient(180deg, #FFFFFF 0%, #D0D5DD 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            pointer-events: auto; /* Agar bisa di-klik jika diperlukan */
         }
+        
         .sub-title { 
-            font-family: var(--font-body); font-size: 11px; color: var(--primary); 
-            font-weight: 800; text-transform: uppercase; letter-spacing: 3px;
-            margin-top: 5px; display: inline-block; background: rgba(212, 255, 0, 0.1); 
-            border: 1px solid rgba(212, 255, 0, 0.4); padding: 4px 12px; border-radius: 20px;
+            font-family: var(--font-tech); font-weight: 800; font-size: clamp(10px, 4vw, 13px); 
+            white-space: nowrap; color: var(--kc-lime); letter-spacing: 4px; text-transform: uppercase; 
+            margin-top: 8px; text-shadow: 0 0 8px rgba(212,255,0,0.3); 
+            pointer-events: auto;
         }
 
         .tiktok-badge {
             pointer-events: auto; 
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            margin-top: 10px; padding: 6px 15px; background: linear-gradient(45deg, #000000, #111111);
-            border: 1px solid var(--primary); border-radius: 20px; color: #fff; text-decoration: none;
-            font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800;
-            letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(212, 255, 0, 0.2);
+            margin-top: 10px; padding: 6px 16px; background: var(--metal-dark);
+            border: var(--border-metal); border-radius: 20px; color: #fff; text-decoration: none;
+            font-family: var(--font-tech); font-weight: 800; font-size: 11px;
+            letter-spacing: 1px; transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .tiktok-badge:active { transform: scale(0.95); }
-        .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
+        .tiktok-badge i { color: var(--kc-lime); font-size: 14px; text-shadow: 0 0 10px var(--kc-lime); }
 
+        /* --- PETA --- */
         #map { width: 100%; height: 100vh; z-index: 1; background: #111; }
         .leaflet-control-attribution { display: none !important; }
         .leaflet-routing-container { display: none !important; } 
-
         .clear-icon { background: none !important; border: none !important; }
         
         @keyframes pulseRadar { 0% {transform: scale(0.6); opacity: 1;} 100% {transform: scale(1.8); opacity: 0;} }
         @keyframes blinkText { 0%,100% {opacity:1;} 50% {opacity:0.5;} }
 
+        /* --- INFO CARD (POP-UP LOKASI BAWAH) --- */
         .info-card {
-            position: fixed; bottom: 80px; 
-            left: 0; right: 0; background: var(--card-bg); 
-            border-top: 1px solid #333; padding: 25px 20px 30px 20px; 
-            z-index: 1500; transform: translateY(150%); 
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+            position: fixed; bottom: 80px; left: 0; right: 0; 
+            background: var(--metal-dark); border-top: 4px solid var(--kc-lime); 
+            padding: 25px 20px 30px 20px; z-index: 15000; 
+            transform: translateY(150%); transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(212,255,0,0.1);
+            border-top-left-radius: 16px; border-top-right-radius: 16px;
+            overflow: hidden;
         }
         .info-card.active { transform: translateY(0); }
+        .info-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(212,255,0,0.02) 1px, transparent 1px); background-size: 100% 3px; pointer-events: none; z-index: 0; }
         
         .btn-map-close { 
-            position: absolute; top: -60px; left: 20px; 
-            background: rgba(0,0,0,0.8); color: #fff; border: 1px solid #333;
-            width: 40px; height: 40px; border-radius: 50%; font-weight: 700; 
+            position: absolute; top: -60px; right: 20px; /* Dipindah ke kanan agar seperti close modal lainnya */
+            background: rgba(0,0,0,0.8); color: #aaa; border: 1px solid #333;
+            width: 40px; height: 40px; border-radius: 50%; font-weight: bold; 
             display: flex; align-items: center; justify-content: center; cursor: pointer; 
-            z-index: 10001; font-size: 1.2rem;
+            z-index: 10001; font-size: 20px;
             opacity: 0; transition: 0.3s; pointer-events: none;
         }
         .info-card.active .btn-map-close { opacity: 1; pointer-events: auto; }
+        .btn-map-close:hover { color: #fff; }
         
-        .card-title { font-family: var(--font-ui); font-weight: 900; font-size: 1.6rem; color: #fff; margin: 0 0 8px 0; line-height: 1.1; }
-        .card-distance { font-family: var(--font-ui); font-size: 0.9rem; color: #aaa; margin: 0 0 20px 0; border-left: 3px solid var(--primary); padding-left: 10px; }
-        .dist-loading { color: var(--primary); font-style: italic; animation: blinkText 1s infinite; }
+        .card-title { font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: 22px; color: var(--kc-lime); margin: 0 0 10px 0; line-height: 1.1; position: relative; z-index: 2; text-shadow: 0 0 10px rgba(212,255,0,0.3);}
+        .card-distance { font-family: var(--font-tech); font-weight: 800; font-size: 16px; color: #fff; margin: 0 0 20px 0; border-left: 3px solid var(--kc-lime); padding-left: 10px; position: relative; z-index: 2;}
+        .dist-loading { color: var(--kc-lime); font-style: italic; animation: blinkText 1s infinite; }
         
         .btn-nav {
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            width: 100%; padding: 16px; border-radius: 12px;
-            background: var(--primary); color: #000;
-            font-family: var(--font-ui); font-weight: 900; font-size: 1rem; 
+            width: 100%; padding: 18px; border-radius: 8px; border: none;
+            background: linear-gradient(135deg, var(--kc-lime), #8DAA00); color: #000;
+            font-family: var(--font-logo); font-style: italic; font-weight: 900; font-size: 16px; 
             text-transform: uppercase; text-decoration: none; transition: 0.2s; 
+            position: relative; z-index: 2; box-shadow: 0 5px 15px rgba(212,255,0,0.3);
         }
         .btn-nav:active { transform: scale(0.97); }
 
-        .dock-container {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary);
-            display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 2000;
-        }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; }
-        .nav-item.center-btn { transform: translateY(-30px); }
-        .center-icon-box { 
-            width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; font-size: 26px; color: #666; position: relative; z-index: 10; box-shadow: 0 0 25px var(--primary-dim);
-        }
-        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 255, 0, 0.3); animation: spin 10s linear infinite; }
-        .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary); }
-        .nav-item.active .center-icon-box { color: var(--primary); }
-        .nav-icon { font-size: 20px; margin-bottom: 5px; }
-        .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; }
-
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        /* --- DOCK NAV BAWAH (DISAMAKAN DENGAN SYSTEM) --- */
+        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 1px solid rgba(212, 255, 0, 0.3); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 20000; box-shadow: 0 -5px 20px rgba(212, 255, 0, 0.05);}
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; height: 100%; }
+        .nav-item.active { opacity: 1; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.4); }
+        .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
+        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--kc-lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--kc-lime); position: relative; box-shadow: 0 0 15px rgba(212, 255, 0, 0.3);}
+        .nav-text { font-family: var(--font-head); font-style: italic; font-size: 9px; font-weight: 900; letter-spacing: 1.5px; margin-top: 6px; text-transform: uppercase;}
     </style>
 </head>
 <body>
 
     <div class="header-fixed">
-        <div class="main-title">PETA LOKASI FC</div>
+        <h1 class="main-title">PETA LOKASI FC</h1>
         <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
         <br>
         <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge">
@@ -144,20 +144,20 @@
         <h3 class="card-title" id="fcName">Nama Lokasi</h3>
         <p class="card-distance" id="fcDist">Jarak: -- KM</p>
         <a href="#" id="btnMaps" target="_blank" class="btn-nav">
-            MULAI JALAN (GOOGLE MAPS) ↗
+            <i class="fas fa-location-arrow"></i> MULAI JALAN (MAPS)
         </a>
     </div>
 
     <div class="dock-container">
         <div class="nav-item active">
-            <i class="fas fa-map-marked-alt nav-icon"></i><span class="nav-text">PETA FC</span>
+            <i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">PETA FC</span>
         </div>
-        <a href="system.html" class="nav-item center-btn">
-            <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
-            <span class="nav-text" style="margin-top:8px;">SYSTEM</span>
+        <a href="antrian.html" class="nav-item center-btn">
+            <div class="center-icon-box"><i class="fas fa-qrcode"></i></div>
+            <span class="nav-text" style="color:var(--kc-lime);">ANTRIAN</span>
         </a>
         <a href="plan.html" class="nav-item">
-            <i class="fas fa-route nav-icon"></i><span class="nav-text">TRIP PLAN</span>
+            <i class="fas fa-route" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">TRIP PLAN</span>
         </a>
     </div>
 
@@ -170,7 +170,7 @@
         
         L.tileLayer(`https://tile.jawg.io/jawg-matrix/{z}/{x}/{y}{r}.png?access-token=${JAWG_API}`, { maxZoom: 22 }).addTo(map);
 
-        // KITA GUNAKAN URL ASLI DARI INDEX.HTML
+        // KITA GUNAKAN URL ASLI DARI SCRIPT BAPAK
         const URL_LOKASI = "https://docs.google.com/spreadsheets/d/1EJOTMMfGpBMFPqR0LzbMbh7tZUcTCZld4x387OO9aJM/export?format=csv";
 
         let userLat = null, userLng = null;
@@ -192,7 +192,7 @@
                         html: `
                             <div style="position:relative; width:60px; height:60px; display:flex; align-items:center; justify-content:center;">
                                 <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(212, 255, 0, 0.4); animation:pulseRadar 2s infinite;"></div>
-                                <img src="logo2.png" style="width:45px !important; height:45px !important; max-width:45px !important; max-height:45px !important; object-fit:contain; position:relative; z-index:2; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.9));">
+                                <img src="logo2.png" style="width:45px !important; height:45px !important; max-width:45px !important; max-height:45px !important; object-fit:contain; position:relative; z-index:2; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.9));" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png';">
                             </div>
                         `,
                         iconSize: [60, 60], iconAnchor: [30, 30]
@@ -206,17 +206,15 @@
         
         initGPS();
 
-        // 100% COPY PASTE DARI SCRIPT ASLI INDEX.HTML BAPAK
+        // 100% COPY PASTE DARI SCRIPT ASLI BAPAK
         async function loadFCData() {
             try {
                 const txtLoc = await fetch(URL_LOKASI).then(r=>r.text());
                 const rows = txtLoc.split('\n').slice(1);
                 
                 rows.forEach((r) => {
-                    // Split manual tanpa library tambahan agar sama persis dgn index.html
                     const c = r.split(',');
                     
-                    // Kolom ke-4 adalah Lat, Kolom ke-5 adalah Lng
                     let latStr = c[4] ? c[4].replace(/"/g, '').replace(',', '.') : '';
                     let lngStr = c[5] ? c[5].replace(/"/g, '').replace(',', '.') : '';
                     let name = c[0] ? c[0].replace(/"/g, '').trim() : "STASIUN FC";
@@ -225,12 +223,10 @@
                     let latVal = parseFloat(latStr);
                     let lngVal = parseFloat(lngStr);
                     
-                    // Validasi ketat persis seperti index.html
                     if(c.length < 5 || isNaN(latVal) || isNaN(lngVal)) return;
 
-                    // Render marker ke peta
                     const m = L.marker([latVal, lngVal]).addTo(map);
-                    m.bindPopup(`<b>${name}</b><br><span style="color:#888; font-size:10px;">Klik untuk melihat rute</span>`);
+                    m.bindPopup(`<b style="font-family:'Orbitron'; color:#000;">${name}</b><br><span style="color:#555; font-size:10px; font-family:'Rajdhani'; font-weight:bold;">Klik rute di bawah</span>`);
                     
                     m.on('click', () => {
                         m.openPopup();
@@ -246,9 +242,9 @@
             document.getElementById('fcName').innerText = name;
             
             if(userLat && userLng) {
-                document.getElementById('fcDist').innerHTML = `<span class="dist-loading">Mengambil jarak rute asli...</span>`;
+                document.getElementById('fcDist').innerHTML = `<span class="dist-loading">KALKULASI RUTE SATELIT...</span>`;
             } else {
-                document.getElementById('fcDist').innerText = `Jarak: -- KM (Nyalakan GPS!)`;
+                document.getElementById('fcDist').innerText = `JARAK: -- KM (GPS MATI)`;
             }
             
             let finalLink = "";
@@ -268,16 +264,16 @@
             if (userLat && userLng) {
                 routingControl = L.Routing.control({
                     waypoints: [ L.latLng(userLat, userLng), L.latLng(lat, lng) ],
-                    lineOptions: { styles: [{color: '#00d2ff', opacity: 0.8, weight: 5}] },
+                    lineOptions: { styles: [{color: '#D4FF00', opacity: 0.8, weight: 5}] }, // Garis rute diubah jadi Lime
                     createMarker: function() { return null; }, 
                     addWaypoints: false, draggableWaypoints: false, fitSelectedRoutes: true, show: false
                 })
                 .on('routesfound', function(e) {
                     const distanceRouteKm = (e.routes[0].summary.totalDistance / 1000).toFixed(1);
-                    document.getElementById('fcDist').innerText = `Jarak Rute: ${distanceRouteKm} KM`;
+                    document.getElementById('fcDist').innerText = `JARAK TEMPUH: ${distanceRouteKm} KM`;
                 })
                 .on('routingerror', function(e) {
-                    document.getElementById('fcDist').innerText = `Jarak Udara: ${distStraight} KM`;
+                    document.getElementById('fcDist').innerText = `JARAK UDARA: ${distStraight} KM`;
                 })
                 .addTo(map);
             }

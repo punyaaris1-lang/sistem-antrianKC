@@ -81,7 +81,7 @@
             <i class="fas fa-shield-alt" style="font-size: 50px; color: var(--gold); margin-bottom: 20px;"></i>
             <h2 style="font-family:'Orbitron'; margin-top:0; color:#fff;">SECURITY CHECK</h2>
             <input type="text" id="adminName" class="inp-name" placeholder="NAMA ADMIN">
-            <input type="password" id="adminPin" class="inp-pin" placeholder="••••" maxlength="4">
+            <input type="password" id="adminPin" class="inp-pin" placeholder="••••" maxlength="6">
             <button class="btn-login" onclick="verifyLogin()">AUTHORIZE</button>
         </div>
     </div>
@@ -102,8 +102,15 @@
         <div id="tabOps" class="tab-content active">
             <div class="box" style="border-top: 2px solid var(--neon);">
                 <h3 style="color:var(--neon);"><i class="fas fa-exclamation-triangle"></i> POP-UP PENGUMUMAN</h3>
-                <div style="font-size:10px; color:#fff; margin-bottom:10px;">Pesan ini akan muncul sebagai Pop-Up di tengah layar User.</div>
+                <div style="font-size:10px; color:#fff; margin-bottom:10px;">Atur pesan yang akan muncul di layar User.</div>
+                
                 <input type="text" id="annInput" placeholder="Ketik teks pengumuman penting di sini...">
+                
+                <select id="annShowOption" style="margin-bottom: 10px; color: var(--neon); border-color: var(--neon);">
+                    <option value="once">MODUS 1: TAMPIL 1x SAJA (Sekali user tutup, tidak muncul lagi)</option>
+                    <option value="always">MODUS 2: TAMPIL SELALU (Selalu muncul saat user buka web)</option>
+                </select>
+                
                 <div style="display:flex; gap:5px; margin-top:5px;">
                     <button class="btn-blue" style="flex:1;" onclick="setAnn(true)">TAYANGKAN POP-UP</button>
                     <button class="btn-red" style="flex:1;" onclick="setAnn(false)">HAPUS (MATIKAN)</button>
@@ -252,7 +259,8 @@
             if(!nama) return alert("NAMA WAJIB DIISI!");
             
             if(pin === "5588") { sessionStorage.setItem('adm_role', 'ADMIN'); sessionStorage.setItem('adm_name', nama); openDashboard('ADMIN'); logAdminAction("Login ke Aplikasi (ADMIN)"); }
-            else if(pin === "9999") { sessionStorage.setItem('adm_role', 'SUPERADMIN'); sessionStorage.setItem('adm_name', nama); openDashboard('SUPERADMIN'); logAdminAction("Login ke Aplikasi (SUPERADMIN)"); }
+            // UPDATE PIN SUPERADMIN KE 250585
+            else if(pin === "250585") { sessionStorage.setItem('adm_role', 'SUPERADMIN'); sessionStorage.setItem('adm_name', nama); openDashboard('SUPERADMIN'); logAdminAction("Login ke Aplikasi (SUPERADMIN)"); }
             else { alert("PIN SALAH!"); }
         };
         
@@ -296,7 +304,16 @@
             cachedSlots = d.chargingSlots || [null,null,null,null,null]; while(cachedSlots.length<5)cachedSlots.push(null);
             cachedQueue = d.waitingQueue || []; disabledSlots = d.disabledSlots || [false,false,false,false,false];
             blockedPlates = d.blockedPlates || [];
-            if(d.announcement) document.getElementById('annInput').value = d.announcement.text || "";
+            
+            if(d.announcement) {
+                document.getElementById('annInput').value = d.announcement.text || "";
+                // Set status dropdown dari Firebase
+                if(d.announcement.showOnce === false) {
+                    document.getElementById('annShowOption').value = "always";
+                } else {
+                    document.getElementById('annShowOption').value = "once";
+                }
+            }
             updateMonitor();
         });
 
@@ -336,7 +353,6 @@
             document.getElementById('blockedListContainer').innerHTML = blockHtml;
         }
 
-        // --- SISTEM STATISTIK HARIAN & TABEL HISTORY ---
         async function loadStatistikHarian() {
             const now = new Date();
             const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).getTime();
@@ -381,7 +397,6 @@
             } catch(e) { console.log("Gagal memuat statistik:", e); }
         }
 
-        // --- SISTEM LOAD TAB LOG ADMIN ---
         function loadAdminLogs() {
             const q = query(adminLogRef, orderBy("time", "desc"), limit(50));
             onSnapshot(q, (snap) => {
@@ -433,10 +448,23 @@
         window.setAnn = (isActive) => {
             const txt = document.getElementById('annInput').value;
             if(isActive && !txt) return alert("Isi teks pengumuman dulu!");
+            
             const annId = Date.now().toString(); 
-            runTransaction(db, async(t) => { t.update(mainRef, { announcement: { text: txt, active: isActive, id: annId } }); }).then(() => { 
+            const showOption = document.getElementById('annShowOption').value;
+            const isShowOnce = (showOption === 'once'); // true jika 1x, false jika selalu
+            
+            runTransaction(db, async(t) => { 
+                t.update(mainRef, { 
+                    announcement: { 
+                        text: txt, 
+                        active: isActive, 
+                        id: annId,
+                        showOnce: isShowOnce 
+                    } 
+                }); 
+            }).then(() => { 
                 alert(isActive ? "Pop-Up Pengumuman DITAYANGKAN ke semua User!" : "Pop-Up Pengumuman DIMATIKAN."); 
-                logAdminAction(isActive ? `Tayangkan Pop-Up: ${txt}` : `Matikan Pop-Up Pengumuman`);
+                logAdminAction(isActive ? `Tayangkan Pop-Up (${showOption}): ${txt}` : `Matikan Pop-Up Pengumuman`);
             });
         };
 

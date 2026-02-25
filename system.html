@@ -8,7 +8,7 @@
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "2.6_NeonSystem_FullBadge"; 
+        const CURRENT_VERSION = "3.5_System_AdminFix_ModalKeren"; 
         if (localStorage.getItem("app_version_system") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -25,84 +25,118 @@
         }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,700;1,900&family=Rajdhani:wght@500;600;700;800;900&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === TEMA BARU KC (NEON YELLOW/LIME & BLACK) === */
+        /* === TEMA ASLI KARTIKA CHANDRA (DARK NEON LIME) === */
         :root { 
-            --bg: #050505; 
-            --primary: #D4FF00; 
-            --primary-dim: rgba(212, 255, 0, 0.15); 
-            --accent: #FF003C;        
-            --font-tech: 'Rajdhani', sans-serif; --font-num: 'Teko', sans-serif; --font-head: 'Orbitron', sans-serif;
-            --ornament-display: none;
-            --bg-pattern: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
+            --kc-lime: #D4FF00;  
+            --bg-dark: #050505; 
+            --glass-panel: rgba(10, 10, 10, 0.95);
+            --danger: #FF003C;
+            --metal-dark: linear-gradient(145deg, #1A1D24 0%, #0D0F12 100%);
+            --border-metal: 1px solid rgba(255,255,255,0.08);
+            --font-head: 'Orbitron', sans-serif;
+            --font-tech: 'Rajdhani', sans-serif; 
+            --font-num: 'Teko', sans-serif; 
         }
 
-        /* === TEMA RAMADAN KC (HIJAU ZAMRUD/EMAS) - AKTIF 19 FEB === */
-        body.ramadan-mode {
-            --primary: #FFD700; 
-            --primary-dim: rgba(255, 215, 0, 0.15);
-            --bg: #011205; 
-            --ornament-display: block;
-            --bg-pattern: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px), radial-gradient(rgba(255,215,0,0.15) 1px, transparent 2px);
-        }
+        * { box-sizing: border-box; user-select: none; outline: none; -webkit-tap-highlight-color: transparent; }
         
-        * { box-sizing: border-box; user-select: none; outline: none; }
-        body { font-family: var(--font-tech); background-color: var(--bg); background-image: var(--bg-pattern); background-size: 30px 30px, 30px 30px, 60px 60px; color: #fff; margin: 0; padding: 0 20px 100px 20px; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; transition: all 0.5s ease; }
-
-        /* PENGUMUMAN (MARQUEE) */
-        #announcementBar { display: none; background: #FF003C; color: #fff; padding: 8px 15px; font-family: var(--font-tech); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #fff; margin: 0 -20px 15px -20px; box-shadow: 0 5px 15px rgba(255,0,60,0.4); }
-
-        /* ORNAMEN RAMADAN */
-        .ramadan-ornaments { display: var(--ornament-display); pointer-events: none; position: absolute; width: 100%; height: 200px; top:0; left:0; z-index: 1; overflow: hidden; }
-        .hanging-item { position: absolute; top: -10px; display: flex; flex-direction: column; align-items: center; transform-origin: top center; animation: swing 3s infinite ease-in-out alternate; }
-        .hi-string { width: 1px; height: 30px; background: var(--primary); }
-        .hi-body { color: var(--primary); filter: drop-shadow(0 0 10px var(--primary)); font-size: 20px; }
-        .pos-1 { left: 20px; animation-delay: 0.2s; } .pos-2 { right: 20px; animation-delay: 0.5s; }
-        @keyframes swing { 0% { transform: rotate(5deg); } 100% { transform: rotate(-5deg); } }
-
-        /* HEADER & QUEUE BAR */
-        .header { text-align: center; margin-bottom: 5px; margin-top: 15px; position: relative; z-index: 5; } 
-        .main-title { font-family: var(--font-tech); font-weight: 900; font-size: 42px; line-height: 0.9; color: #fff; text-shadow: 0 0 25px var(--primary-dim); letter-spacing: 2px; text-transform: uppercase; }
-        .sub-title { font-family: var(--font-head); font-size: 10px; color: var(--primary); letter-spacing: 4px; font-weight: 800; text-transform: uppercase; margin-top: 10px; background: rgba(212, 255, 0, 0.1); padding: 4px 15px; display: inline-block; }
-
-        .tiktok-badge {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            margin-top: 10px; margin-bottom: 20px; padding: 6px 15px;
-            background: linear-gradient(45deg, #000000, #111111);
-            border: 1px solid var(--primary);
-            border-radius: 20px; color: #fff; text-decoration: none;
-            font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800;
-            letter-spacing: 1px; transition: 0.3s;
-            box-shadow: 0 0 10px rgba(212, 255, 0, 0.2);
+        body { 
+            font-family: var(--font-tech); 
+            background-color: var(--bg-dark); 
+            background-image: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #fff; margin: 0; padding: 0 0 110px 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; 
         }
-        .tiktok-badge:active { transform: scale(0.95); }
-        .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
 
-        .queue-bar-wrapper { width: 100%; margin-bottom: 25px; position: relative; z-index: 5; }
-        .queue-bar { background: linear-gradient(90deg, rgba(30, 35, 0, 0.9), rgba(0,0,0,0.9)); clip-path: polygon(0 0, 100% 0, 95% 100%, 0% 100%); border-left: 6px solid var(--primary); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .qb-lbl { font-size: 11px; color: var(--primary); letter-spacing: 2px; text-transform: uppercase; font-weight: 800; font-family: var(--font-head); }
-        .qb-val { font-family: var(--font-tech); font-weight:700; font-size: 24px; color: #fff; display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
-        .qb-tot { font-family: var(--font-tech); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+        /* --- HEADER --- */
+        .header { text-align: center; padding-top: 35px; margin-bottom: 20px; position: relative; z-index: 5; } 
+        .main-title { font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: clamp(24px, 8vw, 34px); white-space: nowrap; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; text-shadow: 0 0 15px rgba(212, 255, 0, 0.3); }
+        .sub-title { font-family: var(--font-head); font-style: italic; font-size: 10px; color: var(--kc-lime); letter-spacing: 3px; font-weight: 900; text-transform: uppercase; margin-top: 10px; background: rgba(212, 255, 0, 0.05); padding: 5px 15px; border: 1px solid rgba(212, 255, 0, 0.2); border-radius: 20px; display: inline-block; }
 
-        /* SLOT CONTAINER (GRID 5 SLOT) */
-        .slot-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; position: relative; z-index: 5; }
+        /* --- QUEUE BAR (KLIK UNTUK LIHAT ANTRIAN) --- */
+        .queue-bar-wrapper { padding: 0 20px; margin-bottom: 15px; cursor: pointer; transition: 0.2s;}
+        .queue-bar-wrapper:active { transform: scale(0.98); }
+        .queue-bar { background: #000; border: 1px solid rgba(212, 255, 0, 0.3); border-left: 8px solid var(--kc-lime); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 20px rgba(0,0,0,0.6); border-radius: 6px; }
+        .qb-lbl { font-size: 10px; color: var(--kc-lime); letter-spacing: 2px; text-transform: uppercase; font-weight: 900; font-family: var(--font-head); font-style: italic; margin-bottom: 2px;}
+        .qb-val { font-family: var(--font-tech); font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1;}
+        .qb-tot { font-family: var(--font-num); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.5); }
+
+        /* --- SOREFALTO WIDGET --- */
+        .sorefalto-widget { margin: 0 20px 25px; background: var(--glass-panel); border: 1px solid rgba(212, 255, 0, 0.15); border-radius: 8px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+        .sf-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: linear-gradient(90deg, rgba(212, 255, 0, 0.05), transparent, rgba(212, 255, 0, 0.05)); border-bottom: 1px solid rgba(212, 255, 0, 0.1); }
+        .sf-wing { display: flex; gap: 4px; align-items: center; }
+        .sf-wing span { display: block; width: 5px; height: 18px; background: var(--kc-lime); border-radius: 1px; box-shadow: 0 0 5px rgba(212, 255, 0, 0.5); }
+        .sf-wing.left span { transform: skewX(-20deg); }
+        .sf-wing.left span:nth-child(1) { opacity: 0.2; } .sf-wing.left span:nth-child(2) { opacity: 0.5; } .sf-wing.left span:nth-child(3) { opacity: 1; }
+        .sf-wing.right span { transform: skewX(20deg); }
+        .sf-wing.right span:nth-child(1) { opacity: 1; } .sf-wing.right span:nth-child(2) { opacity: 0.5; } .sf-wing.right span:nth-child(3) { opacity: 0.2; }
+        
+        .sf-content { flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .sf-content i { color: var(--kc-lime); font-size: 16px; filter: drop-shadow(0 0 5px rgba(212, 255, 0, 0.5));}
+        
+        .sf-text { position: relative; display: inline-block; font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: 16px; color: rgba(255, 255, 255, 0.9); letter-spacing: 4px; text-transform: uppercase; animation: flicker 4s infinite; }
+        .sf-text::before, .sf-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; opacity: 0.8; font-style: italic; }
+        .sf-text::before { left: 2px; text-shadow: -2px 0 var(--danger); animation: glitch-anim-1 3s infinite linear alternate-reverse; }
+        .sf-text::after { left: -2px; text-shadow: 2px 0 var(--kc-lime); animation: glitch-anim-2 4s infinite linear alternate-reverse; }
+
+        .sf-motto { background: rgba(0,0,0,0.8); padding: 10px; text-align: center; font-family: var(--font-tech); font-weight: 800; font-size: 11px; color: #fff; letter-spacing: 1.5px; text-transform: uppercase; min-height: 35px;}
+        .sf-motto span { color: var(--kc-lime); margin: 0 5px; }
+
+        /* KURSOR KETIKAN SOREFALTO */
+        .type-cursor { display: inline-block; width: 6px; height: 12px; background: var(--kc-lime); margin-left: 4px; animation: cursorBlink 1s infinite; vertical-align: middle; }
+
+        @keyframes cursorBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+        @keyframes flicker { 0%, 9%, 11%, 19%, 21%, 69%, 71%, 100% { opacity: 1; } 10%, 20%, 70% { opacity: 0.6; } }
+        @keyframes glitch-anim-1 { 0%, 90% { clip-path: inset(0 0 100% 0); transform: translate(0); } 92% { clip-path: inset(20% 0 80% 0); transform: translate(-3px, 1px); } 94% { clip-path: inset(60% 0 10% 0); transform: translate(3px, -1px); } 96% { clip-path: inset(40% 0 50% 0); transform: translate(-3px, 2px); } 98% { clip-path: inset(80% 0 5% 0); transform: translate(3px, -1px); } 100% { clip-path: inset(0 0 100% 0); transform: translate(0); } }
+        @keyframes glitch-anim-2 { 0%, 85% { clip-path: inset(0 0 100% 0); transform: translate(0); } 87% { clip-path: inset(10% 0 60% 0); transform: translate(3px, -1px); } 89% { clip-path: inset(30% 0 20% 0); transform: translate(-3px, 2px); } 91% { clip-path: inset(70% 0 10% 0); transform: translate(3px, 1px); } 93% { clip-path: inset(20% 0 50% 0); transform: translate(-3px, -1px); } 95% { clip-path: inset(0 0 100% 0); transform: translate(0); } }
+
+        /* --- SLOT CONTAINER --- */
+        .slot-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px;}
         .slot-container > div:nth-child(5) { grid-column: 1 / -1; }
 
-        .armor-card { width: 100%; min-height: 140px; position: relative; background: #050505; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); transition: all 0.3s; }
-        .armor-card::before { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 1px #333; pointer-events: none; z-index: 3; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); }
-        .armor-card.active::before { box-shadow: inset 0 0 0 2px var(--primary); }
-        .armor-card.maintenance::before { box-shadow: inset 0 0 0 2px #f00; }
-        .armor-card.active { background: rgba(212, 255, 0, 0.05); }
-        .armor-card.maintenance { background: rgba(255, 0, 0, 0.1); }
-        .armor-inner { display: flex; flex-direction: column; align-items: center; height: 100%; width: 100%; padding: 15px 12px; position: relative; z-index: 4; text-align: center; }
+        /* --- KARTU SLOT --- */
+        .slot-card { 
+            width: 100%; height: 160px; 
+            background-color: var(--glass-panel);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: flex; flex-direction: column; padding: 12px;
+            position: relative; overflow: hidden;
+        }
+        .slot-card.active { border-color: var(--kc-lime); box-shadow: 0 0 15px rgba(212, 255, 0, 0.2); }
+        .slot-card.maintenance { border-color: #555; background-color: rgba(255,255,255,0.05); } /* Maintenance abu-abu (tidak merah) */
 
-        /* === DESAIN BADGE LENGKAP === */
-        .glamour-badge { width: 130px; height: 32px; border-radius: 6px; display: flex; align-items: center; background: linear-gradient(135deg, #151515, #050505); border: 1px solid var(--b-color-main); box-shadow: 0 0 10px var(--b-glow); position: relative; overflow: hidden; margin-top:5px; }
-        .gb-icon { width: 35px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 13px; background: var(--b-gradient); color: var(--icon-color, #000); clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); }
-        .gb-text { flex: 1; font-size: 11px; font-weight: 900; letter-spacing: 1.5px; color: var(--b-color-main); text-shadow: 0 0 5px rgba(0,0,0,0.8); }
+        /* BACKGROUND PUZZLE LOGO RAKSASA */
+        .slot-card::before {
+            content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 300'%3E%3Cpolygon points='100,20 180,60 180,200 100,280 20,200 20,60' fill='none' stroke='%23D4FF00' stroke-width='4' opacity='0.5'/%3E%3Cpolygon points='110,80 70,160 100,160 90,220 140,140 110,140' fill='%23D4FF00'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            opacity: 0.03; filter: grayscale(100%); transition: all 0.5s ease;
+        }
+        .slot-card.active::before { opacity: 0.5; filter: grayscale(0%); }
+        .slot-card:nth-child(1)::before { background-size: 220% 320%; background-position: 0% 0%; } 
+        .slot-card:nth-child(2)::before { background-size: 220% 320%; background-position: 100% 0%; } 
+        .slot-card:nth-child(3)::before { background-size: 220% 320%; background-position: 0% 45%; } 
+        .slot-card:nth-child(4)::before { background-size: 220% 320%; background-position: 100% 45%; } 
+        .slot-card:nth-child(5)::before { background-size: 110% 320%; background-position: center 100%; } 
+
+        .sc-head, .sc-body, .sc-badge-zone, .sc-action-zone { position: relative; z-index: 2; }
+        .sc-head { display: flex; justify-content: space-between; align-items: flex-start; height: 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sc-no { font-family: var(--font-num); font-size: 28px; font-weight: 600; color: #aaa; line-height: 0.8;}
+        .slot-card.active .sc-no { color: var(--kc-lime); text-shadow: 0 0 10px rgba(212,255,0,0.4);}
+
+        .sc-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; overflow: hidden; }
+        .sc-plat { font-family: var(--font-num); font-size: clamp(20px, 6vw, 26px); font-weight: 600; color: #FFF; line-height: 1; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .sc-name { font-family: var(--font-tech); font-size: 14px; font-weight: 900; color: #FFF; text-transform: uppercase; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 2px 4px rgba(0,0,0,0.8);}
+
+        .sc-badge-zone { height: 26px; display: flex; justify-content: center; align-items: center; width: 100%; margin-bottom: 6px; }
+        
+        .glamour-badge { width: 100%; max-width: 130px; height: 24px; border-radius: 4px; display: flex; align-items: center; background: rgba(0,0,0,0.8); border: 1px solid var(--b-color-main); box-shadow: 0 0 10px var(--b-glow); position: relative; overflow: hidden; margin: 0 auto;}
+        .gb-icon { width: 28px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; background: var(--b-gradient); color: var(--icon-color, #000); clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); }
+        .gb-text { flex: 1; font-size: 9px; font-weight: 900; letter-spacing: 1px; color: var(--b-color-main); text-align: center; text-shadow: 0 0 5px rgba(0,0,0,0.8); padding-right:5px;}
         
         .b-presiden { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.6); --b-gradient: linear-gradient(135deg, #8B0000, #FF0000); --icon-color: #D4FF00; }
         .b-ketum { --b-color-main: #E5FF66; --b-glow: rgba(229, 255, 102, 0.4); --b-gradient: linear-gradient(135deg, #FFF380, #D4FF00); }
@@ -114,113 +148,137 @@
         .b-urc { --b-color-main: #FF0000; --b-glow: rgba(255, 0, 0, 0.6); --b-gradient: linear-gradient(135deg, #FF4500, #8B0000); --icon-color: #FFF; } 
         .b-member { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.2); --b-gradient: linear-gradient(135deg, #D4FF00, #668000); }
 
-        .btn-stop-me { background: linear-gradient(135deg, #ff0000, #990000); color: #fff; width: 100%; padding: 10px; margin-top: 10px; border: 1px solid #ff5555; border-radius: 4px; font-weight: 800; cursor: pointer; animation: pulseText 1s infinite; }
-        .btn-pilih { width: 100%; padding: 10px 0; margin-top: auto; background: linear-gradient(135deg, #D4FF00, #AACC00); color: #000; border: none; border-radius: 4px; font-weight: 900; cursor: pointer; }
-        
-        .btn-cancel-q { margin-top: 20px; background: rgba(255,0,60,0.15); border: 2px solid var(--accent); color: var(--accent); padding: 15px 30px; font-weight: 900; cursor: pointer; width: 100%; border-radius: 8px; transition: 0.3s; }
-        .btn-cancel-q:active { background: var(--accent); color: #fff; }
+        .sc-action-zone { height: 32px; width: 100%; }
+        .btn-action { width: 100%; height: 100%; border: none; border-radius: 6px; font-weight: 900; font-family: var(--font-tech); font-size: 13px; cursor: pointer; letter-spacing: 1px; position: relative; z-index: 10; transition: 0.2s;}
+        .btn-action:active { transform: scale(0.96); }
+        .btn-stop { background: linear-gradient(135deg, #FF003C 0%, #aa0000 100%); color: #fff; box-shadow: 0 2px 5px rgba(255,0,60,0.4); }
+        .btn-pilih { background: linear-gradient(135deg, var(--kc-lime) 0%, #7A9900 100%); color: #000; box-shadow: 0 2px 5px rgba(212,255,0,0.3); }
+        .btn-disabled { background: rgba(255,255,255,0.1); color: #aaa; text-transform: uppercase; backdrop-filter: blur(2px); pointer-events: none;}
 
-        /* MODAL KHUSUS POP-UP PENGUMUMAN */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
-        
-        .announcement-box { width: 90%; max-width: 350px; background: #111; border: 2px solid #FF003C; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 60, 0.4); animation: zoomIn 0.3s ease-out; }
-        .announcement-box h2 { font-family: 'Teko'; color: #fff; font-size: 32px; margin: 0 0 15px 0; letter-spacing: 2px; }
-        .announcement-box p { font-family: 'Rajdhani'; color: #ccc; font-size: 18px; margin-bottom: 25px; line-height: 1.5; }
-        .btn-mengerti { width: 100%; background: #FF003C; color: #fff; padding: 15px; border: none; border-radius: 8px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255,0,60,0.3); }
+        .btn-cancel-q { margin: 0 20px 20px; background: rgba(255,0,60,0.1); border: 2px solid var(--danger); color: #FFF; padding: 15px 30px; font-weight: 900; font-family: var(--font-tech); font-size: 16px; cursor: pointer; width: calc(100% - 40px); border-radius: 8px; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255,0,60,0.3); transition: 0.2s; display: none;}
+        .btn-cancel-q:active { background: var(--danger); }
 
-        .modal-box { width: 85%; max-width: 320px; background: #111; border: 1px solid var(--primary); padding: 25px; border-radius: 10px; text-align: center; }
-        .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-yes { flex:1; background: var(--primary); color: #000; padding:10px; font-weight:bold; border:none;} .btn-no { flex:1; background: #333; color: #fff; padding:10px; font-weight:bold; border:1px solid #555;}
+        /* ========================================================= */
+        /* SEMUA MODAL SISTEM (KEREN, ANTI-MERAH, TACTICAL)          */
+        /* ========================================================= */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s;}
+        
+        /* Modal Tactical Base */
+        .modal-tactical { 
+            background: var(--metal-dark); border: var(--border-metal); 
+            border-top: 4px solid var(--kc-lime); border-radius: 16px; 
+            width: 85%; max-width: 380px; padding: 25px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 20px rgba(212,255,0,0.1); 
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .modal-tactical::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(212,255,0,0.02) 1px, transparent 1px); background-size: 100% 3px; pointer-events: none; z-index: 0; }
+        
+        .close-x { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 24px; font-weight: bold; cursor: pointer; transition: 0.2s; z-index: 10;}
+        .close-x:hover { color: #fff; }
+
+        /* MODAL PENGUMUMAN CERDAS (ADMIN) - PAKAI MANAF.PNG */
+        .announcement-box { border-top-color: var(--kc-lime); box-shadow: 0 0 40px rgba(212, 255, 0, 0.2); text-align: center;}
+        .announcement-box h2 { font-family: var(--font-logo); font-style: italic; color: #fff; font-size: 22px; margin: 0 0 15px 0; letter-spacing: 2px; position: relative; z-index: 2;}
+        .announcement-box p { font-family: var(--font-data); font-weight: 600; color: #ccc; font-size: 16px; margin-bottom: 20px; line-height: 1.5; position: relative; z-index: 2;}
+
+        /* MODAL CONFIRM (CUSTOM) */
+        .confirm-modal-box { text-align: center; }
+        #modalTitle { font-family: var(--font-logo); font-style: italic; color: var(--kc-lime); font-size: 20px; margin-bottom: 10px; position: relative; z-index: 2;}
+        #modalMsg { font-family: var(--font-data); color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; position: relative; z-index: 2;}
+        .modal-btns { display: flex; gap: 10px; position: relative; z-index: 2; }
+        .btn-yes { flex: 1; background: var(--kc-lime); color: #000; padding: 12px; border-radius: 8px; font-family: var(--font-data); font-weight: 900; font-size: 16px; border: none; cursor: pointer; }
+        .btn-no { flex: 1; background: transparent; color: #fff; border: 1px solid #555; padding: 12px; border-radius: 8px; font-family: var(--font-data); font-weight: 900; font-size: 16px; cursor: pointer; }
+
+        /* MODAL LIST ANTRIAN */
+        #queueListModal { align-items:flex-end; }
+        .ql-container { background: var(--metal-dark); width:100%; height:70vh; border-top:2px solid var(--kc-lime); border-radius:20px 20px 0 0; display:flex; flex-direction:column; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); padding-bottom: env(safe-area-inset-bottom); position: relative; overflow: hidden;}
+        .ql-container::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(212,255,0,0.02) 1px, transparent 1px); background-size: 100% 3px; pointer-events: none; z-index: 0; }
+        .ql-header { padding:20px; text-align:center; font-family:var(--font-logo); font-style: italic; font-size:20px; font-weight:900; color:var(--kc-lime); border-bottom:1px solid rgba(255,255,255,0.05); letter-spacing: 1px; position: relative; z-index: 2;}
+        .ql-body { flex:1; overflow-y:auto; padding:15px; display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 2;}
+        
+        .q-item { background: #0A0C0E; padding: 15px; border-left: 4px solid var(--kc-lime); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+        .q-plat { font-family: var(--font-num); font-size: 26px; color: #fff; line-height: 1; letter-spacing: 1px;}
+        .q-name { color: #8892B0; font-family: var(--font-tech); font-size: 13px; font-weight: 800; text-transform: uppercase; margin-top: 4px;}
+        .q-num { font-weight: 600; color: var(--kc-lime); font-size: 32px; font-family: var(--font-num); line-height: 0.8;}
+        
+        .btn-close-ql { padding:18px; background:#000; color:#fff; border:none; font-family:var(--font-tech); font-weight:900; font-size:16px; letter-spacing:2px; cursor: pointer; border-top: 1px solid #333; position: relative; z-index: 2;}
 
         /* --- DOCK NAV BAWAH --- */
-        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 99999; }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; transition: 0.3s; height: 100%; cursor: pointer; position: relative; }
-        .nav-item.active { opacity: 1; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 1px solid rgba(212, 255, 0, 0.3); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 10000; box-shadow: 0 -5px 20px rgba(212, 255, 0, 0.05);}
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; height: 100%; }
+        .nav-item.active { opacity: 1; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.4); }
         .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
-        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--primary-dim); font-size: 26px; color: var(--primary); position: relative; z-index: 10; transition: transform 0.2s; }
-        .center-icon-box:active { transform: scale(0.9); }
-        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 255, 0, 0.5); animation: spin 10s linear infinite; }
-        body.ramadan-mode .center-icon-box::after { border-color: rgba(255, 215, 0, 0.5); }
-        .nav-text { font-family: var(--font-head); font-size: 10px; letter-spacing: 2px; font-weight: 900; margin-top: 5px; }
-
-        /* NOTIFIKASI DOT MERAH */
-        .notif-dot { position: absolute; top: 15px; right: 25px; width: 10px; height: 10px; background: #FF003C; border-radius: 50%; border: 2px solid #000; box-shadow: 0 0 8px #FF003C; animation: blinkNotif 1.5s infinite; }
-
-        @keyframes pulseText { 0%,100% {opacity: 1;} 50% {opacity: 0.5;} }
-        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes blinkNotif { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } }
+        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--kc-lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--kc-lime); position: relative; box-shadow: 0 0 15px rgba(212, 255, 0, 0.3);}
+        .nav-text { font-family: var(--font-head); font-style: italic; font-size: 10px; font-weight: 900; letter-spacing: 1.5px; margin-top: 6px; text-transform: uppercase;}
     </style>
 </head>
 <body>
 
-    <div id="announcementModal" class="modal-overlay" style="z-index: 99999;">
-        <div class="announcement-box">
-            <div style="font-size: 50px; color: #FF003C; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i></div>
+    <div id="announcementModal" class="modal-overlay">
+        <div class="modal-tactical announcement-box">
+            <button class="close-x" onclick="tutupPengumuman()">✕</button>
+            <div style="margin-bottom: 15px; position: relative; z-index: 2;">
+                <img src="manaf.png" alt="Admin" style="width: 100px; height: auto; filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.4)); border-radius: 8px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
+            </div>
             <h2>PENGUMUMAN</h2>
             <p id="annTextPopup">Teks pengumuman di sini...</p>
-            <button class="btn-mengerti" onclick="tutupPengumuman()">SAYA MENGERTI</button>
         </div>
-    </div>
-
-    <div class="ramadan-ornaments">
-        <div class="hanging-item pos-1"><div class="hi-string"></div><div class="hi-body"><i class="fas fa-moon"></i></div></div>
-        <div class="hanging-item pos-2"><div class="hi-string"></div><div class="hi-body"><i class="fas fa-mosque"></i></div></div>
-    </div>
-
-    <div class="header" ondblclick="toggleAdmin()">
-        <div class="main-title">FC KARTIKA CHANDRA</div>
-        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div><br>
-        
-        <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge">
-            <i class="fab fa-tiktok"></i> @maka_ojol
-        </a>
-    </div>
-
-    <div class="queue-bar-wrapper" onclick="document.getElementById('queueListModal').style.display='flex'">
-        <div class="queue-bar">
-            <div class="qb-left"><span class="qb-lbl">ANTRIAN BERIKUTNYA</span><div class="qb-val" id="nextQDisplay">--</div></div>
-            <div class="qb-right"><div class="qb-tot" id="totalQDisplay">0</div></div>
-        </div>
-    </div>
-
-    <div class="slot-container" id="slotsContainer"></div>
-
-    <div style="display:flex; justify-content:center; position:relative; z-index:5;">
-        <button id="btnCancelQ" class="btn-cancel-q" onclick="cancelQueue()">❌ BATAL ANTRIAN</button>
-    </div>
-
-    <div style="padding: 20px 0; text-align: center; position:relative; z-index:5;">
-        <img src="sore.jpg" alt="Sorefalto" style="width: 100%; max-width:400px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: contain;">
     </div>
 
     <div id="customModal" class="modal-overlay">
-        <div class="modal-box">
-            <h2 id="modalTitle" style="color:var(--primary); margin:0 0 10px 0; font-family:'Teko'; font-size:24px;">TITLE</h2>
-            <div id="modalMsg" style="color:#ccc; font-size:14px;">Msg</div>
+        <div class="modal-tactical confirm-modal-box">
+            <h2 id="modalTitle">TITLE</h2>
+            <div id="modalMsg">Msg</div>
             <div id="modalBtns" class="modal-btns"></div>
         </div>
     </div>
 
-    <div id="queueListModal" class="modal-overlay" style="align-items:flex-end;">
-        <div style="background:#0a0a0a; width:100%; height:70vh; border-top:2px solid var(--primary); border-radius:20px 20px 0 0; display:flex; flex-direction:column;">
-            <div style="padding:15px; text-align:center; font-family:'Teko'; font-size:24px; color:var(--primary); border-bottom:1px solid #333;">DAFTAR TUNGGU</div>
-            <div id="qlBody" style="flex:1; overflow-y:auto; padding:15px;"></div>
-            <button onclick="document.getElementById('queueListModal').style.display='none'" style="padding:15px; background:#222; color:#fff; border:none; font-family:'Rajdhani'; font-weight:bold;">TUTUP</button>
+    <div id="queueListModal" class="modal-overlay">
+        <div class="ql-container">
+            <div class="ql-header">DAFTAR TUNGGU</div>
+            <div id="qlBody" class="ql-body"></div>
+            <button onclick="closeQueueModal()" class="btn-close-ql">TUTUP PENGAMATAN</button>
         </div>
     </div>
 
+    <div class="header">
+        <h1 class="main-title" ondblclick="toggleAdmin()">FC KARTIKA CHANDRA</h1>
+        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
+    </div>
+
+    <div class="queue-bar-wrapper" onclick="openQueueModal()">
+        <div class="queue-bar">
+            <div class="qb-left"><div class="qb-lbl">ANTRIAN BERIKUTNYA</div><div class="qb-val" id="nextQDisplay">--</div></div>
+            <div class="qb-right"><div class="qb-tot" id="totalQDisplay">00</div></div>
+        </div>
+    </div>
+
+    <div class="sorefalto-widget">
+        <div class="sf-header">
+            <div class="sf-wing left"><span></span><span></span><span></span></div>
+            <div class="sf-content">
+                <i class="fas fa-shield-alt"></i>
+                <span class="sf-text" data-text="SOREFALTO">SOREFALTO</span>
+            </div>
+            <div class="sf-wing right"><span></span><span></span><span></span></div>
+        </div>
+        <div class="sf-motto" id="typingMottoContainer"></div>
+    </div>
+
+    <div class="slot-container" id="slotsContainer"></div>
+
+    <button id="btnCancelQ" class="btn-cancel-q" onclick="cancelQueue()">❌ BATAL ANTRIAN</button>
+
     <div class="dock-container">
         <a href="lokasifc.html" class="nav-item">
-            <div class="notif-dot"></div>
-            <i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:5px;"></i><span class="nav-text">PETA FC</span>
+            <i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">PETA FC</span>
         </a>
         <div class="nav-item center-btn active">
             <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
-            <span class="nav-text" style="color:var(--primary); margin-top:8px;">SYSTEM</span>
+            <span class="nav-text" style="color:var(--kc-lime);">SYSTEM</span>
         </div>
         <a href="plan.html" class="nav-item">
-            <i class="fas fa-route" style="font-size:20px; margin-bottom:5px;"></i><span class="nav-text">TRIP PLAN</span>
+            <i class="fas fa-route" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">TRIP PLAN</span>
         </a>
     </div>
 
@@ -232,52 +290,106 @@
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
         const mainRef = doc(db, "antrian", "utama"); const historyRef = collection(db, "riwayatCharging");
 
-        // === KONFIGURASI TEMA RAMADAN ===
-        const RAMADAN_START = new Date("2026/02/19 00:00:00");
-        if(new Date() >= RAMADAN_START) document.body.classList.add('ramadan-mode');
-
         const $ = (id) => document.getElementById(id);
         const myPlat = localStorage.getItem('myPlat');
-        if(!myPlat && !localStorage.getItem('sa_sess')) window.location.href = 'antrian.html';
+        
+        // Pengecekan Kunci Sesi (Supervisor Mode & Antrian Normal)
+        if(!myPlat && !localStorage.getItem('sa_sess_v2') && !localStorage.getItem('super_admin_kc')) {
+            window.location.href = 'antrian.html';
+        }
 
+        // --- SISTEM PEMBERSIH SESSION LAMA SECARA PAKSA ---
+        if(localStorage.getItem('sa_sess')) { localStorage.removeItem('sa_sess'); }
+
+        // --- TRIGGER ADMIN (KLIK JUDUL 2X) ---
         window.toggleAdmin = () => { 
-            const pass = prompt("KODE AKSES:"); 
-            if (pass === "090815") { 
-                if(localStorage.getItem('sa_sess')) { localStorage.removeItem('sa_sess'); alert("GOD MODE MATI."); } 
-                else { localStorage.setItem('sa_sess', '1'); alert("GOD MODE AKTIF (Bypass GPS)."); }
+            const pass = prompt("KODE AKSES TACTICAL:"); 
+            if (pass === "250585") { 
+                if(localStorage.getItem('super_admin_kc') || localStorage.getItem('sa_sess_v2')) { 
+                    localStorage.removeItem('super_admin_kc'); 
+                    localStorage.removeItem('sa_sess_v2'); 
+                    alert("SUPERVISOR MODE OFFLINE."); 
+                } else { 
+                    localStorage.setItem('super_admin_kc', '1'); 
+                    localStorage.setItem('sa_sess_v2', '1'); 
+                    alert("SUPERVISOR MODE ONLINE."); 
+                }
                 location.reload();
             } else if(pass === "5588" || pass === "9999") {
                 window.location.href = "admin.html";
-            } else if(pass) alert("KODE SALAH!"); 
+            } else if(pass) {
+                alert("ACCESS DENIED!"); 
+            }
         };
 
-        window.closeCustomModal = () => $('customModal').style.display='none';
-        window.showConfirm = (msg, cb) => { $('modalTitle').innerText="KONFIRMASI"; $('modalMsg').innerText=msg; $('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes">YA</button><button class="btn-no" onclick="closeCustomModal()">BATAL</button>`; $('btnYes').onclick=()=>{closeCustomModal();cb();}; $('customModal').style.display='flex'; };
+        // --- SISTEM TYPING EFFECT SOREFALTO ---
+        const mottoWords = ["Solidarity", "Respect", "Familyar", "Togetherness"];
+        const mottoContainer = $('typingMottoContainer');
+        
+        async function runTypingEffect() {
+            mottoContainer.innerHTML = '<span id="mottoTextData"></span><span class="type-cursor"></span>';
+            const textData = $('mottoTextData');
+            
+            for (let i = 0; i < mottoWords.length; i++) {
+                if (i > 0) {
+                    textData.innerHTML += ' <span style="color:var(--kc-lime); margin:0 5px;">&bull;</span> ';
+                    await new Promise(r => setTimeout(r, 400)); // Jeda sebelum ngetik kata baru
+                }
+                
+                const word = mottoWords[i];
+                for (let j = 0; j < word.length; j++) {
+                    textData.innerHTML += word[j];
+                    await new Promise(r => setTimeout(r, 60)); // Kecepatan ngetik per huruf
+                }
+            }
+            
+            // Diam 5 menit (300.000 ms) sebelum dihapus dan diulang
+            setTimeout(runTypingEffect, 300000);
+        }
+        // Mulai ngetik setelah 1 detik halaman diload
+        setTimeout(runTypingEffect, 1000);
+
+        // UI MODALS HELPER
+        window.closeCustomModal = () => { $('customModal').style.opacity = '0'; setTimeout(() => { $('customModal').style.display='none'; }, 300); };
+        window.showConfirm = (msg, cb) => { 
+            $('modalTitle').innerText="SYSTEM ALERT"; 
+            $('modalMsg').innerText=msg; 
+            $('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes">LAKSANAKAN</button><button class="btn-no" onclick="closeCustomModal()">BATAL</button>`; 
+            $('btnYes').onclick=()=>{closeCustomModal();cb();}; 
+            $('customModal').style.display='flex'; setTimeout(() => { $('customModal').style.opacity = '1'; }, 10);
+        };
+
+        window.openQueueModal = () => { $('queueListModal').style.display='flex'; setTimeout(() => { $('queueListModal').style.opacity = '1'; }, 10); };
+        window.closeQueueModal = () => { $('queueListModal').style.opacity='0'; setTimeout(() => { $('queueListModal').style.display = 'none'; }, 300); };
 
         function cleanStr(s) { return s ? s.replace(/[^A-Z0-9]/gi, '').toUpperCase() : ''; }
 
-        // --- SISTEM POP-UP ---
+        // --- SISTEM POP-UP CERDAS ---
         let currentAnnId = "";
         window.tutupPengumuman = () => {
-            $('announcementModal').style.display = 'none';
+            $('announcementModal').style.opacity = '0';
+            setTimeout(() => { $('announcementModal').style.display = 'none'; }, 300);
             localStorage.setItem('lastAnnId', currentAnnId);
         };
 
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) return; const d = snap.data();
             
-            // 1. CEK POP-UP PENGUMUMAN
+            // 1. CEK POP-UP PENGUMUMAN CERDAS
             if(d.announcement && d.announcement.active && d.announcement.text) {
                 currentAnnId = d.announcement.id;
-                if(localStorage.getItem('lastAnnId') !== currentAnnId) {
+                const showOnce = d.announcement.showOnce !== undefined ? d.announcement.showOnce : true;
+                if(!showOnce || localStorage.getItem('lastAnnId') !== currentAnnId) {
                     $('annTextPopup').innerText = d.announcement.text;
                     $('announcementModal').style.display = 'flex';
+                    setTimeout(() => { $('announcementModal').style.opacity = '1'; }, 10);
                 }
             } else {
-                $('announcementModal').style.display = 'none';
+                $('announcementModal').style.opacity = '0';
+                setTimeout(() => { $('announcementModal').style.display = 'none'; }, 300);
             }
 
-            // 2. RENDER SLOT (5 SLOT KARTIKA CHANDRA)
+            // 2. RENDER SLOT
             let slots = d.chargingSlots || [null,null,null,null,null]; while(slots.length<5) slots.push(null);
             let queue = d.waitingQueue || []; let dis = d.disabledSlots || [false,false,false,false,false];
             
@@ -289,36 +401,64 @@
             slots.forEach((s, i) => {
                 const isOff = dis[i]; const div = document.createElement('div');
                 
-                if (isOff) { // SLOT RUSAK / DIMATIKAN ADMIN
-                    div.className = "armor-card maintenance";
-                    div.innerHTML = `<div class="armor-inner"><div style="color:#aaa; font-size:10px; width:100%; text-align:left;">SLOT 0${i+1}</div><div style="font-size:32px; color:#f00; font-family:'Teko'; margin-bottom:auto;">MAINTENANCE</div><div style="font-size:10px; color:#fff; background:#f00; width:100%; padding:8px; border-radius:3px;">OFFLINE</div></div>`;
+                if (isOff) {
+                    div.className = "slot-card maintenance";
+                    div.innerHTML = `
+                        <div class="sc-head"><span class="sc-no">0${i+1}</span></div>
+                        <div class="sc-body"><div class="sc-plat" style="color:#aaa;">MAINTENANCE</div><div class="sc-name" style="color:#aaa;">OFFLINE</div></div>
+                        <div class="sc-badge-zone"></div>
+                        <div class="sc-action-zone"><button class="btn-action btn-disabled">OFFLINE</button></div>
+                    `;
                 } 
-                else if (s) { // SLOT TERISI
-                    div.className = "armor-card active";
+                else if (s) { 
+                    div.className = "slot-card active";
                     const isMe = (cleanStr(s.plat) === cleanStr(myPlat));
-                    let actBtn = isMe ? `<button onclick="window.stopCharging(${i})" class="btn-stop-me">⛔ STOP / SELESAI</button>` : '';
-                    div.innerHTML = `<div class="armor-inner"><div style="display:flex; justify-content:space-between; width:100%; border-bottom:1px solid #333; margin-bottom:10px;"><span style="color:var(--primary); font-size:10px;">SLOT 0${i+1}</span></div><div style="font-size:28px; font-family:'Teko'; color:#fff; line-height:0.9;">${s.plat}</div><div style="font-size:11px; color:#aaa; margin-bottom:5px;">${s.userName}</div>${getBadgeHTML(s.role)}${actBtn}</div>`;
+                    let actBtn = isMe ? `<button onclick="window.stopCharging(${i})" class="btn-action btn-stop">STOP CHARGING</button>` : `<button class="btn-action btn-disabled">IN PROGRESS...</button>`;
+                    div.innerHTML = `
+                        <div class="sc-head"><span class="sc-no">0${i+1}</span></div>
+                        <div class="sc-body"><div class="sc-plat">${s.plat}</div><div class="sc-name">${s.userName}</div></div>
+                        <div class="sc-badge-zone">${getBadgeHTML(s.role)}</div>
+                        <div class="sc-action-zone">${actBtn}</div>
+                    `;
                 } 
-                else { // SLOT KOSONG
-                    div.className = "armor-card";
+                else { 
+                    div.className = "slot-card";
                     let bHtml = '';
-                    if(queue.length===0 || myQIndex===0) bHtml = `<button class="btn-pilih" onclick="window.selectSlot(${i})">PILIH SLOT</button>`;
-                    else if(myQIndex>0) bHtml = `<div style="font-size:10px; color:#000; background:var(--primary); width:100%; padding:8px; font-weight:bold;">ANTRIAN ${myQIndex+1}</div>`;
-                    else bHtml = `<div style="font-size:10px; color:#aaa; background:#333; width:100%; padding:8px;">LOCKED</div>`;
-                    div.innerHTML = `<div class="armor-inner"><div style="color:#aaa; font-size:10px; width:100%; text-align:left;">SLOT 0${i+1}</div><div style="font-size:32px; color:#ccc; font-family:'Teko'; margin-bottom:auto;">OPEN</div>${bHtml}</div>`;
+                    if(queue.length===0 || myQIndex===0) bHtml = `<button class="btn-action btn-pilih" onclick="window.selectSlot(${i})">PILIH SLOT ⚡</button>`;
+                    else if(myQIndex>0) bHtml = `<button class="btn-action btn-disabled" style="background:var(--kc-lime); color:#000;">ANTRIAN ${myQIndex+1}</button>`;
+                    else bHtml = `<button class="btn-action btn-disabled">LOCKED</button>`;
+                    
+                    div.innerHTML = `
+                        <div class="sc-head"><span class="sc-no">0${i+1}</span></div>
+                        <div class="sc-body"><div class="sc-plat" style="color:#aaa;">AVAILABLE</div><div class="sc-name" style="color:#fff;">TERSEDIA</div></div>
+                        <div class="sc-badge-zone"></div>
+                        <div class="sc-action-zone">${bHtml}</div>
+                    `;
                 }
                 container.appendChild(div);
             });
 
-            $('totalQDisplay').innerText = queue.length; $('nextQDisplay').innerText = queue.length > 0 ? queue[0].userName : "--";
+            // UPDATE QUEUE BAR
+            $('totalQDisplay').innerText = String(queue.length).padStart(2, '0'); 
+            $('nextQDisplay').innerText = queue.length > 0 ? queue[0].userName : "--";
 
             // RENDER QUEUE MODAL
             const qb = $('qlBody'); qb.innerHTML = '';
-            if(queue.length===0) qb.innerHTML = `<div style="text-align:center; color:#666;">KOSONG</div>`;
-            else queue.forEach((q,i) => { qb.innerHTML += `<div style="background:#111; padding:15px; border-left:4px solid var(--primary); margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;"><div><div style="font-family:'Teko'; font-size:28px; color:#fff; line-height:1;">${q.plat}</div><div style="color:#aaa; font-size:12px;">${q.userName}</div>${getBadgeHTML(q.role)}</div><div style="font-weight:bold; color:var(--primary); font-size:24px;">#${i+1}</div></div>`; });
+            if(queue.length===0) qb.innerHTML = `<div style="text-align:center; color:#666; font-family:var(--font-tech); font-size:18px;">KOSONG</div>`;
+            else queue.forEach((q,i) => { 
+                qb.innerHTML += `
+                <div class="q-item">
+                    <div>
+                        <div class="q-plat">${q.plat}</div>
+                        <div class="q-name">${q.userName}</div>
+                        ${getBadgeHTML(q.role)}
+                    </div>
+                    <div class="q-num">0${i+1}</div>
+                </div>`; 
+            });
         });
 
-        // === FUNGSI BADGE LENGKAP SINKRON DENGAN ADMIN ===
+        // === FUNGSI BADGE LENGKAP ===
         function getBadgeHTML(r) {
             if (!r || r === "GUEST") return ""; 
             
@@ -334,7 +474,7 @@
             else if(ru.includes("KREATIF")) { css = "b-kreatif"; icon = "fa-camera"; txt = "TIM KREATIF"; }
             else if(ru.includes("URC")) { css = "b-urc"; icon = "fa-ambulance"; txt = "URC"; }
             
-            return `<div class="glamour-badge ${css}" style="margin:5px auto;"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
+            return `<div class="glamour-badge ${css}"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
         }
 
         window.selectSlot = async (i) => { showConfirm(`MASUK SLOT 0${i+1}?`, () => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); if((d.disabledSlots||[])[i]) throw "SLOT DALAM PERBAIKAN!"; if(d.chargingSlots[i]) throw "SLOT PENUH!"; let q = d.waitingQueue; const idx = q.findIndex(x => cleanStr(x.plat) === cleanStr(myPlat)); if(idx === -1) throw "DATA ANTRIAN HILANG!"; const me = q[idx]; q.splice(idx, 1); me.startTime = Date.now(); d.chargingSlots[i] = me; t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: q }); }).catch(e => alert(e)); }); };

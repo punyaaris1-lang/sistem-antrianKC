@@ -6,7 +6,7 @@
     <title>MAKA - PLAN TRIP KARTIKA CHANDRA</title>
     
     <script>
-        const CURRENT_VERSION = "2.9_OriginalScript"; 
+        const CURRENT_VERSION = "3.0_Tactical_Planner_UI"; 
         if (localStorage.getItem("app_version_plan") !== CURRENT_VERSION) {
             if (window.caches) { caches.keys().then((k) => Promise.all(k.map((key) => caches.delete(key)))); }
             localStorage.setItem("app_version_plan", CURRENT_VERSION);
@@ -15,112 +15,136 @@
     </script>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300;500;700&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,700;1,900&family=Rajdhani:wght@500;600;700;800;900&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
+        /* === TEMA TACTICAL LUXURY (NEON LIME + TITANIUM) === */
         :root {
-            --bg: #050505; 
-            --primary: #D4FF00;       
-            --primary-dim: rgba(212, 255, 0, 0.15);
-            --primary-glow: rgba(212, 255, 0, 0.4);
-            --red: #FF003C; 
-            --green: #39FF14;
-            --gray: #333;
+            --kc-lime: #D4FF00;       
+            --kc-silver: #E2E8F0;
+            --danger: #FF003C;
+            
+            --metal-dark: linear-gradient(145deg, #1A1D24 0%, #0D0F12 100%);
+            --metal-light: linear-gradient(145deg, #2D333B 0%, #1E2229 100%);
+            --carbon-bg: repeating-linear-gradient(45deg, #050608 0, #050608 2px, #0a0b0e 2px, #0a0b0e 6px);
+            
+            --border-metal: 1px solid rgba(255,255,255,0.08);
+            --shadow-3d: 10px 10px 30px rgba(0,0,0,0.8), -2px -2px 10px rgba(255,255,255,0.03);
+            --inner-bevel: inset 1px 1px 2px rgba(255,255,255,0.1), inset -1px -1px 2px rgba(0,0,0,0.5);
+
+            --font-head: 'Orbitron', sans-serif;
             --font-tech: 'Rajdhani', sans-serif;
             --font-num: 'Teko', sans-serif;
-            --font-head: 'Orbitron', sans-serif;
         }
 
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        
         body { 
-            margin: 0; padding: 0; font-family: var(--font-tech); 
-            background: var(--bg); color: #fff; padding-bottom: 90px; 
-            background-image: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
+            margin: 0; padding: 0 0 110px 0; 
+            font-family: var(--font-tech); 
+            background-color: #030405;
+            background-image: 
+                radial-gradient(circle at 100% 0%, rgba(212, 255, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+                var(--carbon-bg);
+            color: #fff; overflow-x: hidden;
         }
         
-        .header { 
-            text-align: center; padding: 25px 20px; 
-            background: linear-gradient(180deg, #000 0%, rgba(20, 25, 0, 0.9) 100%);
-            border-bottom: 1px solid rgba(212, 255, 0, 0.2); position: relative; z-index: 10;
-        }
-        .main-title { font-family: var(--font-head); font-weight: 900; font-size: 28px; color: #fff; line-height: 1; letter-spacing: 2px; text-shadow: 0 0 20px var(--primary-glow); }
-        .sub-title { font-family: var(--font-tech); font-size: 11px; color: var(--primary); letter-spacing: 3px; font-weight: 800; margin-top: 8px; display: inline-block; border-bottom: 2px solid var(--primary); padding-bottom: 3px; }
+        /* --- HEADER --- */
+        .header { text-align: center; padding-top: 35px; margin-bottom: 20px; position: relative; z-index: 5; } 
+        .main-title { font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: clamp(22px, 7.5vw, 34px); white-space: nowrap; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; text-shadow: 0 0 10px rgba(255,255,255,0.3); background: linear-gradient(180deg, #FFFFFF 0%, #D0D5DD 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sub-title { font-family: var(--font-tech); font-weight: 800; font-size: clamp(10px, 4vw, 13px); white-space: nowrap; color: var(--kc-lime); letter-spacing: 4px; text-transform: uppercase; margin-top: 8px; text-shadow: 0 0 8px rgba(212,255,0,0.3); }
 
-        .tiktok-badge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 15px; padding: 6px 15px; background: linear-gradient(45deg, #000000, #111111); border: 1px solid var(--primary); border-radius: 20px; color: #fff; text-decoration: none; font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 0 10px rgba(212, 255, 0, 0.2); }
+        .tiktok-badge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 15px; padding: 6px 16px; background: var(--metal-dark); border: var(--border-metal); border-radius: 20px; color: #fff; text-decoration: none; font-family: var(--font-tech); font-weight: 800; font-size: 11px; letter-spacing: 1px; box-shadow: var(--shadow-3d); transition: 0.3s; }
         .tiktok-badge:active { transform: scale(0.95); }
-        .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
+        .tiktok-badge i { color: var(--kc-lime); font-size: 14px; text-shadow: 0 0 10px var(--kc-lime); }
 
-        .container { padding: 20px; }
-        #db-status { text-align: center; font-size: 11px; color: #555; margin-bottom: 20px; font-family: var(--font-head); letter-spacing: 1px; font-weight: bold; }
+        /* --- CONTAINER & INPUTS --- */
+        .container { padding: 0 20px; position: relative; z-index: 5;}
+        #db-status { text-align: center; font-size: 11px; color: #8892B0; margin-bottom: 20px; font-family: var(--font-head); letter-spacing: 2px; font-weight: bold; }
+        
         .input-group { position: relative; margin-bottom: 15px; }
-        .input-icon { position: absolute; left: 15px; top: 14px; color: var(--primary); font-family: var(--font-head); font-size: 12px; z-index: 2; font-weight: bold; }
+        .input-icon { position: absolute; left: 15px; top: 16px; color: var(--kc-lime); font-family: var(--font-head); font-style: italic; font-size: 10px; z-index: 2; font-weight: 900; letter-spacing: 1px;}
         
-        .form-control { width: 100%; padding: 14px 10px 14px 60px; background: rgba(10, 12, 0, 0.8); border: 1px solid #333; border-radius: 6px; color: #fff; font-family: var(--font-tech); font-weight: 700; font-size: 16px; box-sizing: border-box; transition: 0.3s; text-transform: uppercase; }
-        .form-control:focus { border-color: var(--primary); outline: none; background: #000; box-shadow: 0 0 15px var(--primary-dim); }
-        .form-control::placeholder { color: #666; font-weight: 600; }
-        .form-control.gps-active { border-color: var(--green); color: var(--green); background: rgba(0, 50, 0, 0.2); }
+        .form-control { width: 100%; padding: 14px 10px 14px 70px; background: var(--metal-dark); border: var(--border-metal); border-radius: 8px; color: #fff; font-family: var(--font-tech); font-weight: 700; font-size: 16px; box-sizing: border-box; transition: 0.3s; text-transform: uppercase; box-shadow: var(--inner-bevel); }
+        .form-control:focus { border-color: var(--kc-lime); outline: none; background: #000; box-shadow: 0 0 15px rgba(212,255,0,0.2); }
+        .form-control::placeholder { color: #555; font-weight: 600; }
+        .form-control.gps-active { border-color: var(--kc-lime); color: var(--kc-lime); background: rgba(212, 255, 0, 0.05); }
 
-        .gps-trigger { position: absolute; right: 10px; top: 10px; background: rgba(212, 255, 0, 0.1); border: 1px solid var(--primary); color: var(--primary); width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .gps-trigger:active { background: var(--primary); color: #000; }
-        .btn-add { width: 100%; background: rgba(255,255,255,0.03); border: 1px dashed #555; color: #888; border-radius: 6px; padding: 12px; font-family: var(--font-tech); font-weight: bold; font-size: 14px; cursor: pointer; margin-bottom: 20px; transition: 0.2s; }
-        .btn-add:active { background: rgba(212, 255, 0, 0.1); color: var(--primary); border-color: var(--primary); }
+        .gps-trigger { position: absolute; right: 10px; top: 10px; background: rgba(212, 255, 0, 0.1); border: 1px solid var(--kc-lime); color: var(--kc-lime); width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .gps-trigger:active { background: var(--kc-lime); color: #000; }
+        
+        .btn-add { width: 100%; background: rgba(255,255,255,0.02); border: 1px dashed #555; color: #aaa; border-radius: 8px; padding: 12px; font-family: var(--font-tech); font-weight: 800; font-size: 14px; cursor: pointer; margin-bottom: 20px; transition: 0.2s; letter-spacing: 1px;}
+        .btn-add:active { background: rgba(212, 255, 0, 0.1); color: var(--kc-lime); border-color: var(--kc-lime); }
 
-        .btn-action { width: 100%; padding: 16px; color: #000; background: linear-gradient(135deg, var(--primary) 0%, #668000 100%); border: none; border-radius: 8px; font-family: var(--font-head); font-weight: 900; font-size: 18px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 25px rgba(212, 255, 0, 0.3); transition: 0.2s; margin-top: 10px; }
-        .btn-action:active { transform: scale(0.98); opacity: 0.9; }
+        /* --- ACTION BUTTON TACTICAL --- */
+        .btn-action { width: 100%; background: linear-gradient(180deg, #D4FF00 0%, #8DAA00 100%); border: none; color: #000; padding: 20px; position: relative; font-family: var(--font-logo); font-style: italic; font-weight: 900; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 2px 2px 2px rgba(255,255,255,0.5), inset -2px -2px 5px rgba(0,0,0,0.5); transition: 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; filter: drop-shadow(0 10px 15px rgba(212, 255, 0, 0.2)); }
+        .btn-action:active { transform: translateY(4px); background: linear-gradient(180deg, #8DAA00 0%, #5E7300 100%); box-shadow: inset 2px 2px 8px rgba(0,0,0,0.8); filter: drop-shadow(0 0px 0px transparent);}
 
-        .route-card { background: #0a0a0a; border: 1px solid #333; margin-top: 30px; padding: 20px; border-radius: 12px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .route-card.aman { border-left: 4px solid var(--green); }
-        .route-card.nekat { border-left: 4px solid var(--red); }
-        .card-title { font-family: var(--font-head); font-size: 16px; color: #fff; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #222; padding-bottom: 12px; }
-        .badge { font-family: var(--font-tech); font-weight: bold; padding: 3px 10px; font-size: 12px; border-radius: 4px; color: #000; letter-spacing: 1px; }
-        .badge.aman { background: var(--green); box-shadow: 0 0 10px rgba(57, 255, 20, 0.4); }
-        .badge.nekat { background: var(--red); color: #fff; box-shadow: 0 0 10px rgba(255, 0, 60, 0.4); }
+        /* --- RESULTS AREA --- */
+        .route-card { background: var(--metal-dark); border: var(--border-metal); margin-top: 30px; padding: 20px; border-radius: 12px; position: relative; box-shadow: var(--shadow-3d); }
+        .route-card.aman { border-left: 4px solid var(--kc-lime); }
+        .route-card.nekat { border-left: 4px solid var(--danger); }
+        
+        .card-title { font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: 16px; color: #fff; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; letter-spacing: 1px;}
+        .badge { font-family: var(--font-tech); font-weight: 900; padding: 4px 10px; font-size: 11px; border-radius: 4px; color: #000; letter-spacing: 1px; font-style: normal;}
+        .badge.aman { background: var(--kc-lime); box-shadow: 0 0 10px rgba(212, 255, 0, 0.4); }
+        .badge.nekat { background: var(--danger); color: #fff; box-shadow: 0 0 10px rgba(255, 0, 60, 0.4); }
 
-        .timeline { position: relative; padding-left: 25px; border-left: 1px dashed #444; margin-left: 10px; }
+        .timeline { position: relative; padding-left: 25px; border-left: 2px dashed #444; margin-left: 10px; }
         .t-item { position: relative; margin-bottom: 25px; }
-        .t-dot { position: absolute; left: -31px; top: 5px; width: 12px; height: 12px; background: #000; border: 2px solid var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary-glow); }
-        .t-info { background: rgba(212, 255, 0, 0.03); padding: 12px; border: 1px solid #222; border-radius: 6px; }
-        .t-name { font-family: var(--font-tech); font-weight: 800; font-size: 18px; color: var(--primary); line-height: 1.2; text-transform: uppercase; }
-        .t-meta { font-size: 12px; color: #aaa; display: flex; justify-content: space-between; margin-top: 8px; font-family: var(--font-tech); font-weight: 600; }
-        .t-bat { font-weight: bold; font-family: var(--font-num); font-size: 18px; }
+        .t-dot { position: absolute; left: -32px; top: 5px; width: 14px; height: 14px; background: #000; border: 2px solid var(--kc-lime); border-radius: 50%; box-shadow: 0 0 10px rgba(212,255,0,0.5); }
+        .t-info { background: rgba(255,255,255,0.02); padding: 15px; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; box-shadow: var(--inner-bevel);}
+        .t-name { font-family: var(--font-tech); font-weight: 900; font-size: 18px; color: #fff; line-height: 1.2; text-transform: uppercase; letter-spacing: 1px;}
+        .t-meta { font-size: 12px; color: #8892B0; display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-family: var(--font-tech); font-weight: 800; }
+        .t-bat { font-weight: 600; font-family: var(--font-num); font-size: 24px; line-height: 1;}
         
-        .bat-ok { color: var(--green); }
-        .bat-low { color: var(--red); animation: blink 1s infinite; }
+        .bat-ok { color: var(--kc-lime); }
+        .bat-low { color: var(--danger); animation: blink 1s infinite; text-shadow: 0 0 10px var(--danger);}
 
-        .dest-info { margin-top: 20px; padding: 15px; background: rgba(212, 255, 0, 0.05); border: 1px solid var(--primary); border-radius: 6px; }
-        .dest-label { font-size: 10px; color: var(--primary); letter-spacing: 2px; font-weight: bold; margin-bottom: 5px; font-family: var(--font-head); }
-        .dest-val { font-family: var(--font-tech); font-weight: 800; font-size: 20px; color: #fff; text-transform: uppercase; }
+        .dest-info { margin-top: 20px; padding: 15px; background: rgba(212, 255, 0, 0.05); border: 1px solid var(--kc-lime); border-radius: 8px; box-shadow: inset 0 0 20px rgba(212,255,0,0.05);}
+        .dest-label { font-size: 10px; color: var(--kc-lime); letter-spacing: 2px; font-weight: 900; margin-bottom: 5px; font-family: var(--font-head); font-style: italic;}
+        .dest-val { font-family: var(--font-num); font-weight: 600; font-size: 26px; color: #fff; text-transform: uppercase; line-height: 1; margin-bottom: 5px;}
 
-        #map { height: 350px; width: 100%; background: #e5e5e5; border: 1px solid #333; margin-top: 25px; border-radius: 12px; }
+        #map { height: 350px; width: 100%; background: #111; border: var(--border-metal); margin-top: 25px; border-radius: 12px; filter: grayscale(20%) contrast(120%);}
         
-        #loading-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 99999; display: none; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(5px); }
-        .scanner-line { width: 60px; height: 60px; border: 3px solid #222; border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 30px var(--primary-glow); }
-        .loading-text { font-family: var(--font-head); color: var(--primary); margin-top: 25px; letter-spacing: 3px; font-size: 14px; animation: blink 1.5s infinite; }
+        /* --- ANIMASI SCANNING LOGO (LOADING SCREEN) --- */
+        #loading-overlay { position: fixed; inset: 0; background: rgba(3,4,5,0.9); z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);}
+        .scanner-container { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .scanner-logo { font-size: 80px; color: #222; }
+        .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--kc-lime); box-shadow: 0 0 15px 2px var(--kc-lime); opacity: 0; }
+        .loading-text { font-family: var(--font-head); font-style: italic; font-weight:900; color: var(--kc-lime); font-size: 14px; letter-spacing: 4px; animation: blink 1s infinite; text-shadow: 0 0 10px var(--kc-lime);}
+        
+        .scanning-active .scanline { animation: scan-anim 2s linear infinite; opacity: 1;}
+        .scanning-active .scanner-logo { animation: logo-reveal 2s linear infinite; }
 
-        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 2000; }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; transition: 0.3s; height: 100%; }
-        .nav-item.active { color: var(--primary); text-shadow: 0 0 15px var(--primary-glow); }
-        .nav-item.center-btn { transform: translateY(-30px); }
-        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,0,0,0.5); font-size: 26px; color: #555; position: relative; z-index: 10; transition: transform 0.2s; }
-        .center-icon-box:active { transform: scale(0.9); }
-        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed #333; }
-        .nav-icon { font-size: 22px; margin-bottom: 5px; }
-        .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; margin-top: 4px; }
+        @keyframes scan-anim { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
+        @keyframes logo-reveal { 0%, 100% { color: #222; filter: none; } 50% { color: var(--kc-lime); filter: drop-shadow(0 0 15px var(--kc-lime)); } }
+
+        /* --- DOCK NAV BAWAH --- */
+        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 1px solid rgba(212, 255, 0, 0.3); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 20000; box-shadow: 0 -5px 20px rgba(212, 255, 0, 0.05);}
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; height: 100%; }
+        .nav-item.active { opacity: 1; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.4); }
+        .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
+        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--kc-lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--kc-lime); position: relative; box-shadow: 0 0 15px rgba(212, 255, 0, 0.3);}
+        .nav-text { font-family: var(--font-head); font-style: italic; font-size: 9px; font-weight: 900; letter-spacing: 1.5px; margin-top: 6px; text-transform: uppercase;}
 
         @keyframes blink { 0%,100% {opacity:1} 50% {opacity:0.4} }
-        @keyframes spin { 100% {transform: rotate(360deg);} }
     </style>
 </head>
 <body>
 
     <div id="loading-overlay">
-        <div class="scanner-line"></div>
-        <div class="loading-text">ANALISA RUTE...</div>
+        <div class="scanner-container">
+            <i class="fas fa-route scanner-logo"></i>
+            <div class="scanline"></div>
+        </div>
+        <div class="loading-text" id="loadingText">ANALISA RUTE SATELIT...</div>
     </div>
 
     <div class="header">
-        <div class="main-title">TACTICAL PLANNER</div>
+        <h1 class="main-title">TACTICAL PLANNER</h1>
         <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div><br>
         
         <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge">
@@ -147,8 +171,8 @@
         <button class="btn-add" onclick="addStop()">+ TAMBAH TITIK SINGGAH</button>
 
         <div class="input-group">
-            <div class="input-icon"><i class="fas fa-bolt"></i></div>
-            <input type="number" id="battery" class="form-control" value="100" placeholder="BATERAI AWAL (%)" style="color:var(--primary); font-family:'Teko'; font-size:24px;">
+            <div class="input-icon" style="font-size: 16px; top: 12px;"><i class="fas fa-bolt"></i></div>
+            <input type="number" id="battery" class="form-control" value="100" placeholder="BATERAI AWAL (%)" style="color:var(--kc-lime); font-family:var(--font-num); font-size:28px; padding-top:8px; padding-bottom:8px;">
         </div>
 
         <button class="btn-action" onclick="calculateRoute()">ANALISA RUTE</button>
@@ -159,14 +183,14 @@
 
     <div class="dock-container">
         <a href="lokasifc.html" class="nav-item">
-            <i class="fas fa-map-marked-alt nav-icon"></i><span class="nav-text">PETA FC</span>
+            <i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">PETA FC</span>
         </a>
-        <a href="system.html" class="nav-item center-btn">
-            <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
-            <span class="nav-text" style="margin-top:8px;">SYSTEM</span>
+        <a href="antrian.html" class="nav-item center-btn">
+            <div class="center-icon-box"><i class="fas fa-qrcode"></i></div>
+            <span class="nav-text" style="color:var(--kc-lime);">ANTRIAN</span>
         </a>
         <div class="nav-item active">
-            <i class="fas fa-route nav-icon"></i><span class="nav-text">TRIP PLAN</span>
+            <i class="fas fa-route" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">TRIP PLAN</span>
         </div>
     </div>
 
@@ -179,7 +203,6 @@
         let fcLocations = [];
         let mapLayers = L.layerGroup().addTo(map);
         
-        // KITA GUNAKAN URL ASLI DARI INDEX.HTML
         const URL_LOKASI = "https://docs.google.com/spreadsheets/d/1EJOTMMfGpBMFPqR0LzbMbh7tZUcTCZld4x387OO9aJM/export?format=csv";
 
         let gpsStartCoords = null; 
@@ -199,16 +222,15 @@
                     let latVal = parseFloat(latStr);
                     let lngVal = parseFloat(lngStr);
                     
-                    // Validasi ketat persis seperti index.html
                     if(c.length < 5 || isNaN(latVal) || isNaN(lngVal)) return;
 
                     fcLocations.push({ name: name, lat: latVal, lng: lngVal });
                 });
                 document.getElementById('db-status').innerHTML = 'SYSTEM ONLINE - ' + fcLocations.length + ' FC DETECTED';
-                document.getElementById('db-status').style.color = 'var(--primary)';
+                document.getElementById('db-status').style.color = 'var(--kc-lime)';
             } catch(e) {
                 document.getElementById('db-status').innerHTML = 'GAGAL TERHUBUNG KE SATELIT';
-                document.getElementById('db-status').style.color = 'red';
+                document.getElementById('db-status').style.color = 'var(--danger)';
             }
         };
 
@@ -246,15 +268,26 @@
         function addStop() {
             const div = document.createElement('div');
             div.className = 'input-group';
-            div.innerHTML = `<div class="input-icon" style="font-size:10px; top:16px;">STOP</div><input type="text" class="form-control loc-input" placeholder="NAMA KOTA / JALAN"><div style="position:absolute; right:12px; top:12px; font-size:18px; color:var(--red); cursor:pointer;" onclick="this.parentElement.remove()"><i class="fas fa-times-circle"></i></div>`;
+            div.innerHTML = `<div class="input-icon" style="top:16px;">STOP</div><input type="text" class="form-control loc-input" placeholder="NAMA KOTA / JALAN"><div style="position:absolute; right:12px; top:12px; font-size:18px; color:var(--danger); cursor:pointer;" onclick="this.parentElement.remove()"><i class="fas fa-times-circle"></i></div>`;
             document.getElementById('waypoints').insertBefore(div, document.getElementById('waypoints').lastElementChild);
+        }
+
+        // FUNGSI ANIMASI SCANNING
+        function triggerScanning() {
+            const screen = document.getElementById('loading-overlay');
+            screen.style.display = 'flex';
+            screen.classList.add('scanning-active');
+        }
+        function stopScanning() {
+            const screen = document.getElementById('loading-overlay');
+            screen.classList.remove('scanning-active');
+            screen.style.display = 'none';
         }
 
         async function calculateRoute() {
             const inputs = document.querySelectorAll('.loc-input');
             const batStart = parseInt(document.getElementById('battery').value);
             const resArea = document.getElementById('result-area');
-            const loading = document.getElementById('loading-overlay');
             const mapDiv = document.getElementById('map');
             
             let inputTexts = [];
@@ -266,7 +299,7 @@
             
             if(inputTexts.length < 2) return alert("MASUKKAN LOKASI AWAL & TUJUAN!");
 
-            loading.style.display = 'flex';
+            triggerScanning(); // UI Baru Loading
             mapLayers.clearLayers();
             resArea.innerHTML = '';
             mapDiv.style.display = 'none';
@@ -312,7 +345,7 @@
             } catch (e) {
                 alert(e.message);
             } finally {
-                loading.style.display = 'none';
+                stopScanning();
             }
         }
 
@@ -379,12 +412,12 @@
                     const dist = leg.distance / 1000;
                     const used = Math.ceil(dist);
                     currentBat -= used;
-                    distInfo = `<span style="color:var(--primary); font-size:11px;">⬇ Jarak Tempuh: ${dist.toFixed(1)} KM (-${used}%)</span>`;
+                    distInfo = `<span style="color:var(--kc-lime); font-size:12px;"><i class="fas fa-arrow-down" style="margin-right:4px;"></i> Jarak Tempuh: ${dist.toFixed(1)} KM (-${used}%)</span>`;
                 }
 
                 if (pt.isCharge) {
                     currentBat = 100; 
-                    distInfo += ` <span style="color:var(--green); font-weight:bold;">[ ISI PENUH ]</span>`;
+                    distInfo += ` <span style="color:var(--kc-lime); font-weight:900; background:rgba(212,255,0,0.1); padding:2px 6px; border-radius:4px; font-family:var(--font-tech);">[ ISI PENUH ]</span>`;
                 }
 
                 if (currentBat < 20) batClass = "bat-low";
@@ -397,8 +430,8 @@
                 <div class="dest-info">
                     <div class="dest-label"><i class="fas fa-plug"></i> CHARGER TERDEKAT DARI TUJUAN</div>
                     <div class="dest-val">${nearestEnd.name}</div>
-                    <div style="font-size:12px; color:#aaa; margin-top:3px;">Jarak Udara: ${nearestEnd.dist.toFixed(1)} KM</div>
-                    <a href="http://googleusercontent.com/maps.google.com/maps?q=${nearestEnd.lat},${nearestEnd.lng}" target="_blank" style="color:var(--primary); font-size:12px; font-weight:bold; display:block; margin-top:8px; text-decoration:none;"><i class="fas fa-location-arrow"></i> BUKA MAPS →</a>
+                    <div style="font-size:12px; color:#8892B0; margin-top:5px; font-weight:800;">Jarak Udara: ${nearestEnd.dist.toFixed(1)} KM</div>
+                    <a href="http://googleusercontent.com/maps.google.com/maps?q=${nearestEnd.lat},${nearestEnd.lng}" target="_blank" style="color:var(--kc-lime); font-size:14px; font-weight:900; display:inline-block; margin-top:10px; text-decoration:none; background:rgba(212,255,0,0.1); padding:8px 12px; border-radius:4px;"><i class="fas fa-location-arrow"></i> BUKA MAPS</a>
                 </div>`;
             }
 
@@ -408,7 +441,8 @@
             });
             gmapsLink = gmapsLink.slice(0, -4); 
 
-            html += `</div><a href="${gmapsLink}" target="_blank" class="btn-action" style="margin-top:20px; text-decoration:none; display:block; text-align:center; font-size:18px;"><i class="fas fa-map"></i> MULAI NAVIGASI</a></div>`;
+            // Tombol Mulai Navigasi disamakan dengan gaya Tactical
+            html += `</div><a href="${gmapsLink}" target="_blank" style="text-decoration:none;"><div class="btn-action" style="margin-top:25px;"><i class="fas fa-map"></i> MULAI NAVIGASI</div></a></div>`;
             area.innerHTML = html;
         }
 
@@ -424,7 +458,7 @@
         }
 
         async function drawComplexRoute(start, mid, end) {
-            drawMap([start, {lat:mid.lat, lon:mid.lng, name:mid.name}, end], '#0088FF');
+            drawMap([start, {lat:mid.lat, lon:mid.lng, name:mid.name}, end], '#D4FF00');
         }
 
         async function getGeo(q) {

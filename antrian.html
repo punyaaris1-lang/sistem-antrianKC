@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>KARTIKA CHANDRA - DASHBOARD</title>
+    <title>FC KARTIKA CHANDRA - ANTRIAN SMART</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "2.6_PaddingFix"; 
+        const CURRENT_VERSION = "4.0_Smart_Greeting_AutoSlot"; 
         if (localStorage.getItem("app_version") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -26,288 +26,367 @@
         }
     </script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@500;600;700;800;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,700;1,900&family=Rajdhani:wght@500;600;700;800;900&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* === TEMA BARU KC (NEON YELLOW/LIME & BLACK) === */
+        /* === TEMA TACTICAL LUXURY (NEON LIME + TITANIUM) === */
         :root {
-            --primary: #D4FF00;       /* Kuning Neon / Lime Logo Baru */
-            --secondary: #E5FF66;     /* Neon Terang */
-            --bg-dark: #050505;
-            --glass-panel: rgba(12, 12, 15, 0.95);
-            --border-color: rgba(212, 255, 0, 0.3);
-            --text-color: #fff;
-            --btn-grad: linear-gradient(135deg, #D4FF00 0%, #668000 100%);
-            --ornament-display: none; 
-            --bg-pattern: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
+            --kc-lime: #D4FF00;       
+            --kc-silver: #E2E8F0;
+            --danger: #FF003C;
+            
+            --metal-dark: linear-gradient(145deg, #1A1D24 0%, #0D0F12 100%);
+            --metal-light: linear-gradient(145deg, #2D333B 0%, #1E2229 100%);
+            --carbon-bg: repeating-linear-gradient(45deg, #050608 0, #050608 2px, #0a0b0e 2px, #0a0b0e 6px);
+            
+            --border-metal: 1px solid rgba(255,255,255,0.08);
+            --shadow-3d: 10px 10px 30px rgba(0,0,0,0.8), -2px -2px 10px rgba(255,255,255,0.03);
+            --inner-bevel: inset 1px 1px 2px rgba(255,255,255,0.1), inset -1px -1px 2px rgba(0,0,0,0.5);
+
+            --font-logo: 'Orbitron', sans-serif;
+            --font-data: 'Rajdhani', sans-serif;
+            --font-num: 'Teko', sans-serif;
         }
 
-        /* === TEMA RAMADAN KC (HIJAU ZAMRUD/EMAS) - AKTIF 19 FEB === */
-        body.ramadan-mode {
-            --primary: #FFD700;       
-            --secondary: #00FF88;     
-            --bg-dark: #011205;       
-            --glass-panel: rgba(5, 20, 10, 0.95);
-            --border-color: rgba(0, 255, 136, 0.4);
-            --btn-grad: linear-gradient(135deg, #00b09b, #96c93d); 
-            --ornament-display: block; 
-            --bg-pattern: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px), radial-gradient(rgba(255,215,0,0.15) 1px, transparent 2px);
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            margin: 0; padding: 0 0 110px 0; 
+            font-family: var(--font-data); 
+            background-color: #030405;
+            background-image: 
+                radial-gradient(circle at 100% 0%, rgba(212, 255, 0, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 0% 100%, rgba(255, 255, 255, 0.03) 0%, transparent 40%),
+                var(--carbon-bg);
+            color: #fff; overflow-x: hidden;
         }
 
-        body {
-            height: 100%; margin: 0; padding: 0;
-            background-color: var(--bg-dark);
-            background-image: var(--bg-pattern);
-            background-size: 30px 30px, 30px 30px, 60px 60px;
-            color: var(--text-color); font-family: 'Inter', sans-serif;
-            overflow: hidden; display: flex; flex-direction: column;
-            transition: all 0.5s ease;
-        }
+        /* --- DEKORASI HUD & CLOCK --- */
+        .hud-top { position: absolute; top: 15px; left: 20px; right: 20px; height: 1px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 10; }
+        .live-tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-data); font-size: 8px; color: var(--kc-lime); letter-spacing: 2px; }
+        .live-tag i { color: var(--kc-lime); animation: blink 1s infinite; font-size: 6px; text-shadow: 0 0 5px var(--kc-lime);}
 
         /* --- ORNAMEN RAMADAN --- */
-        .ramadan-ornaments { display: var(--ornament-display); pointer-events: none; position: absolute; width: 100%; height: 200px; top:0; left:0; z-index: 1; overflow: hidden; }
-        .hanging-item { position: absolute; top: -10px; display: flex; flex-direction: column; align-items: center; transform-origin: top center; animation: swing 3s infinite ease-in-out alternate; }
-        .hi-string { width: 2px; height: 50px; background: var(--primary); }
-        .hi-body { font-size: 36px; color: var(--primary); filter: drop-shadow(0 0 15px var(--primary)); }
-        .pos-1 { left: 25px; animation-delay: 0.2s; } .pos-2 { right: 25px; animation-delay: 0.5s; }
-        @keyframes swing { 0% { transform: rotate(5deg); } 100% { transform: rotate(-5deg); } }
-
-        /* LOADING */
-        #loading-screen { position: fixed; inset: 0; background: #000; z-index: 50000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease-out; }
-        .load-logo { width: 120px; margin-bottom: 20px; animation: pulseText 1.5s infinite; filter: drop-shadow(0 0 15px var(--primary)); }
-        .loader-text { font-family: 'Rajdhani'; font-weight:900; color: var(--primary); font-size: 16px; letter-spacing: 3px; animation: pulseText 1s infinite; }
-
-        /* HEADER */
-        .top-area { height: 22vh; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; padding-top: 10px; }
-        .logo-main-box { width: 65%; max-width: 200px; display: flex; align-items: center; justify-content: center; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.4)); }
-        body.ramadan-mode .logo-main-box { filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.4)); }
-        .logo-img-main { width: 100%; height: auto; object-fit: contain; }
-
-        /* PANEL BAWAH */
-        .bottom-panel {
-            flex: 1; width: 100%; background: var(--glass-panel); backdrop-filter: blur(10px);
-            border-top: 2px solid var(--primary); border-radius: 35px 35px 0 0;
-            /* PADDING BAWAH DITAMBAH JADI 130px AGAR SOREFALTO BISA NAIK SEDIKIT SAAT DI SCROLL */
-            padding: 25px 20px 130px 20px; 
-            box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;
-            box-shadow: 0 -10px 50px rgba(0,0,0,0.8); position: relative; z-index: 2;
-            overflow-y: auto; 
+        .ramadan-ornaments { position: absolute; width: 100%; height: 150px; top:0; left:0; z-index: 20; pointer-events: none; }
+        .hanging-item { position: absolute; top: -10px; display: flex; flex-direction: column; align-items: center; transform-origin: top center; animation: swing 4s infinite ease-in-out alternate; opacity: 0.3; }
+        .hi-string { width: 1px; height: 40px; background: linear-gradient(180deg, transparent, var(--kc-lime)); }
+        .pos-1 { left: 30px; animation-delay: 0.2s; } 
+        .pos-1 .hi-body { color: transparent; -webkit-text-stroke: 1px var(--kc-lime); font-size: 18px; filter: drop-shadow(0 0 5px var(--kc-lime)); margin-top: 5px; }
+        .pos-2 { right: 30px; animation-delay: 0.5s; pointer-events: auto; cursor: pointer; opacity: 1; }
+        .pos-2:hover { opacity: 1; }
+        .pos-2:active .hi-body { transform: scale(0.9); }
+        .pos-2 .hi-body { color: transparent; -webkit-text-stroke: 1px var(--kc-lime); font-size: 28px; filter: drop-shadow(0 0 8px var(--kc-lime)); margin-top: 8px; transition: 0.3s; }
+        .pos-2::after { 
+            content: 'TAP HERE!'; position: absolute; bottom: -22px; 
+            font-family: var(--font-logo); font-style: italic; font-size: 9px; font-weight: 900; 
+            color: var(--kc-lime); letter-spacing: 1px; 
+            animation: fast-blink 1s infinite alternate; white-space: nowrap; 
         }
 
-        .header-section { text-align: center; margin-bottom: 5px; position: relative; z-index: 20; }
-        .live-tag { display: inline-block; background: rgba(255,255,255,0.05); border: 1px solid var(--primary); padding: 4px 12px; border-radius: 20px; color: var(--primary); font-family: 'Rajdhani'; font-weight: 800; font-size: 12px; margin-bottom: 5px; letter-spacing: 1px; }
-        h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(28px, 4vh, 38px); font-weight: 900; margin: 0; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: pointer; letter-spacing: 1px; }
-        .sub-text { color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-top: 5px; }
+        /* --- HEADER & LOGO --- */
+        .header-panel { padding: 40px 15px 25px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 5; text-align: center; width: 100%; }
+        .logo-ring { width: 110px; height: 110px; background: var(--metal-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-3d); position: relative; border: var(--border-metal); }
+        .logo-ring::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--kc-lime); border-right-color: var(--kc-lime); animation: spin 4s linear infinite; opacity: 0.5; }
+        .logo-ring::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: var(--metal-light); box-shadow: var(--inner-bevel); z-index: 1; }
+        .logo-ring i { font-size: 45px; color: var(--kc-lime); position: relative; z-index: 2; filter: drop-shadow(0 0 5px rgba(212,255,0,0.5)); transform: skew(-10deg); }
 
-        /* --- TIKTOK BADGE --- */
-        .tiktok-badge {
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            margin-top: 10px; padding: 6px 15px;
-            background: linear-gradient(45deg, #000000, #111111);
-            border: 1px solid var(--primary);
-            border-radius: 20px; color: #fff; text-decoration: none;
-            font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 800;
-            letter-spacing: 1px; transition: 0.3s;
-            box-shadow: 0 0 10px rgba(212, 255, 0, 0.2);
+        .brand-title {
+            font-family: var(--font-logo); font-style: italic; font-weight: 900;
+            font-size: clamp(22px, 7.5vw, 34px); white-space: nowrap; 
+            color: #fff; letter-spacing: 1px; margin: 20px 0 0 0; text-transform: uppercase; line-height: 1; 
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+            background: linear-gradient(180deg, #FFFFFF 0%, #D0D5DD 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
+        .brand-subtitle { font-family: var(--font-data); font-weight: 800; font-size: clamp(10px, 4vw, 13px); white-space: nowrap; color: var(--kc-lime); letter-spacing: 4px; text-transform: uppercase; margin-top: 8px; text-shadow: 0 0 8px rgba(212,255,0,0.3); }
+
+        .tiktok-badge { display: inline-flex; align-items: center; justify-content: center; gap: 6px; margin-top: 15px; padding: 6px 16px; background: var(--metal-dark); border: var(--border-metal); border-radius: 20px; color: #fff; text-decoration: none; font-family: var(--font-data); font-weight: 800; font-size: 11px; letter-spacing: 1px; box-shadow: var(--shadow-3d); transition: 0.3s; }
         .tiktok-badge:active { transform: scale(0.95); }
-        .tiktok-badge i { color: #fff; font-size: 14px; text-shadow: -1px -1px 0 #00f2fe, 1px 1px 0 #fe0979; }
+        .tiktok-badge i { color: var(--kc-lime); text-shadow: 0 0 10px var(--kc-lime); font-size: 14px;}
 
-        /* --- WIDGET RAMADAN --- */
-        .ramadan-widget {
-            display: none; 
-            background: linear-gradient(135deg, rgba(50,0,80,0.6) 0%, rgba(0,60,30,0.6) 100%);
-            border: 1px solid var(--primary); border-radius: 15px; padding: 12px 15px;
-            align-items: center; justify-content: space-between; position: relative; overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.15); margin-bottom: 5px;
-        }
-        body.ramadan-mode .ramadan-widget { display: flex; }
+        /* --- DASHBOARD GAUGE --- */
+        .dashboard-container { padding: 0 20px; margin-top: 5px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; z-index: 20;}
+        .gauge-card { background: var(--metal-dark); border: var(--border-metal); border-radius: 12px; padding: 15px; position: relative; overflow: hidden; box-shadow: var(--shadow-3d); cursor: pointer; transition: 0.2s;}
+        .gauge-card:active { transform: scale(0.96); box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+        .gauge-card::before { content: ''; position: absolute; top: 0; left: 0; width: 30px; height: 3px; background: var(--kc-lime); box-shadow: 0 0 10px var(--kc-lime); }
         
-        .ramadan-widget::before { content:''; position: absolute; top:0; left:-100%; width:50%; height:100%; background: linear-gradient(90deg, transparent, rgba(212, 255, 0, 0.2), transparent); transform: skewX(-20deg); animation: shine 3s infinite; pointer-events: none; }
-        .rw-icon { font-size: 24px; color: var(--primary); filter: drop-shadow(0 0 10px var(--primary)); margin-right: 10px; animation: float 3s infinite ease-in-out; }
-        .rw-center { flex: 1; }
-        .rw-label { font-size: 10px; color: #ccc; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
-        .rw-timer { font-family: 'Teko'; font-size: 32px; line-height: 0.9; color: #fff; text-shadow: 0 0 10px var(--primary); }
-        .rw-right { text-align: center; border-left: 1px solid rgba(255,255,255,0.2); padding-left: 15px; margin-left: 10px; }
-        .rw-target-lbl { font-size: 9px; color: var(--secondary); font-weight: 800; }
-        .rw-target-time { font-family: 'Orbitron'; font-size: 14px; color: #fff; font-weight: bold; }
-
-        /* STATS */
-        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-        .stat-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 18px; padding: 12px 10px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .stat-btn:active { background: rgba(255,255,255,0.1); border-color: var(--primary); }
-        .st-label { font-size: 11px; color: #aaa; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; letter-spacing: 1px; }
-        .st-val { font-family: 'Rajdhani', sans-serif; font-size: clamp(40px, 6vh, 50px); font-weight: 900; color: #fff; line-height: 1; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .st-hint { font-size: 10px; color: var(--primary); margin-top: 2px; font-weight: 700; letter-spacing: 1px; }
-
-        /* TOMBOL UTAMA */
-        .btn-main {
-            background: var(--btn-grad);
-            color: #000; width: 100%; padding: 18px; 
-            border: none; border-radius: 18px;
-            font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 900; 
-            text-transform: uppercase; cursor: pointer;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-top: 25px; margin-bottom: 5px; transition: 0.3s; flex-shrink: 0;
-        }
-        .btn-main:active { transform: scale(0.96); opacity: 0.9; }
-        body.ramadan-mode .btn-main { box-shadow: 0 5px 25px rgba(0, 255, 136, 0.3); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+        .gauge-lbl { font-family: var(--font-logo); font-style: italic; font-size: 10px; font-weight: 700; color: #FFFFFF; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; margin-bottom: 5px; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+        .gauge-lbl i { color: var(--kc-lime); font-size: 13px; }
         
-        .btn-monitor { display: none; width: 100%; padding: 15px; background: linear-gradient(90deg, #D4FF00, #7A9900); color: #000; border: none; border-radius: 15px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 20px rgba(212, 255, 0, 0.3); margin-bottom: 10px; }
+        .gauge-val-container { display: flex; align-items: baseline; gap: 5px; }
+        .gauge-val { font-family: var(--font-num); font-size: 50px; font-weight: 600; color: #fff; line-height: 0.9; }
+        .gauge-max { font-family: var(--font-data); font-weight: 700; font-size: 18px; color: #BBB; } 
+        
+        .progress-track { width: 100%; height: 4px; background: #111; border-radius: 2px; margin-top: 10px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.8); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #7A9900, var(--kc-lime)); width: 60%; box-shadow: 0 0 5px var(--kc-lime); }
+        
+        .gauge-desc { font-family: var(--font-data); font-size: 10px; font-weight: 800; color: var(--kc-lime); margin-top: 6px; text-transform: uppercase; letter-spacing: 1px;}
 
-        /* MODALS */
-        .modal-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 30000; display: none; align-items: center; justify-content: center; }
-        .modal-wrap.open { display: flex; animation: zoomIn 0.2s; }
-        .modal-panel { background: #0a0a0a; border: 2px solid var(--primary); width: 85%; max-width: 400px; padding: 25px; border-radius: 25px; box-shadow: 0 0 50px rgba(0,0,0,0.2); max-height: 90vh; display: flex; flex-direction: column; }
-        .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
-        .modal-h-title { font-family: 'Rajdhani'; font-size: 24px; font-weight: 900; color: #fff; }
-        .close-x { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; font-weight: bold; }
+        /* --- ACTION BUTTON --- */
+        .action-area { padding: 25px 20px; }
+        .btn-tactical { width: 100%; background: linear-gradient(180deg, #D4FF00 0%, #8DAA00 100%); border: none; color: #000; padding: 22px; position: relative; font-family: var(--font-logo); font-style: italic; font-weight: 900; font-size: 22px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px); box-shadow: inset 2px 2px 2px rgba(255,255,255,0.5), inset -2px -2px 5px rgba(0,0,0,0.5); transition: 0.1s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-wrapper { filter: drop-shadow(0 15px 20px rgba(212, 255, 0, 0.2)); }
+        .btn-tactical:active { transform: translateY(4px); background: linear-gradient(180deg, #8DAA00 0%, #5E7300 100%); box-shadow: inset 2px 2px 8px rgba(0,0,0,0.8); }
 
-        .slot-list-box { display: flex; flex-direction: column; gap: 10px; }
-        .slot-row { background: #151515; border-left: 4px solid #444; padding: 12px 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .slot-row.active { border-left-color: var(--primary); background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent); }
-        .slot-row.empty { border-left-color: #0f0; }
-        .slot-row.maintenance { border-left-color: #f00; background: rgba(255,0,0,0.1); }
+        .btn-monitor { display: none; width: 100%; padding: 15px; margin-top: 10px; background: transparent; border: 1px solid var(--kc-lime); color: var(--kc-lime); font-family: var(--font-data); font-weight: 900; font-size: 16px; cursor: pointer; text-transform: uppercase; border-radius: 8px;}
+        .btn-admin { display: none; width: 100%; padding: 15px; margin-top: 5px; background: transparent; border: 1px solid var(--danger); color: var(--danger); font-family: var(--font-data); font-weight: 900; font-size: 16px; cursor: pointer; text-transform: uppercase; border-radius: 8px;}
+
+        /* --- INFO PANEL SECURE --- */
+        .info-panel { margin: 0 20px 25px; background: var(--metal-dark); border: var(--border-metal); border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px; box-shadow: var(--shadow-3d); }
+        .info-icon { width: 40px; height: 40px; border-radius: 8px; background: var(--metal-light); box-shadow: var(--inner-bevel); display: flex; align-items: center; justify-content: center; color: var(--kc-lime); font-size: 18px; border: 1px solid rgba(255,255,255,0.05); }
+        .info-text { flex: 1; }
+        .it-title { font-family: var(--font-data); font-weight: 800; font-size: 14px; color: #fff; text-transform: uppercase; margin-bottom: 2px; }
+        .it-desc { font-family: var(--font-data); font-weight: 600; font-size: 11px; color: #AAA; } 
+
+        /* ========================================================= */
+        /* SEMUA MODAL SISTEM                                        */
+        /* ========================================================= */
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 50000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        
+        .modal-tactical { 
+            background: var(--metal-dark); border: var(--border-metal); 
+            border-top: 4px solid var(--kc-lime); border-radius: 16px; 
+            width: 85%; max-width: 380px; padding: 25px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 20px rgba(212,255,0,0.1); 
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .modal-tactical::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(212,255,0,0.02) 1px, transparent 1px); background-size: 100% 3px; pointer-events: none; z-index: 0; }
+        
+        .modal-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px; position: relative; z-index: 2;}
+        .modal-h-title { font-family: var(--font-logo); font-style: italic; font-size: 18px; font-weight: 900; color: var(--kc-lime); letter-spacing: 1px;}
+        .close-btn, .close-x { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; z-index: 10;}
+
+        /* MODAL KHUSUS RAMADAN */
+        .mh-title { font-family: var(--font-logo); font-style: italic; font-size: 12px; color: #fff; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; position: relative; z-index: 2;}
+        .time-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; border-left: 2px solid #333; position: relative; z-index: 2;}
+        .time-row.active { border-left-color: var(--kc-lime); background: linear-gradient(90deg, rgba(212,255,0,0.05), transparent); }
+        .tr-lbl { font-family: var(--font-data); font-size: 14px; font-weight: 800; color: #AAA; letter-spacing: 2px;}
+        .time-row.active .tr-lbl { color: var(--kc-lime); text-shadow: 0 0 10px rgba(212,255,0,0.3); }
+        .tr-val { font-family: var(--font-num); font-size: 55px; color: #fff; line-height: 0.9; font-weight: 600; letter-spacing: 2px;}
+        .time-row.active .tr-val { text-shadow: 0 0 15px rgba(255,255,255,0.4); }
+
+        /* MODAL PENGUMUMAN CERDAS (ADMIN) */
+        .announcement-box { border-top-color: var(--kc-lime); box-shadow: 0 0 40px rgba(212, 255, 0, 0.2); text-align: center;}
+        .ann-close-x { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 24px; font-weight: bold; cursor: pointer; transition: 0.2s; z-index: 10;}
+        .ann-close-x:hover { color: #fff; }
+        .announcement-box h2 { font-family: var(--font-logo); font-style: italic; color: #fff; font-size: 22px; margin: 0 0 15px 0; letter-spacing: 2px; position: relative; z-index: 2;}
+        .announcement-box p { font-family: var(--font-data); font-weight: 600; color: #ccc; font-size: 16px; margin-bottom: 20px; line-height: 1.5; position: relative; z-index: 2;}
+
+        /* MODAL GPS ERROR */
+        .gps-modal-box { border-top-color: var(--kc-lime); box-shadow: 0 0 60px rgba(212, 255, 0, 0.2); text-align: center; align-items: center; }
+        .gps-error-img { width: 120px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(212,255,0,0.4)); position: relative; z-index: 2;}
+        .gps-error-title { font-family: var(--font-logo); font-style: italic; font-size: 22px; color: var(--kc-lime); font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 0 0 10px rgba(212,255,0,0.3); position: relative; z-index: 2;}
+        .gps-error-desc { font-family: var(--font-data); color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; position: relative; z-index: 2;}
+
+        /* MODAL SUCCESS (GREETING) */
+        .success-box { text-align: center; }
+        #succTitle { font-family: var(--font-logo); font-style: italic; color: var(--kc-lime); font-size: 24px; margin-bottom: 15px; position: relative; z-index: 2; text-shadow: 0 0 10px rgba(212,255,0,0.5);}
+        #succMsg { font-family: var(--font-data); color: #fff; font-size: 18px; font-weight: 600; margin-bottom: 25px; position: relative; z-index: 2; line-height: 1.5;}
+
+        /* MODAL CONFIRM (CUSTOM) */
+        .confirm-modal-box { text-align: center; }
+        #modalTitle { font-family: var(--font-logo); font-style: italic; color: var(--kc-lime); font-size: 20px; margin-bottom: 10px; position: relative; z-index: 2;}
+        #modalMsg { font-family: var(--font-data); color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; position: relative; z-index: 2;}
+        #modalBtns { display: flex; gap: 10px; position: relative; z-index: 2; }
+        .btn-yes { flex: 1; background: var(--kc-lime); color: #000; padding: 12px; border-radius: 8px; font-family: var(--font-data); font-weight: 900; font-size: 16px; border: none; cursor: pointer; }
+        .btn-no { flex: 1; background: transparent; color: #fff; border: 1px solid #555; padding: 12px; border-radius: 8px; font-family: var(--font-data); font-weight: 900; font-size: 16px; cursor: pointer; }
+
+        /* --- ANIMASI SCANNING LOGO (LOADING SCREEN) --- */
+        #loading-screen { position: fixed; inset: 0; background: #030405; z-index: 99999; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);}
+        .scanner-container { position: relative; width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .scanner-logo { font-size: 80px; color: #222; }
+        .scanline { position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--kc-lime); box-shadow: 0 0 15px 2px var(--kc-lime); opacity: 0; }
+        .loading-text { font-family: var(--font-head); font-style: italic; font-weight:900; color: var(--kc-lime); font-size: 14px; letter-spacing: 4px; animation: blink 1s infinite; text-shadow: 0 0 10px var(--kc-lime);}
+        
+        .scanning-active .scanline { animation: scan-anim 2s linear infinite; opacity: 1;}
+        .scanning-active .scanner-logo { animation: logo-reveal 2s linear infinite; }
+
+        @keyframes scan-anim { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
+        @keyframes logo-reveal { 0%, 100% { color: #222; filter: none; } 50% { color: var(--kc-lime); filter: drop-shadow(0 0 15px var(--kc-lime)); } }
+
+        /* FORM INPUTS & LISTS */
+        .form-content { position: relative; z-index: 2; width: 100%; }
+        .inp-label { color: #8892B0; font-family: var(--font-data); font-size: 12px; font-weight: 800; margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .inp-box { width: 100%; padding: 14px; background: #0A0C0E; border: 1px solid rgba(255,255,255,0.1); color: #fff; font-family: var(--font-data); font-size: 18px; font-weight: 700; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; transition: 0.3s;}
+        .inp-box:focus { border-color: var(--kc-lime); box-shadow: 0 0 10px rgba(212,255,0,0.2); background: #000; }
+        
+        .btn-kirim { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--kc-lime), #8DAA00); border: none; border-radius: 8px; font-family: var(--font-logo); font-style: italic; font-weight: 900; font-size: 18px; cursor: pointer; margin-bottom: 10px; color: #000; }
+        .btn-batal { width: 100%; padding: 12px; background: transparent; border: 1px solid #555; color: #aaa; border-radius: 8px; font-family: var(--font-data); font-weight: 800; font-size: 16px; cursor: pointer; }
+
+        .slot-list-box { display: flex; flex-direction: column; gap: 10px; max-height: 60vh; overflow-y: auto; position: relative; z-index: 2; width: 100%;}
+        .slot-row { background: #0A0C0E; border-left: 3px solid #444; padding: 12px 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05);}
+        .slot-row.active { border-left-color: var(--kc-lime); background: linear-gradient(90deg, rgba(212,255,0,0.05), transparent); }
+        .slot-row.empty { border-left-color: #aaa; } 
+        .slot-row.maintenance { border-left-color: #555; background: rgba(255,255,255,0.05); } 
         .sr-left { display: flex; flex-direction: column; }
-        .sr-plat { font-family: 'Rajdhani'; font-size: 20px; font-weight: 800; color: #fff; }
-        .sr-name { font-size: 12px; color: #aaa; font-weight: 600; text-transform: uppercase; }
+        .sr-plat { font-family: var(--font-num); font-size: 24px; font-weight: 600; color: #fff; line-height:1;}
+        .sr-name { font-size: 11px; color: #8892B0; font-weight: 800; text-transform: uppercase; }
         .sr-right { text-align: right; }
-        .sr-time { font-family: 'Rajdhani'; font-size: 18px; font-weight: 800; color: var(--primary); }
+        .sr-time { font-family: var(--font-data); font-size: 16px; font-weight: 800; color: var(--kc-lime); }
 
-        .queue-table { display: flex; flex-direction: column; gap: 5px; }
-        .q-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #222; }
-        .q-num { width: 30px; font-family: 'Rajdhani'; font-size: 20px; font-weight: 800; color: var(--primary); text-align: center; }
-        .q-data { flex: 1; padding-left: 10px; }
-        .q-plat { font-family: 'Rajdhani'; font-size: 18px; font-weight: 800; color: #fff; display: block; }
-        .q-name { font-size: 12px; color: #aaa; font-weight: 600; text-transform: uppercase; }
+        .queue-table { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; position: relative; z-index: 2; width: 100%;}
+        .q-row { display: flex; align-items: center; padding: 12px; background: #0A0C0E; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);}
+        .q-num { width: 40px; font-family: var(--font-num); font-size: 28px; font-weight: 600; color: var(--kc-lime); text-align: center; border-right: 1px solid #333; padding-right: 10px;}
+        .q-data { flex: 1; padding-left: 15px; display: flex; flex-direction: column; }
+        .q-plat { font-family: var(--font-num); font-size: 24px; font-weight: 600; color: #fff; line-height: 1; }
+        .q-name { font-family: var(--font-data); font-size: 12px; color: #8892B0; font-weight: 800; text-transform: uppercase; margin-top:2px;}
 
-        .inp-label { color: var(--primary); font-size: 12px; font-weight: 800; margin-bottom: 5px; display: block; letter-spacing: 1px; }
-        .inp-box { width: 100%; padding: 14px; background: #1a1a1a; border: 1px solid #444; color: #fff; font-family: 'Rajdhani'; font-size: 20px; font-weight: 700; border-radius: 12px; margin-bottom: 15px; box-sizing: border-box; }
-        .inp-box:focus { border-color: var(--primary); outline: none; background: #000; }
-        .btn-kirim { width: 100%; padding: 15px; background: var(--btn-grad); border: none; border-radius: 12px; font-family: 'Rajdhani'; font-weight: 900; font-size: 20px; cursor: pointer; margin-bottom: 10px; color: #000; }
-        body.ramadan-mode .btn-kirim { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-        .btn-batal { width: 100%; padding: 12px; background: transparent; border: 2px solid #500; color: #f55; border-radius: 12px; font-weight: 800; font-size: 16px; cursor: pointer; }
-
-        /* MODAL KHUSUS POP-UP PENGUMUMAN */
-        .announcement-box { width: 90%; max-width: 350px; background: #111; border: 2px solid #FF003C; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 0 40px rgba(255, 0, 60, 0.4); animation: zoomIn 0.3s ease-out; }
-        .announcement-box h2 { font-family: 'Teko'; color: #fff; font-size: 32px; margin: 0 0 15px 0; letter-spacing: 2px; }
-        .announcement-box p { font-family: 'Rajdhani'; color: #ccc; font-size: 18px; margin-bottom: 25px; line-height: 1.5; }
-        .btn-mengerti { width: 100%; background: #FF003C; color: #fff; padding: 15px; border: none; border-radius: 8px; font-family: 'Rajdhani'; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; box-shadow: 0 5px 15px rgba(255,0,60,0.3); }
-
-        /* === MODAL GPS ERROR === */
-        .gps-modal-box {
-            width: 100%; max-width: 380px; background: #050505; 
-            border: 3px solid #FF003C; padding: 30px 20px; border-radius: 20px; text-align: center; 
-            box-shadow: 0 0 60px rgba(255, 0, 60, 0.5); 
-            display: flex; flex-direction: column; align-items: center;
-            animation: bounceIn 0.4s ease-out;
-        }
-        .gps-error-img { width: 180px; height: auto; margin-bottom: 20px; filter: drop-shadow(0 0 15px rgba(255,0,60,0.6)); }
-        .gps-error-title { font-family: var(--font-head); font-size: 26px; color: #FF003C; font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 10px #FF003C; }
-        .gps-error-desc { color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; }
-
-        /* --- DOCK NAV BAWAH --- */
-        .dock-container {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px;
-            background: rgba(5, 5, 5, 0.98); border-top: 2px solid var(--primary);
-            display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 20000;
-        }
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; transition: 0.3s; height: 100%; }
-        .nav-item.active { opacity: 1; color: var(--primary); text-shadow: 0 0 15px var(--primary); }
+        /* --- DOCK NAV --- */
+        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 85px; background: rgba(10, 12, 15, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(255,255,255,0.1); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 20000; }
+        .dock-container::before { content: ''; position: absolute; top: -1px; left: 0; width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,255,0,0.5), transparent); }
+        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; transition: 0.3s; height: 100%; }
+        .nav-item.active { color: var(--kc-lime); }
         .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
-        .center-icon-box { 
-            width: 65px; height: 65px; background: #000; border: 2px solid var(--primary); border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--primary); position: relative; z-index: 10; box-shadow: 0 0 25px var(--primary-dim);
-        }
-        .center-icon-box::after { content:''; position: absolute; inset: -5px; border-radius: 50%; border: 1px dashed rgba(212, 255, 0, 0.3); animation: spin 10s linear infinite; }
-        .nav-icon { font-size: 20px; margin-bottom: 5px; }
-        .nav-text { font-family: var(--font-head); font-size: 10px; font-weight: 700; letter-spacing: 2px; }
+        .center-icon-box { width: 65px; height: 65px; background: var(--metal-light); border: 2px solid #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.8), var(--inner-bevel); position: relative; z-index: 10; }
+        .nav-item.active .center-icon-box { border-color: var(--kc-lime); color: var(--kc-lime); box-shadow: 0 0 20px rgba(212,255,0,0.2), inset 0 0 10px rgba(212,255,0,0.1); }
+        .nav-icon { font-size: 22px; margin-bottom: 5px; }
+        .nav-text { font-family: var(--font-logo); font-style: italic; font-size: 9px; font-weight: 700; letter-spacing: 1px; margin-top: 4px; text-transform: uppercase;}
 
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-        @keyframes pulseText { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        @keyframes zoomIn { from{transform:scale(0.95);opacity:0} to{transform:scale(1);opacity:1} }
-        @keyframes bounceIn { 0%{transform:scale(0.3);opacity:0;} 50%{transform:scale(1.05);opacity:1;} 70%{transform:scale(0.9);opacity:1;} 100%{transform:scale(1);opacity:1;} }
-        @keyframes shine { 0% {left: -100%;} 20% {left: 200%;} 100% {left: 200%;} }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div id="gpsErrorModal" class="modal-wrap" style="z-index: 99999;">
-        <div class="gps-modal-box">
-            <img src="gps-error.png" alt="GPS Jauh" class="gps-error-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3750/3750058.png'">
-            <div class="gps-error-title">MASIH JAUH BROOO</div>
-            <div id="gpsDistanceVal" class="gps-error-desc">Harap aktifkan GPS & pastikan Anda di Lokasi FC.</div>
-            <button class="btn-mengerti" onclick="closeGpsModal()" style="background:#FF003C; box-shadow: 0 5px 20px rgba(255,0,60,0.4);">SIAP MERAPAT KAPTEN!</button>
-        </div>
+    <div class="hud-top">
+        <div class="live-tag"><span id="liveClock">SYNC...</span> <i class="fas fa-circle"></i></div>
+        <div></div>
     </div>
 
-    <div id="announcementModal" class="modal-wrap" style="z-index: 99999;">
-        <div class="announcement-box">
-            <div style="font-size: 50px; color: #FF003C; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i></div>
+    <div id="loading-screen">
+        <div class="scanner-container">
+            <i class="fas fa-bolt scanner-logo"></i>
+            <div class="scanline"></div>
+        </div>
+        <div class="loading-text" id="loadingText">VERIFYING GPS...</div>
+    </div>
+
+    <div id="announcementModal" class="modal-overlay" style="z-index: 99999;">
+        <div class="modal-tactical announcement-box">
+            <button class="ann-close-x" onclick="tutupPengumuman()">✕</button>
+            <div style="margin-bottom: 15px; position: relative; z-index: 2;">
+                <img src="manaf.png" alt="Admin" style="width: 100px; height: auto; filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.4)); border-radius: 8px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
+            </div>
             <h2>PENGUMUMAN</h2>
             <p id="annTextPopup">Teks pengumuman di sini...</p>
-            <button class="btn-mengerti" onclick="tutupPengumuman()">SAYA MENGERTI</button>
         </div>
     </div>
 
-    <div id="loading-screen"><img src="logo2.png" class="load-logo" alt="Loading"><div class="loader-text">SCANNING SYSTEM...</div></div>
+    <div id="gpsErrorModal" class="modal-overlay" style="z-index: 99999;">
+        <div class="modal-tactical gps-modal-box">
+            <img src="gps-error.png" class="gps-error-img" alt="GPS Jauh" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
+            <div class="gps-error-title">MASIH JAUH BROOO</div>
+            <div id="gpsDistanceVal" class="gps-error-desc">Harap aktifkan GPS & pastikan Anda di Lokasi FC.</div>
+            <button onclick="closeGpsModal()" style="width: 100%; background: var(--kc-silver); color: #000; padding: 15px; border: none; border-radius: 8px; font-family: var(--font-logo); font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); position:relative; z-index:2;">SAYA MENGERTI</button>
+        </div>
+    </div>
+
+    <div id="customModal" class="modal-overlay" style="z-index: 99999;">
+        <div class="modal-tactical confirm-modal-box">
+            <h2 id="modalTitle">TITLE</h2>
+            <div id="modalMsg">Msg</div>
+            <div id="modalBtns"></div>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal-overlay" style="z-index: 99999;">
+        <div class="modal-tactical success-box">
+            <div style="font-size: 60px; color: var(--kc-lime); margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--kc-lime)); animation: pulseText 2s infinite;"><i class="fas fa-check-circle"></i></div>
+            <h2 id="succTitle">BERHASIL!</h2>
+            <div id="succMsg">Pesan Sapaan Otomatis</div>
+            <button onclick="closeSuccessModal()" style="width: 100%; background: var(--kc-lime); color: #000; padding: 15px; border: none; border-radius: 8px; font-family: var(--font-logo); font-weight: 900; font-size: 18px; cursor: pointer; box-shadow: 0 0 15px rgba(212,255,0,0.4);">SIAP LAKSANAKAN</button>
+        </div>
+    </div>
 
     <div class="ramadan-ornaments">
         <div class="hanging-item pos-1"><div class="hi-string"></div><div class="hi-body"><i class="fas fa-moon"></i></div></div>
-        <div class="hanging-item pos-2"><div class="hi-string"></div><div class="hi-body"><i class="fas fa-mosque"></i></div></div>
+        <div class="hanging-item pos-2" onclick="openRamadanModal()"><div class="hi-string"></div><div class="hi-body"><i class="fas fa-mosque"></i></div></div>
     </div>
 
-    <div class="top-area">
-        <div class="logo-main-box">
-            <img src="logo2.png" alt="Maka Lintas KC" class="logo-img-main">
-        </div>
+    <div class="header-panel">
+        <div class="logo-ring"><i class="fas fa-bolt"></i></div>
+        <h1 class="brand-title" ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
+        <div class="brand-subtitle">MAKA LINTAS KARTIKA CHANDRA</div>
+        <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge"><i class="fab fa-tiktok"></i> @maka_ojol</a>
     </div>
 
-    <div class="bottom-panel">
-        <div class="header-section">
-            <div class="live-tag"><i class="fas fa-circle" style="font-size:8px; vertical-align:middle; margin-right:5px; color:#f00;"></i> <span id="liveClock">ONLINE</span></div>
-            <h1 ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
-            <div class="sub-text">MAKA LINTAS KARTIKA CHANDRA</div>
+    <div class="dashboard-container">
+        <div class="gauge-card" onclick="openModal('slot')">
+            <div class="gauge-lbl"><i class="fas fa-microchip"></i> SLOT SYSTEM</div>
+            <div class="gauge-val-container"><div class="gauge-val" id="slotVal">00</div><div class="gauge-max">/05</div></div>
+            <div class="progress-track"><div class="progress-fill" id="slotProgress"></div></div>
+            <div class="gauge-desc" id="slotDesc">TERSEDIA (KLIK DETAIL)</div>
         </div>
-
-        <div class="ramadan-widget">
-            <div class="rw-icon"><i class="fas fa-moon"></i></div>
-            <div class="rw-center"><div class="rw-label" id="pLabel">MENUJU BUKA PUASA</div><div class="rw-timer" id="pTimer">--:--:--</div></div>
-            <div class="rw-right"><div class="rw-target-lbl" id="pNextName">MAGHRIB</div><div class="rw-target-time" id="pNextTime">--:--</div></div>
-        </div>
-
-        <div class="stats-container">
-            <div class="stat-btn" onclick="openModal('slot')"><div class="st-label">Slot Tersedia</div><div class="st-val" id="slotVal">...</div><div class="st-hint">LIHAT DETAIL ►</div></div>
-            <div class="stat-btn" onclick="openModal('queue')"><div class="st-label">Antrian</div><div class="st-val" id="queueVal">...</div><div class="st-hint">LIHAT DAFTAR ►</div></div>
-        </div>
-
-        <button id="btnDaftar" class="btn-main" onclick="checkLocationAndOpenForm()">MEMUAT DATA...</button>
-        <button id="btnMonitor" class="btn-monitor" onclick="window.location.href='system.html'"><i class="fas fa-tv"></i> BUKA MONITOR</button>
-
-        <div style="padding-top: 15px; padding-bottom: 10px; text-align: center; position:relative; z-index:5;">
-            <img src="sore.jpg" alt="Sorefalto" style="width: 100%; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.5); object-fit: contain;">
+        
+        <div class="gauge-card" onclick="openModal('queue')">
+            <div class="gauge-lbl"><i class="fas fa-users"></i> ANTRIAN</div>
+            <div class="gauge-val-container"><div class="gauge-val" id="queueVal">00</div><div class="gauge-max">UNIT</div></div>
+            <div class="progress-track"><div class="progress-fill" style="width:30%; background:#fff; box-shadow:none;"></div></div>
+            <div class="gauge-desc">MENUNGGU (KLIK DAFTAR)</div>
         </div>
     </div>
 
-    <div id="detailModal" class="modal-wrap"><div class="modal-panel"><div class="modal-head"><div class="modal-h-title" id="mTitle">STATUS SLOT</div><button class="close-x" onclick="closeModal('detailModal')">✕</button></div><div id="mContent" class="slot-list-box"></div></div></div>
-    <div id="formModal" class="modal-wrap"><div class="modal-panel"><div class="modal-head"><div class="modal-h-title">FORMULIR</div><button class="close-x" onclick="closeModal('formModal')">✕</button></div><div><span class="inp-label">NAMA LENGKAP</span><input type="text" id="inpNama" class="inp-box" placeholder="NAMA ANDA"><span class="inp-label">NOMOR PLAT (Wajib Spasi)</span><input type="text" id="inpPlat" class="inp-box" placeholder="B 1234 XYZ" style="text-transform:uppercase;"><span class="inp-label">SISA BATERAI (0-100%)</span><input type="number" id="inpBatre" class="inp-box" placeholder="20" min="0" max="100"><button class="btn-kirim" onclick="submitData()" id="btnSubmitForm">AMBIL TIKET</button><button class="btn-batal" onclick="closeModal('formModal')">BATAL</button></div></div></div>
+    <div class="action-area">
+        <div class="btn-wrapper">
+            <button id="btnDaftar" class="btn-tactical" onclick="checkLocationAndOpenForm()">DAFTAR ANTRIAN</button>
+        </div>
+        <button id="btnMonitor" class="btn-monitor" onclick="window.location.href='system.html'"><i class="fas fa-desktop"></i> SUPERVISI SYSTEM</button>
+        <button id="btnAdminPanel" class="btn-admin" onclick="window.location.href='admin.html'"><i class="fas fa-user-shield"></i> SUPERVISI ADMIN</button>
+    </div>
+
+    <div class="info-panel">
+        <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="info-text">
+            <div class="it-title">SECURE CONNECTION</div>
+            <div class="it-desc">GPS Tracking Active. Pendaftaran hanya dapat dilakukan dalam radius maksimum 70m dari Stasiun.</div>
+        </div>
+    </div>
+
+    <div id="ramadanModal" class="modal-overlay" onclick="closeRamadanModal()">
+        <div class="modal-tactical" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeRamadanModal()"><i class="fas fa-times"></i></button>
+            <div class="mh-title"><i class="fas fa-satellite-dish"></i> RAMADAN PROTOCOL</div>
+            <div class="time-row"><div class="tr-lbl">IMSAK</div><div class="tr-val">04:30</div></div>
+            <div class="time-row active"><div class="tr-lbl">MAGHRIB</div><div class="tr-val">18:10</div></div>
+            <div style="text-align:center; font-family:var(--font-data); font-size:9px; color:#aaa; margin-top:15px; letter-spacing:1px;">SYNC LOCATION: JAKARTA</div>
+        </div>
+    </div>
+
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-tactical">
+            <div class="modal-head">
+                <div class="modal-h-title" id="mTitle">STATUS SLOT</div>
+                <button class="close-x" onclick="closeModal('detailModal')">✕</button>
+            </div>
+            <div id="mContent" class="slot-list-box"></div>
+        </div>
+    </div>
+
+    <div id="formModal" class="modal-overlay">
+        <div class="modal-tactical">
+            <div class="modal-head">
+                <div class="modal-h-title">DATA PROTOKOL</div>
+                <button class="close-x" onclick="closeModal('formModal')">✕</button>
+            </div>
+            <div class="form-content">
+                <span class="inp-label">NAMA LENGKAP</span>
+                <input type="text" id="inpNama" class="inp-box" placeholder="KODE PANGGILAN">
+                <span class="inp-label">NOMOR PLAT (Wajib Spasi)</span>
+                <input type="text" id="inpPlat" class="inp-box" placeholder="B 1234 XYZ" style="text-transform:uppercase;">
+                <span class="inp-label">SISA BATERAI (0-100%)</span>
+                <input type="number" id="inpBatre" class="inp-box" placeholder="20" min="0" max="100">
+                
+                <button class="btn-kirim" onclick="submitData()" id="btnSubmitForm">VERIFIKASI & AMBIL TIKET</button>
+                <button class="btn-batal" onclick="closeModal('formModal')">BATAL</button>
+            </div>
+        </div>
+    </div>
 
     <div class="dock-container">
-        <a href="lokasifc.html" class="nav-item">
-            <i class="fas fa-map-marked-alt nav-icon"></i><span class="nav-text">PETA FC</span>
-        </a>
-        
-        <div class="nav-item center-btn active">
-            <div class="center-icon-box"><i class="fas fa-qrcode"></i></div>
-            <span class="nav-text" style="color:var(--primary); margin-top:8px;">ANTRIAN</span>
-        </div>
-        
-        <a href="plan.html" class="nav-item">
-            <i class="fas fa-route nav-icon"></i><span class="nav-text">TRIP PLAN</span>
-        </a>
+        <a href="lokasifc.html" class="nav-item"><i class="fas fa-map-marked-alt nav-icon"></i><span class="nav-text">PETA LOKASI</span></a>
+        <div class="nav-item center-btn active"><div class="center-icon-box"><i class="fas fa-qrcode"></i></div><span class="nav-text">ANTRIAN</span></div>
+        <a href="plan.html" class="nav-item"><i class="fas fa-route nav-icon"></i><span class="nav-text">TRIP PLAN</span></a>
     </div>
 
     <script type="module">
@@ -316,8 +395,8 @@
 
         // === KONFIGURASI KARTIKA CHANDRA (5 SLOT) ===
         const TOTAL_SLOTS = 5; 
-        const STATION_LAT = -6.2285953; const STATION_LNG = 106.819502; const MAX_DIST_KM = 0.075; 
-        const RAMADAN_START_DATE = "2026/02/19 00:00:00"; 
+        const STATION_LAT = -6.2285953; const STATION_LNG = 106.819502; 
+        const MAX_DIST_KM = 0.07; // MAX 70 METER
         
         const firebaseConfig = { apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk", authDomain: "kartikachandrafc.firebaseapp.com", projectId: "kartikachandrafc", storageBucket: "kartikachandrafc.firebasestorage.app", messagingSenderId: "677704449500", appId: "1:677704449500:web:671df8ae5cf6e66d0b6319" };
         
@@ -330,124 +409,264 @@
         let globalDisabled = [false, false, false, false, false];
         let blockedPlates = [];
 
-        // FUNGSI MODAL GPS BARU
-        function showGpsErrorModal(dist, isError = false) {
+        // --- SISTEM PEMBERSIH SESSION LAMA SECARA PAKSA ---
+        if(localStorage.getItem('sa_sess')) {
+            localStorage.removeItem('sa_sess'); 
+        }
+
+        // --- MODAL KHUSUS GPS ERROR ---
+        window.showGpsErrorModal = (dist, isError = false) => {
              if(isError) {
                  document.getElementById('gpsDistanceVal').innerText = "Mohon aktifkan GPS & Izinkan Akses Lokasi Browser!";
              } else {
-                 document.getElementById('gpsDistanceVal').innerText = `Jarak Terdeteksi: ${dist.toFixed(0)} Meter (Max 75m)`;
+                 document.getElementById('gpsDistanceVal').innerText = `Jarak Terdeteksi: ${dist.toFixed(0)} Meter (Max 70m)`;
              }
-             document.getElementById('gpsErrorModal').classList.add('open');
              document.getElementById('gpsErrorModal').style.display = 'flex';
+             setTimeout(() => { document.getElementById('gpsErrorModal').style.opacity = '1'; }, 10);
         }
         window.closeGpsModal = () => {
-            document.getElementById('gpsErrorModal').classList.remove('open');
-            setTimeout(() => document.getElementById('gpsErrorModal').style.display = 'none', 200);
+            document.getElementById('gpsErrorModal').style.opacity = '0';
+            setTimeout(() => document.getElementById('gpsErrorModal').style.display = 'none', 300);
         };
 
-        // --- SISTEM POP-UP PENGUMUMAN ADMIN ---
+        // --- MODAL CUSTOM CONFIRM ---
+        window.closeCustomModal = () => {
+            document.getElementById('customModal').style.opacity = '0';
+            setTimeout(() => document.getElementById('customModal').style.display = 'none', 300);
+        };
+        window.showConfirm = (msg, cb) => { 
+            document.getElementById('modalTitle').innerText="SYSTEM ALERT"; 
+            document.getElementById('modalMsg').innerText=msg; 
+            document.getElementById('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes">LAKSANAKAN</button><button class="btn-no" onclick="closeCustomModal()">BATAL</button>`; 
+            document.getElementById('btnYes').onclick=()=>{closeCustomModal();cb();}; 
+            document.getElementById('customModal').style.display = 'flex';
+            setTimeout(() => { document.getElementById('customModal').style.opacity = '1'; }, 10);
+        };
+
+        // --- MODAL SUCCESS (GREETING) ---
+        window.closeSuccessModal = () => {
+            document.getElementById('successModal').style.opacity = '0';
+            setTimeout(() => { 
+                document.getElementById('successModal').style.display = 'none'; 
+                // Redirect ke system setelah user baca pesan
+                window.location.href = 'system.html';
+            }, 300);
+        };
+
+        // --- SISTEM POP-UP PENGUMUMAN CERDAS ---
         let currentAnnId = "";
         window.tutupPengumuman = () => {
-            document.getElementById('announcementModal').classList.remove('open');
-            setTimeout(() => document.getElementById('announcementModal').style.display = 'none', 200);
+            document.getElementById('announcementModal').style.opacity = '0';
+            setTimeout(() => document.getElementById('announcementModal').style.display = 'none', 300);
             localStorage.setItem('lastAnnId', currentAnnId);
         };
 
-        // --- CEK MODE RAMADAN ---
-        function checkRamadanMode() {
-            const now = new Date();
-            const start = new Date(RAMADAN_START_DATE);
-            if (now >= start) {
-                document.body.classList.add('ramadan-mode');
-                initRamadanCountdown(); 
-            }
-        }
-        checkRamadanMode();
-
-        // --- API JADWAL PUASA (KARTIKA CHANDRA) ---
-        async function initRamadanCountdown() {
-            try {
-                const today = new Date();
-                const dateStr = `${today.getDate()}-${today.getMonth()+1}-${today.getFullYear()}`;
-                const apiURL = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${STATION_LAT}&longitude=${STATION_LNG}&method=20`;
-                
-                const req = await fetch(apiURL); const res = await req.json(); const timings = res.data.timings;
-                const imsak = new Date(); const tImsak = timings.Imsak.split(':'); imsak.setHours(tImsak[0], tImsak[1], 0);
-                const maghrib = new Date(); const tMaghrib = timings.Maghrib.split(':'); maghrib.setHours(tMaghrib[0], tMaghrib[1], 0);
-
-                setInterval(() => {
-                    const now = new Date(); let target, lbl, info;
-                    if(now < imsak) { target = imsak; lbl = "SISA WAKTU SAHUR"; info = `IMSAK ${timings.Imsak}`; }
-                    else if(now >= imsak && now < maghrib) { target = maghrib; lbl = "MENUJU BUKA PUASA"; info = `MAGHRIB ${timings.Maghrib}`; }
-                    else { document.getElementById('pLabel').innerText="SELAMAT BERBUKA"; document.getElementById('pTimer').innerText="ALHAMDULILLAH"; return; }
-
-                    const diff = target - now;
-                    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const s = Math.floor((diff % (1000 * 60)) / 1000);
-                    
-                    document.getElementById('pLabel').innerText = lbl;
-                    document.getElementById('pNextName').innerText = info.split(' ')[0];
-                    document.getElementById('pNextTime').innerText = info.split(' ')[1];
-                    document.getElementById('pTimer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                }, 1000);
-            } catch(e) { console.log("Offline Mode"); }
+        // --- SISTEM SUPERVISI MENU ---
+        if(localStorage.getItem('super_admin_kc')) {
+            document.getElementById('btnMonitor').style.display = 'block';
+            document.getElementById('btnAdminPanel').style.display = 'block';
         }
 
-        // --- SISTEM GOD MODE ---
-        if(localStorage.getItem('sa_sess')) document.getElementById('btnMonitor').style.display = 'block';
+        // FUNGSI ANIMASI SCANNING
+        function triggerScanning(text) {
+            const screen = document.getElementById('loading-screen');
+            document.getElementById('loadingText').innerText = text;
+            screen.style.display = 'flex';
+            screen.classList.add('scanning-active');
+        }
+        function stopScanning() {
+            const screen = document.getElementById('loading-screen');
+            screen.classList.remove('scanning-active');
+            screen.style.display = 'none';
+        }
+        
+        // FUNGSI ANIMASI PULSE TEKS
+        function pulseTextAnim() {
+             // CSS animation handle this
+        }
 
+        // --- TRIGGER ADMIN (KLIK KARTIKA CHANDRA 2X) ---
         window.toggleAdmin = () => { 
-            const pass = prompt("KODE AKSES:"); 
-            if (pass === "090815") { 
-                if(localStorage.getItem('sa_sess')) { localStorage.removeItem('sa_sess'); alert("GOD MODE MATI."); } 
-                else { localStorage.setItem('sa_sess', '1'); alert("GOD MODE AKTIF (Bypass GPS)."); }
+            const pass = prompt("KODE AKSES TACTICAL:"); 
+            if (pass === "250585") { 
+                if(localStorage.getItem('super_admin_kc')) { 
+                    localStorage.removeItem('super_admin_kc'); 
+                    alert("SUPERVISOR MODE OFFLINE."); 
+                } else { 
+                    localStorage.setItem('super_admin_kc', '1'); 
+                    alert("SUPERVISOR MODE ONLINE."); 
+                }
                 location.reload();
             } else if(pass === "5588" || pass === "9999") {
                 window.location.href = "admin.html";
-            } else if(pass) alert("KODE SALAH!"); 
+            } else if(pass) {
+                alert("ACCESS DENIED!"); 
+            }
         };
 
-        // --- FUNGSI UTAMA CEK LOKASI (DENGAN POPUP CUSTOM) ---
+        // --- FUNGSI UTAMA CEK LOKASI & BUKA FORM ---
         window.checkLocationAndOpenForm = () => {
             const btn = document.getElementById('btnDaftar');
             if(btn.innerHTML.includes('SYSTEM')) { window.location.href = 'system.html'; return; }
-            if(localStorage.getItem('sa_sess')) { document.getElementById('formModal').classList.add('open'); document.getElementById('formModal').style.display = 'flex'; return; } 
+            if(localStorage.getItem('super_admin_kc')) { 
+                document.getElementById('formModal').style.display = 'flex'; 
+                setTimeout(() => { document.getElementById('formModal').style.opacity = '1'; }, 10);
+                return; 
+            } 
             
             if (!navigator.geolocation) { showGpsErrorModal(0, true); return; }
             
-            const ori = btn.innerHTML; btn.innerHTML = 'CEK LOKASI...';
+            triggerScanning("VERIFYING GPS LOCATION...");
             
             navigator.geolocation.getCurrentPosition((pos) => {
                 const dist = calculateDistance(STATION_LAT, STATION_LNG, pos.coords.latitude, pos.coords.longitude);
-                btn.innerHTML = ori;
+                stopScanning();
                 if (dist <= MAX_DIST_KM) { 
-                    document.getElementById('formModal').classList.add('open'); document.getElementById('formModal').style.display = 'flex'; 
+                    document.getElementById('formModal').style.display = 'flex';
+                    setTimeout(() => { document.getElementById('formModal').style.opacity = '1'; }, 10);
                 } else { showGpsErrorModal(dist * 1000, false); }
-            }, () => { btn.innerHTML = ori; showGpsErrorModal(0, true); }, { enableHighAccuracy: true });
+            }, () => { stopScanning(); showGpsErrorModal(0, true); }, { enableHighAccuracy: true });
         };
 
+        // --- FUNGSI SAPAAN CERDAS (AI GREETING) ---
+        function generateGreeting(role, dbName, inputName, isSlot, slotNo, queueNo) {
+            const now = new Date();
+            const hour = now.getHours();
+            let greeting = "";
+            let timeMsg = "";
+            
+            // 1. Tentukan Waktu (Siang/Malam)
+            if (hour >= 4 && hour < 10) greeting = "Selamat Pagi";
+            else if (hour >= 10 && hour < 15) greeting = "Selamat Siang";
+            else if (hour >= 15 && hour < 18) greeting = "Selamat Sore";
+            else greeting = "Selamat Malam";
+
+            // 2. Tentukan Pesan Ramadan
+            if (hour >= 4 && hour < 18) {
+                timeMsg = "Puasa ngga hari ini? Semoga lancar ya!";
+            } else {
+                timeMsg = "Sudah buka kan? Jangan lupa nanti Sahur ya.";
+            }
+
+            // 3. Tentukan Sapaan Nama & Jabatan
+            let namePart = "";
+            if (role && role !== "GUEST" && role !== "MEMBER") {
+                // PENGURUS
+                namePart = `${greeting} ${role}, Bang ${dbName}`;
+            } else {
+                // MEMBER BIASA / UMUM
+                namePart = `Halo Bro ${inputName}`;
+            }
+
+            // 4. Tentukan Status Masuk (Slot / Antrian)
+            let statusMsg = "";
+            if (isSlot) {
+                statusMsg = `Langsung masuk SLOT 0${slotNo+1} ya.`;
+            } else {
+                statusMsg = `Mohon maaf slot penuh, Anda masuk ANTRIAN nomor ${queueNo}.`;
+            }
+
+            return `${namePart}. ${timeMsg} <br><br> ${statusMsg} <br><span style="font-size:14px; color:#aaa;">Semoga lancar semuanya dan sehat selalu.</span>`;
+        }
+
         window.submitData = async () => {
-            const nama = document.getElementById('inpNama').value.toUpperCase(); 
+            const namaInput = document.getElementById('inpNama').value.toUpperCase(); 
             const plat = document.getElementById('inpPlat').value.toUpperCase(); 
             const batre = document.getElementById('inpBatre').value;
-            if(!nama || !plat || !batre) return alert("LENGKAPI DATA!");
+            if(!namaInput || !plat || !batre) return showConfirm("MOHON LENGKAPI DATA PROTOKOL!", () => {});
 
-            if(blockedPlates.includes(plat)) { alert("AKSES DITOLAK!\nPlat nomor ini telah diblokir oleh Admin."); return; }
+            if(blockedPlates.includes(plat)) { return showConfirm("AKSES DITOLAK!\nPlat nomor masuk daftar Blacklist.", () => {}); }
 
-            const btn = document.getElementById('btnSubmitForm'); btn.innerText = "PROSES...";
+            const btn = document.getElementById('btnSubmitForm'); btn.innerText = "SINKRONISASI DATA...";
+            
             try {
+                // 1. Cek Database Member
                 const mSnap = await getDoc(doc(db, "members", plat.replace(/[^A-Z0-9]/g, '')));
-                let role = mSnap.exists() && mSnap.data().role ? mSnap.data().role : "GUEST";
-                const snap = await getDoc(mainRef);
-                if(snap.exists()) {
-                    let d = snap.data(); let q = d.waitingQueue || [];
-                    if(q.find(x => x.plat === plat) || (d.chargingSlots||[]).find(x => x && x.plat === plat)) { localStorage.setItem('myPlat', plat); window.location.href = 'system.html'; return; }
-                    q.push({ userName: nama, plat: plat, batreSisa: batre, role: role, timestamp: Date.now(), qNo: (d.lastTicket || 0) + 1 });
-                    await updateDoc(mainRef, { waitingQueue: q, lastTicket: (d.lastTicket || 0) + 1 });
-                    localStorage.setItem('myPlat', plat); window.location.href = 'system.html';
+                let role = "GUEST";
+                let realName = namaInput;
+                
+                if (mSnap.exists()) {
+                    const mData = mSnap.data();
+                    if (mData.role) role = mData.role;
+                    if (mData.nama) realName = mData.nama; // Pakai nama asli dr DB jika ada
                 }
-            } catch(e) { alert("ERROR: " + e); btn.innerText = "AMBIL TIKET"; }
+
+                // 2. Cek Slot Kosong & Antrian
+                await runTransaction(db, async(t) => {
+                    const d = (await t.get(mainRef)).data();
+                    
+                    // Cek Duplikasi
+                    if([...(d.chargingSlots||[]), ...(d.waitingQueue||[])].some(u => u && u.plat === plat)) {
+                        throw "ANDA SUDAH TERDAFTAR!";
+                    }
+
+                    // Cek Slot Kosong (AUTO-SLOT LOGIC)
+                    let targetSlot = -1;
+                    let slots = d.chargingSlots || [null,null,null,null,null];
+                    let dis = d.disabledSlots || [false,false,false,false,false];
+                    
+                    for(let i=0; i<5; i++) {
+                        if(slots[i] === null && !dis[i]) {
+                            targetSlot = i;
+                            break;
+                        }
+                    }
+
+                    const newTicket = (d.lastTicket || 0) + 1;
+                    const userData = { 
+                        userName: (role !== "GUEST" && role !== "MEMBER") ? realName : namaInput, // Gunakan nama DB jika pengurus
+                        plat: plat, 
+                        batreSisa: batre, 
+                        role: role, 
+                        timestamp: Date.now(), 
+                        qNo: newTicket 
+                    };
+
+                    if (targetSlot !== -1) {
+                        // MASUK SLOT LANGSUNG
+                        userData.startTime = Date.now();
+                        slots[targetSlot] = userData;
+                        t.update(mainRef, { chargingSlots: slots, lastTicket: newTicket });
+                        
+                        // Siapkan Pesan Sukses
+                        const msg = generateGreeting(role, realName, namaInput, true, targetSlot, 0);
+                        localStorage.setItem('myPlat', plat);
+                        
+                        // Tampilkan Modal Sukses (Perlu keluar dr Transaction dulu)
+                        // Kita throw object khusus agar bisa ditangkap di catch/finally
+                        throw { type: 'SUCCESS', msg: msg };
+                    } else {
+                        // MASUK ANTRIAN
+                        let q = d.waitingQueue || [];
+                        q.push(userData);
+                        t.update(mainRef, { waitingQueue: q, lastTicket: newTicket });
+                        
+                        const msg = generateGreeting(role, realName, namaInput, false, 0, newTicket);
+                        localStorage.setItem('myPlat', plat);
+                        
+                        throw { type: 'SUCCESS', msg: msg };
+                    }
+                });
+
+            } catch(e) { 
+                if (e.type === 'SUCCESS') {
+                    // Tampilkan Pesan Sukses
+                    document.getElementById('formModal').style.opacity = '0';
+                    setTimeout(() => { document.getElementById('formModal').style.display = 'none'; }, 300);
+                    
+                    document.getElementById('succMsg').innerHTML = e.msg;
+                    document.getElementById('successModal').style.display = 'flex';
+                    setTimeout(() => { document.getElementById('successModal').style.opacity = '1'; }, 10);
+                } else {
+                    if(e === "ANDA SUDAH TERDAFTAR!") {
+                        localStorage.setItem('myPlat', plat);
+                        window.location.href = 'system.html';
+                    } else {
+                        alert("SYSTEM ERROR: " + e); 
+                    }
+                }
+                btn.innerText = "VERIFIKASI & AMBIL TIKET"; 
+            }
         };
 
         window.openModal = (type) => {
@@ -457,41 +676,45 @@
                 globalSlots.forEach((s, i) => {
                     const isOff = globalDisabled[i];
                     if(isOff) {
-                        c.innerHTML += `<div class="slot-row maintenance"><div class="sr-left"><span class="sr-plat" style="color:#f00;">SLOT 0${i+1}</span><span class="sr-name" style="color:#fff;">MAINTENANCE</span></div><div class="sr-right"><span class="sr-time" style="color:#f00;">OFFLINE</span></div></div>`;
+                        c.innerHTML += `<div class="slot-row maintenance"><div class="sr-left"><span class="sr-plat" style="color:#aaa;">SLOT 0${i+1}</span><span class="sr-name" style="color:#aaa;">MAINTENANCE</span></div><div class="sr-right"><span class="sr-time" style="color:#aaa;">OFFLINE</span></div></div>`;
                     } else if (s) {
-                        c.innerHTML += `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-right"><span class="sr-time" style="color:var(--primary)">ISI</span></div></div>`;
+                        c.innerHTML += `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-right"><span class="sr-time" style="color:var(--kc-lime)">IN USE</span></div></div>`;
                     } else {
-                        c.innerHTML += `<div class="slot-row empty"><div class="sr-left"><span class="sr-plat" style="color:#0f0">SLOT 0${i+1}</span><span class="sr-name" style="color:#fff">TERSEDIA</span></div><div class="sr-right"><span class="sr-time" style="color:#0f0">OPEN</span></div></div>`;
+                        c.innerHTML += `<div class="slot-row empty"><div class="sr-left"><span class="sr-plat" style="color:#aaa;">SLOT 0${i+1}</span><span class="sr-name" style="color:#fff">TERSEDIA</span></div><div class="sr-right"><span class="sr-time" style="color:#aaa;">OPEN</span></div></div>`;
                     }
                 });
             } else {
-                document.getElementById('mTitle').innerText = "DAFTAR ANTRIAN"; c.className = "queue-table"; 
-                if(globalQueue.length === 0) c.innerHTML = "<div style='text-align:center;padding:20px;color:#fff;'>TIDAK ADA ANTRIAN</div>";
-                else globalQueue.forEach((q, i) => { c.innerHTML += `<div class="q-row"><div class="q-num">#${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div></div>`; });
+                document.getElementById('mTitle').innerText = "DAFTAR TUNGGU"; c.className = "queue-table"; 
+                if(globalQueue.length === 0) c.innerHTML = "<div style='text-align:center;padding:20px;color:#888;font-family:var(--font-data);'>TIDAK ADA ANTRIAN</div>";
+                else globalQueue.forEach((q, i) => { c.innerHTML += `<div class="q-row"><div class="q-num">0${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div></div>`; });
             }
-            document.getElementById('detailModal').classList.add('open'); document.getElementById('detailModal').style.display = 'flex';
+            document.getElementById('detailModal').style.display = 'flex';
+            setTimeout(() => { document.getElementById('detailModal').style.opacity = '1'; }, 10);
         };
 
-        window.closeModal = (id) => { document.getElementById(id).classList.remove('open'); setTimeout(() => document.getElementById(id).style.display = 'none', 200); };
+        window.closeModal = (id) => { 
+            document.getElementById(id).style.opacity = '0';
+            setTimeout(() => { document.getElementById(id).style.display = 'none'; }, 300);
+        };
+        
         function calculateDistance(lat1, lon1, lat2, lon2) { const p = 0.017453292519943295; const c = Math.cos; const a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2; return 12742 * Math.asin(Math.sqrt(a)); }
         
-        // --- REALTIME DATA ---
+        // --- REALTIME DATA (LOGIKA 4/5 TERPAKAI) ---
         onSnapshot(mainRef, (snap) => {
-            const l = document.getElementById('loading-screen'); if(l) { l.style.opacity = '0'; setTimeout(() => { l.style.display = 'none'; }, 500); }
             if (!snap.exists()) return;
             const d = snap.data();
             
-            // CEK POP-UP PENGUMUMAN
             if(d.announcement && d.announcement.active && d.announcement.text) {
                 currentAnnId = d.announcement.id;
-                if(localStorage.getItem('lastAnnId') !== currentAnnId) {
+                const showOnce = d.announcement.showOnce !== undefined ? d.announcement.showOnce : true; 
+                if(!showOnce || localStorage.getItem('lastAnnId') !== currentAnnId) {
                     document.getElementById('annTextPopup').innerText = d.announcement.text;
-                    document.getElementById('announcementModal').classList.add('open');
                     document.getElementById('announcementModal').style.display = 'flex';
+                    setTimeout(() => { document.getElementById('announcementModal').style.opacity = '1'; }, 10);
                 }
             } else { 
-                document.getElementById('announcementModal').classList.remove('open');
-                document.getElementById('announcementModal').style.display = 'none'; 
+                document.getElementById('announcementModal').style.opacity = '0';
+                setTimeout(() => { document.getElementById('announcementModal').style.display = 'none'; }, 300);
             }
 
             globalSlots = d.chargingSlots || [null, null, null, null, null];
@@ -499,29 +722,38 @@
             globalDisabled = d.disabledSlots || [false, false, false, false, false];
             blockedPlates = d.blockedPlates || [];
 
-            // Hitung slot tersedia
+            let usedCount = 0;
             let availableCount = 0;
-            for(let i=0; i<5; i++) { if(globalSlots[i] !== null || globalDisabled[i]) { availableCount++; } }
+            for(let i=0; i<5; i++) { 
+                if(globalSlots[i] === null && !globalDisabled[i]) { 
+                    availableCount++; 
+                } else {
+                    usedCount++;
+                }
+            }
             
-            document.getElementById('slotVal').innerHTML = `${availableCount}<span style="font-size:24px;opacity:0.8;margin-left:5px">/${TOTAL_SLOTS}</span>`;
-            document.getElementById('queueVal').innerText = globalQueue.length;
+            document.getElementById('slotVal').innerHTML = `0${usedCount}`;
+            document.getElementById('slotProgress').style.width = `${(usedCount/5)*100}%`;
+            document.getElementById('slotDesc').innerText = `${availableCount} TERSEDIA (KLIK DETAIL)`;
             
-            // VALIDASI TIKET
+            document.getElementById('queueVal').innerText = String(globalQueue.length).padStart(2, '0');
+            
             const myPlat = localStorage.getItem('myPlat'); const btn = document.getElementById('btnDaftar');
-            if(!myPlat) { btn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>'; btn.style.background="var(--btn-grad)"; btn.style.color="#000"; }
-            else if((d.waitingQueue||[]).find(q=>q.plat===myPlat) || (d.chargingSlots||[]).find(s=>s&&s.plat===myPlat)) { btn.innerHTML = 'KEMBALI KE SYSTEM <i class="fas fa-undo"></i>'; btn.style.background="#fff"; btn.style.color="#000"; }
-            else { localStorage.removeItem('myPlat'); btn.innerHTML = 'DAFTAR ANTRIAN <i class="fas fa-arrow-right"></i>'; btn.style.background="var(--btn-grad)"; btn.style.color="#000"; }
+            if(!myPlat) { btn.innerHTML = 'DAFTAR ANTRIAN'; btn.style.background="linear-gradient(180deg, #D4FF00 0%, #8DAA00 100%)"; btn.style.color="#000"; }
+            else if((d.waitingQueue||[]).find(q=>q.plat===myPlat) || (d.chargingSlots||[]).find(s=>s&&s.plat===myPlat)) { btn.innerHTML = 'AKSES SYSTEM'; btn.style.background="#E2E8F0"; btn.style.color="#000"; }
+            else { localStorage.removeItem('myPlat'); btn.innerHTML = 'DAFTAR ANTRIAN'; btn.style.background="linear-gradient(180deg, #D4FF00 0%, #8DAA00 100%)"; btn.style.color="#000"; }
         });
 
-        // CLOCK
         setInterval(() => {
-            const d = new Date(); const days = ['MINGGU','SENIN','SELASA','RABU','KAMIS','JUMAT','SABTU']; const months = ['JAN','FEB','MAR','APR','MEI','JUN','JUL','AGU','SEP','OKT','NOV','DES'];
-            document.getElementById('liveClock').innerText = `LIVE | ${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+            const d = new Date(); 
+            document.getElementById('liveClock').innerText = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
         }, 1000);
 
-        // INPUT FORMATTER
         const platInput = document.getElementById('inpPlat'); if(platInput) { platInput.addEventListener('input', function(e) { let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); let f = ""; if (v.length > 0) { let m = v.match(/^([A-Z]{1,2})(\d{0,4})([A-Z]*)$/); if (m) { f = m[1]; if (m[2]) f += " " + m[2]; if (m[3]) f += " " + m[3]; } else { f = v; } } this.value = f; }); }
         const batInput = document.getElementById('inpBatre'); if(batInput) batInput.addEventListener('input', function(e) { let v = this.value.replace(/[^0-9]/g, ''); if(parseInt(v) > 100) v = "100"; this.value = v; });
+
+        window.openRamadanModal = () => { document.getElementById('ramadanModal').style.display = 'flex'; setTimeout(() => { document.getElementById('ramadanModal').style.opacity = '1'; }, 10); };
+        window.closeRamadanModal = () => { document.getElementById('ramadanModal').style.opacity = '0'; setTimeout(() => { document.getElementById('ramadanModal').style.display = 'none'; }, 300); };
     </script>
 </body>
 </html>
