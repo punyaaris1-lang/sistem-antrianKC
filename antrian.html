@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "4.2_BugFix_Transaction_Logo2"; 
+        const CURRENT_VERSION = "4.3_Critical_Fix_Transaction_Logo"; 
         if (localStorage.getItem("app_version") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -77,20 +77,14 @@
         .pos-2:hover { opacity: 1; }
         .pos-2:active .hi-body { transform: scale(0.9); }
         .pos-2 .hi-body { color: transparent; -webkit-text-stroke: 1px var(--kc-lime); font-size: 28px; filter: drop-shadow(0 0 8px var(--kc-lime)); margin-top: 8px; transition: 0.3s; }
-        .pos-2::after { 
-            content: 'TAP HERE!'; position: absolute; bottom: -22px; 
-            font-family: var(--font-logo); font-style: italic; font-size: 9px; font-weight: 900; 
-            color: var(--kc-lime); letter-spacing: 1px; 
-            animation: fast-blink 1s infinite alternate; white-space: nowrap; 
-        }
+        .pos-2::after { content: 'TAP HERE!'; position: absolute; bottom: -22px; font-family: var(--font-logo); font-style: italic; font-size: 9px; font-weight: 900; color: var(--kc-lime); letter-spacing: 1px; animation: fast-blink 1s infinite alternate; white-space: nowrap; }
 
         /* --- HEADER & LOGO --- */
         .header-panel { padding: 40px 15px 25px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 5; text-align: center; width: 100%; }
         .logo-ring { width: 110px; height: 110px; background: var(--metal-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-3d); position: relative; border: var(--border-metal); }
         .logo-ring::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--kc-lime); border-right-color: var(--kc-lime); animation: spin 4s linear infinite; opacity: 0.5; }
         .logo-ring::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: var(--metal-light); box-shadow: var(--inner-bevel); z-index: 1; }
-        .logo-ring i { font-size: 45px; color: var(--kc-lime); position: relative; z-index: 2; filter: drop-shadow(0 0 5px rgba(212,255,0,0.5)); transform: skew(-10deg); }
-
+        
         .brand-title {
             font-family: var(--font-logo); font-style: italic; font-weight: 900;
             font-size: clamp(22px, 7.5vw, 34px); white-space: nowrap; 
@@ -141,8 +135,6 @@
         /* SEMUA MODAL SISTEM                                        */
         /* ========================================================= */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 50000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        
-        /* Modal ditambahkan class .open biar transisi muncul perlahan */
         .modal-overlay.open { opacity: 1; } 
 
         .modal-tactical { background: var(--metal-dark); border: var(--border-metal); border-top: 4px solid var(--kc-lime); border-radius: 16px; width: 85%; max-width: 380px; padding: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 20px rgba(212,255,0,0.1); position: relative; overflow: hidden; display: flex; flex-direction: column; }
@@ -302,7 +294,9 @@
     </div>
 
     <div class="header-panel">
-        <div class="logo-ring"><i class="fas fa-bolt"></i></div>
+        <div class="logo-ring">
+            <img src="logo2.png" style="width: 65%; height: auto; position: relative; z-index: 2; filter: drop-shadow(0 0 5px rgba(212,255,0,0.5));" onerror="this.style.display='none';">
+        </div>
         <h1 class="brand-title" ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
         <div class="brand-subtitle">MAKA LINTAS KARTIKA CHANDRA</div>
         <a href="https://www.tiktok.com/@maka_ojol?_r=1&_t=ZS-93whYgrpbGe" target="_blank" class="tiktok-badge"><i class="fab fa-tiktok"></i> @maka_ojol</a>
@@ -387,7 +381,7 @@
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        // BUG FIX: runTransaction sekarang sudah di-import dengan benar di baris ini!
+        // BUG FIX: runTransaction di-import dengan benar!
         import { getFirestore, doc, onSnapshot, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // === KONFIGURASI KARTIKA CHANDRA (5 SLOT) ===
@@ -499,7 +493,7 @@
             } else if(pass) alert("ACCESS DENIED!"); 
         };
 
-        // --- FUNGSI UTAMA CEK LOKASI (DENGAN ANIMASI SCANNER LOGO) ---
+        // --- FUNGSI UTAMA CEK LOKASI (DENGAN ANIMASI SCANNER LOGO2.PNG) ---
         window.checkLocationAndOpenForm = () => {
             const btn = document.getElementById('btnDaftar');
             if(btn.innerHTML.includes('SYSTEM')) { window.location.href = 'system.html'; return; }
@@ -596,12 +590,16 @@
             const namaInput = document.getElementById('inpNama').value.toUpperCase(); 
             const plat = document.getElementById('inpPlat').value.toUpperCase(); 
             const batre = document.getElementById('inpBatre').value;
+            
             if(!namaInput || !plat || !batre) return showConfirm("MOHON LENGKAPI DATA PROTOKOL!", () => {});
-
             if(blockedPlates.includes(plat)) { return showConfirm("AKSES DITOLAK!\nPlat nomor ini telah diblokir.", () => {}); }
 
-            const btn = document.getElementById('btnSubmitForm'); btn.innerText = "PROSES...";
+            const btn = document.getElementById('btnSubmitForm'); 
+            btn.innerText = "PROSES...";
             
+            let finalGreetingMsg = ""; // Variabel penampung sapaan cerdas
+            let isDuplicate = false;   // Flag deteksi duplikat
+
             try {
                 // 1. Cek Database Member untuk nama asli dan role
                 const mSnap = await getDoc(doc(db, "members", plat.replace(/[^A-Z0-9]/g, '')));
@@ -614,16 +612,17 @@
                     if (mData.nama) realName = mData.nama;
                 }
 
-                // 2. Cek Slot Kosong & Antrian pakai runTransaction
-                await runTransaction(db, async(t) => {
+                // 2. Transaksi Firebase (Sistem Eksekusi Anti-Tabrakan)
+                await runTransaction(db, async (t) => {
                     const d = (await t.get(mainRef)).data();
                     
-                    // Hindari Double Register
+                    // Cek Duplikasi di Antrian maupun Slot
                     if([...(d.chargingSlots||[]), ...(d.waitingQueue||[])].some(u => u && u.plat === plat)) {
-                        throw "ANDA SUDAH TERDAFTAR!";
+                        isDuplicate = true;
+                        return; // Hentikan eksekusi transaksi jika data dobel
                     }
 
-                    // Cek ketersediaan Slot
+                    // Logika Cari Slot Kosong (AUTO-SLOT)
                     let targetSlot = -1;
                     let slots = d.chargingSlots || [null,null,null,null,null];
                     let dis = d.disabledSlots || [false,false,false,false,false];
@@ -635,6 +634,7 @@
                         }
                     }
 
+                    // Format Data Pengguna
                     const newTicket = (d.lastTicket || 0) + 1;
                     const userData = { 
                         userName: (role !== "GUEST" && role !== "MEMBER") ? realName : namaInput,
@@ -646,43 +646,45 @@
                     };
 
                     if (targetSlot !== -1) {
-                        // LANGSUNG MASUK SLOT
+                        // LANGSUNG MASUK SLOT JIKA KOSONG
                         userData.startTime = Date.now();
                         slots[targetSlot] = userData;
                         t.update(mainRef, { chargingSlots: slots, lastTicket: newTicket });
                         
-                        const msg = generateGreeting(role, realName, namaInput, true, targetSlot, 0);
-                        localStorage.setItem('myPlat', plat);
-                        throw { type: 'SUCCESS', msg: msg };
+                        // Setup Sapaan Cerdas untuk masuk Slot
+                        finalGreetingMsg = generateGreeting(role, realName, namaInput, true, targetSlot, 0);
+                        
                     } else {
-                        // MASUK ANTRIAN KARENA SLOT PENUH
+                        // MASUK ANTRIAN JIKA SLOT PENUH
                         let q = d.waitingQueue || [];
                         q.push(userData);
                         t.update(mainRef, { waitingQueue: q, lastTicket: newTicket });
                         
-                        const msg = generateGreeting(role, realName, namaInput, false, 0, newTicket);
-                        localStorage.setItem('myPlat', plat);
-                        throw { type: 'SUCCESS', msg: msg };
+                        // Setup Sapaan Cerdas untuk masuk Antrian
+                        finalGreetingMsg = generateGreeting(role, realName, namaInput, false, 0, newTicket);
                     }
-                });
+                }); // <-- Akhir dari block runTransaction
 
-            } catch(e) { 
-                if (e && e.type === 'SUCCESS') {
-                    // Berhasil: Tutup form dan tampilkan modal sapaan!
+                // 3. Eksekusi Modal Jika Sukses (Di Luar Transaksi)
+                if (isDuplicate) {
+                    localStorage.setItem('myPlat', plat);
+                    window.location.href = 'system.html';
+                } else if (finalGreetingMsg) {
+                    // Set identitas ke perangkat user
+                    localStorage.setItem('myPlat', plat);
+                    
+                    // Tutup Form Input
                     document.getElementById('formModal').classList.remove('open');
                     setTimeout(() => { document.getElementById('formModal').style.display = 'none'; }, 200);
                     
-                    document.getElementById('succMsg').innerHTML = e.msg;
+                    // Tampilkan Modal Sapaan Cerdas
+                    document.getElementById('succMsg').innerHTML = finalGreetingMsg;
                     document.getElementById('successModal').classList.add('open');
                     document.getElementById('successModal').style.display = 'flex';
-                } else {
-                    if(e === "ANDA SUDAH TERDAFTAR!") {
-                        localStorage.setItem('myPlat', plat);
-                        window.location.href = 'system.html';
-                    } else {
-                        alert("SYSTEM ERROR: " + (e.message || e)); 
-                    }
                 }
+
+            } catch (e) { 
+                alert("SYSTEM ERROR: " + (e.message || e));
                 btn.innerText = "VERIFIKASI & AMBIL TIKET"; 
             }
         };
@@ -696,15 +698,15 @@
                     if(isOff) {
                         c.innerHTML += `<div class="slot-row maintenance"><div class="sr-left"><span class="sr-plat" style="color:#aaa;">SLOT 0${i+1}</span><span class="sr-name" style="color:#aaa;">MAINTENANCE</span></div><div class="sr-right"><span class="sr-time" style="color:#aaa;">OFFLINE</span></div></div>`;
                     } else if (s) {
-                        c.innerHTML += `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-right"><span class="sr-time" style="color:var(--kc-lime)">IN USE</span></div></div>`;
+                        c.innerHTML += `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-right"><span class="sr-time" style="color:var(--primary)">ISI</span></div></div>`;
                     } else {
                         c.innerHTML += `<div class="slot-row empty"><div class="sr-left"><span class="sr-plat" style="color:#aaa;">SLOT 0${i+1}</span><span class="sr-name" style="color:#fff">TERSEDIA</span></div><div class="sr-right"><span class="sr-time" style="color:#aaa;">OPEN</span></div></div>`;
                     }
                 });
             } else {
-                document.getElementById('mTitle').innerText = "DAFTAR TUNGGU"; c.className = "queue-table"; 
-                if(globalQueue.length === 0) c.innerHTML = "<div style='text-align:center;padding:20px;color:#888;font-family:var(--font-data);'>TIDAK ADA ANTRIAN</div>";
-                else globalQueue.forEach((q, i) => { c.innerHTML += `<div class="q-row"><div class="q-num">0${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div></div>`; });
+                document.getElementById('mTitle').innerText = "DAFTAR ANTRIAN"; c.className = "queue-table"; 
+                if(globalQueue.length === 0) c.innerHTML = "<div style='text-align:center;padding:20px;color:#888;'>TIDAK ADA ANTRIAN</div>";
+                else globalQueue.forEach((q, i) => { c.innerHTML += `<div class="q-row"><div class="q-num">#${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div></div>`; });
             }
             document.getElementById('detailModal').classList.add('open'); 
             document.getElementById('detailModal').style.display = 'flex';
@@ -717,7 +719,7 @@
         
         function calculateDistance(lat1, lon1, lat2, lon2) { const p = 0.017453292519943295; const c = Math.cos; const a = 0.5 - c((lat2 - lat1) * p)/2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))/2; return 12742 * Math.asin(Math.sqrt(a)); }
         
-        // --- REALTIME DATA (LOGIKA 4/5 TERPAKAI) ---
+        // --- REALTIME DATA ---
         onSnapshot(mainRef, (snap) => {
             if (!snap.exists()) return;
             const d = snap.data();
