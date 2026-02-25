@@ -3,483 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FC KARTIKA CHANDRA - SYSTEM</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#D4FF00">
-
-    <script>
-        const CURRENT_VERSION = "3.5_System_AdminFix_ModalKeren"; 
-        if (localStorage.getItem("app_version_system") !== CURRENT_VERSION) {
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                    for(let registration of registrations) { registration.unregister(); }
-                });
-            }
-            if (window.caches) {
-                caches.keys().then((keyList) => {
-                    return Promise.all(keyList.map((key) => caches.delete(key)));
-                });
-            }
-            localStorage.setItem("app_version_system", CURRENT_VERSION);
-            window.location.reload(true);
-        }
-    </script>
-
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,700;1,900&family=Rajdhani:wght@500;600;700;800;900&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+    <title>MOCKUP - FC KARTIKA CHANDRA SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rajdhani:wght@600;700;800&family=Teko:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
-        /* === TEMA ASLI KARTIKA CHANDRA (DARK NEON LIME) === */
-        :root { 
-            --kc-lime: #D4FF00;  
-            --bg-dark: #050505; 
-            --glass-panel: rgba(10, 10, 10, 0.95);
-            --danger: #FF003C;
+        /* === TEMA TACTICAL LUXURY (Sama seperti sebelumnya) === */
+        :root {
+            --kc-lime: #D4FF00;       
             --metal-dark: linear-gradient(145deg, #1A1D24 0%, #0D0F12 100%);
-            --border-metal: 1px solid rgba(255,255,255,0.08);
-            --font-head: 'Orbitron', sans-serif;
-            --font-tech: 'Rajdhani', sans-serif; 
-            --font-num: 'Teko', sans-serif; 
+            --carbon-bg: repeating-linear-gradient(45deg, #050608 0, #050608 2px, #0a0b0e 2px, #0a0b0e 6px);
+            --border-metal: 1px solid rgba(255,255,255,0.1);
+            --shadow-3d: 10px 10px 30px rgba(0,0,0,0.8);
+            --font-logo: 'Orbitron', sans-serif;
+            --font-data: 'Rajdhani', sans-serif;
+            --font-num: 'Teko', sans-serif;
         }
 
-        * { box-sizing: border-box; user-select: none; outline: none; -webkit-tap-highlight-color: transparent; }
-        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
-            font-family: var(--font-tech); 
-            background-color: var(--bg-dark); 
-            background-image: linear-gradient(rgba(212, 255, 0, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 255, 0, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            color: #fff; margin: 0; padding: 0 0 110px 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; 
+            margin: 0; padding: 0; font-family: var(--font-data); 
+            background-color: #030405;
+            background-image: radial-gradient(circle at 50% 0%, rgba(212, 255, 0, 0.1) 0%, transparent 50%), var(--carbon-bg);
+            color: #fff; overflow-x: hidden; min-height: 100vh;
+            display: flex; flex-direction: column;
         }
 
-        /* --- HEADER --- */
-        .header { text-align: center; padding-top: 35px; margin-bottom: 20px; position: relative; z-index: 5; } 
-        .main-title { font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: clamp(24px, 8vw, 34px); white-space: nowrap; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; text-shadow: 0 0 15px rgba(212, 255, 0, 0.3); }
-        .sub-title { font-family: var(--font-head); font-style: italic; font-size: 10px; color: var(--kc-lime); letter-spacing: 3px; font-weight: 900; text-transform: uppercase; margin-top: 10px; background: rgba(212, 255, 0, 0.05); padding: 5px 15px; border: 1px solid rgba(212, 255, 0, 0.2); border-radius: 20px; display: inline-block; }
-
-        /* --- QUEUE BAR (KLIK UNTUK LIHAT ANTRIAN) --- */
-        .queue-bar-wrapper { padding: 0 20px; margin-bottom: 15px; cursor: pointer; transition: 0.2s;}
-        .queue-bar-wrapper:active { transform: scale(0.98); }
-        .queue-bar { background: #000; border: 1px solid rgba(212, 255, 0, 0.3); border-left: 8px solid var(--kc-lime); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 20px rgba(0,0,0,0.6); border-radius: 6px; }
-        .qb-lbl { font-size: 10px; color: var(--kc-lime); letter-spacing: 2px; text-transform: uppercase; font-weight: 900; font-family: var(--font-head); font-style: italic; margin-bottom: 2px;}
-        .qb-val { font-family: var(--font-tech); font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1;}
-        .qb-tot { font-family: var(--font-num); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.5); }
-
-        /* --- SOREFALTO WIDGET --- */
-        .sorefalto-widget { margin: 0 20px 25px; background: var(--glass-panel); border: 1px solid rgba(212, 255, 0, 0.15); border-radius: 8px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-        .sf-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: linear-gradient(90deg, rgba(212, 255, 0, 0.05), transparent, rgba(212, 255, 0, 0.05)); border-bottom: 1px solid rgba(212, 255, 0, 0.1); }
-        .sf-wing { display: flex; gap: 4px; align-items: center; }
-        .sf-wing span { display: block; width: 5px; height: 18px; background: var(--kc-lime); border-radius: 1px; box-shadow: 0 0 5px rgba(212, 255, 0, 0.5); }
-        .sf-wing.left span { transform: skewX(-20deg); }
-        .sf-wing.left span:nth-child(1) { opacity: 0.2; } .sf-wing.left span:nth-child(2) { opacity: 0.5; } .sf-wing.left span:nth-child(3) { opacity: 1; }
-        .sf-wing.right span { transform: skewX(20deg); }
-        .sf-wing.right span:nth-child(1) { opacity: 1; } .sf-wing.right span:nth-child(2) { opacity: 0.5; } .sf-wing.right span:nth-child(3) { opacity: 0.2; }
-        
-        .sf-content { flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .sf-content i { color: var(--kc-lime); font-size: 16px; filter: drop-shadow(0 0 5px rgba(212, 255, 0, 0.5));}
-        
-        .sf-text { position: relative; display: inline-block; font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: 16px; color: rgba(255, 255, 255, 0.9); letter-spacing: 4px; text-transform: uppercase; animation: flicker 4s infinite; }
-        .sf-text::before, .sf-text::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; opacity: 0.8; font-style: italic; }
-        .sf-text::before { left: 2px; text-shadow: -2px 0 var(--danger); animation: glitch-anim-1 3s infinite linear alternate-reverse; }
-        .sf-text::after { left: -2px; text-shadow: 2px 0 var(--kc-lime); animation: glitch-anim-2 4s infinite linear alternate-reverse; }
-
-        .sf-motto { background: rgba(0,0,0,0.8); padding: 10px; text-align: center; font-family: var(--font-tech); font-weight: 800; font-size: 11px; color: #fff; letter-spacing: 1.5px; text-transform: uppercase; min-height: 35px;}
-        .sf-motto span { color: var(--kc-lime); margin: 0 5px; }
-
-        /* KURSOR KETIKAN SOREFALTO */
-        .type-cursor { display: inline-block; width: 6px; height: 12px; background: var(--kc-lime); margin-left: 4px; animation: cursorBlink 1s infinite; vertical-align: middle; }
-
-        @keyframes cursorBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-        @keyframes flicker { 0%, 9%, 11%, 19%, 21%, 69%, 71%, 100% { opacity: 1; } 10%, 20%, 70% { opacity: 0.6; } }
-        @keyframes glitch-anim-1 { 0%, 90% { clip-path: inset(0 0 100% 0); transform: translate(0); } 92% { clip-path: inset(20% 0 80% 0); transform: translate(-3px, 1px); } 94% { clip-path: inset(60% 0 10% 0); transform: translate(3px, -1px); } 96% { clip-path: inset(40% 0 50% 0); transform: translate(-3px, 2px); } 98% { clip-path: inset(80% 0 5% 0); transform: translate(3px, -1px); } 100% { clip-path: inset(0 0 100% 0); transform: translate(0); } }
-        @keyframes glitch-anim-2 { 0%, 85% { clip-path: inset(0 0 100% 0); transform: translate(0); } 87% { clip-path: inset(10% 0 60% 0); transform: translate(3px, -1px); } 89% { clip-path: inset(30% 0 20% 0); transform: translate(-3px, 2px); } 91% { clip-path: inset(70% 0 10% 0); transform: translate(3px, 1px); } 93% { clip-path: inset(20% 0 50% 0); transform: translate(-3px, -1px); } 95% { clip-path: inset(0 0 100% 0); transform: translate(0); } }
-
-        /* --- SLOT CONTAINER --- */
-        .slot-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 20px;}
-        .slot-container > div:nth-child(5) { grid-column: 1 / -1; }
-
-        /* --- KARTU SLOT --- */
-        .slot-card { 
-            width: 100%; height: 160px; 
-            background-color: var(--glass-panel);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: flex; flex-direction: column; padding: 12px;
-            position: relative; overflow: hidden;
+        /* HEADER */
+        .sys-header {
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(10, 12, 15, 0.8); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212,255,0,0.2);
+            position: sticky; top: 0; z-index: 100;
         }
-        .slot-card.active { border-color: var(--kc-lime); box-shadow: 0 0 15px rgba(212, 255, 0, 0.2); }
-        .slot-card.maintenance { border-color: #555; background-color: rgba(255,255,255,0.05); } /* Maintenance abu-abu (tidak merah) */
+        .sys-logo { width: 40px; height: auto; filter: drop-shadow(0 0 5px var(--kc-lime)); }
+        .sys-title { font-family: var(--font-logo); font-size: 20px; color: var(--kc-lime); letter-spacing: 2px; text-shadow: 0 0 10px rgba(212,255,0,0.4); }
+        .btn-back { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
 
-        /* BACKGROUND PUZZLE LOGO RAKSASA */
-        .slot-card::before {
-            content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 300'%3E%3Cpolygon points='100,20 180,60 180,200 100,280 20,200 20,60' fill='none' stroke='%23D4FF00' stroke-width='4' opacity='0.5'/%3E%3Cpolygon points='110,80 70,160 100,160 90,220 140,140 110,140' fill='%23D4FF00'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            opacity: 0.03; filter: grayscale(100%); transition: all 0.5s ease;
+        /* MAIN CONTAINER */
+        .main-content { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+        /* SLOT CARDS */
+        .slot-container {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px; position: relative;
         }
-        .slot-card.active::before { opacity: 0.5; filter: grayscale(0%); }
-        .slot-card:nth-child(1)::before { background-size: 220% 320%; background-position: 0% 0%; } 
-        .slot-card:nth-child(2)::before { background-size: 220% 320%; background-position: 100% 0%; } 
-        .slot-card:nth-child(3)::before { background-size: 220% 320%; background-position: 0% 45%; } 
-        .slot-card:nth-child(4)::before { background-size: 220% 320%; background-position: 100% 45%; } 
-        .slot-card:nth-child(5)::before { background-size: 110% 320%; background-position: center 100%; } 
-
-        .sc-head, .sc-body, .sc-badge-zone, .sc-action-zone { position: relative; z-index: 2; }
-        .sc-head { display: flex; justify-content: space-between; align-items: flex-start; height: 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .sc-no { font-family: var(--font-num); font-size: 28px; font-weight: 600; color: #aaa; line-height: 0.8;}
-        .slot-card.active .sc-no { color: var(--kc-lime); text-shadow: 0 0 10px rgba(212,255,0,0.4);}
-
-        .sc-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; overflow: hidden; }
-        .sc-plat { font-family: var(--font-num); font-size: clamp(20px, 6vw, 26px); font-weight: 600; color: #FFF; line-height: 1; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .sc-name { font-family: var(--font-tech); font-size: 14px; font-weight: 900; color: #FFF; text-transform: uppercase; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 2px 4px rgba(0,0,0,0.8);}
-
-        .sc-badge-zone { height: 26px; display: flex; justify-content: center; align-items: center; width: 100%; margin-bottom: 6px; }
-        
-        .glamour-badge { width: 100%; max-width: 130px; height: 24px; border-radius: 4px; display: flex; align-items: center; background: rgba(0,0,0,0.8); border: 1px solid var(--b-color-main); box-shadow: 0 0 10px var(--b-glow); position: relative; overflow: hidden; margin: 0 auto;}
-        .gb-icon { width: 28px; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 11px; background: var(--b-gradient); color: var(--icon-color, #000); clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); }
-        .gb-text { flex: 1; font-size: 9px; font-weight: 900; letter-spacing: 1px; color: var(--b-color-main); text-align: center; text-shadow: 0 0 5px rgba(0,0,0,0.8); padding-right:5px;}
-        
-        .b-presiden { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.6); --b-gradient: linear-gradient(135deg, #8B0000, #FF0000); --icon-color: #D4FF00; }
-        .b-ketum { --b-color-main: #E5FF66; --b-glow: rgba(229, 255, 102, 0.4); --b-gradient: linear-gradient(135deg, #FFF380, #D4FF00); }
-        .b-waketum { --b-color-main: #E5E4E2; --b-glow: rgba(229, 228, 226, 0.4); --b-gradient: linear-gradient(135deg, #E5E4E2, #838996); --icon-color: #000; } 
-        .b-sekretaris { --b-color-main: #00FFFF; --b-glow: rgba(0, 255, 255, 0.4); --b-gradient: linear-gradient(135deg, #00BFFF, #00008B); --icon-color: #FFF; } 
-        .b-bendahara { --b-color-main: #39FF14; --b-glow: rgba(57, 255, 20, 0.4); --b-gradient: linear-gradient(135deg, #32CD32, #006400); --icon-color: #FFF; } 
-        .b-humas { --b-color-main: #BF00FF; --b-glow: rgba(191, 0, 255, 0.4); --b-gradient: linear-gradient(135deg, #DA70D6, #4B0082); --icon-color: #FFF; } 
-        .b-kreatif { --b-color-main: #FF00FF; --b-glow: rgba(255, 0, 255, 0.4); --b-gradient: linear-gradient(135deg, #FF69B4, #C71585); --icon-color: #FFF; } 
-        .b-urc { --b-color-main: #FF0000; --b-glow: rgba(255, 0, 0, 0.6); --b-gradient: linear-gradient(135deg, #FF4500, #8B0000); --icon-color: #FFF; } 
-        .b-member { --b-color-main: #D4FF00; --b-glow: rgba(212, 255, 0, 0.2); --b-gradient: linear-gradient(135deg, #D4FF00, #668000); }
-
-        .sc-action-zone { height: 32px; width: 100%; }
-        .btn-action { width: 100%; height: 100%; border: none; border-radius: 6px; font-weight: 900; font-family: var(--font-tech); font-size: 13px; cursor: pointer; letter-spacing: 1px; position: relative; z-index: 10; transition: 0.2s;}
-        .btn-action:active { transform: scale(0.96); }
-        .btn-stop { background: linear-gradient(135deg, #FF003C 0%, #aa0000 100%); color: #fff; box-shadow: 0 2px 5px rgba(255,0,60,0.4); }
-        .btn-pilih { background: linear-gradient(135deg, var(--kc-lime) 0%, #7A9900 100%); color: #000; box-shadow: 0 2px 5px rgba(212,255,0,0.3); }
-        .btn-disabled { background: rgba(255,255,255,0.1); color: #aaa; text-transform: uppercase; backdrop-filter: blur(2px); pointer-events: none;}
-
-        .btn-cancel-q { margin: 0 20px 20px; background: rgba(255,0,60,0.1); border: 2px solid var(--danger); color: #FFF; padding: 15px 30px; font-weight: 900; font-family: var(--font-tech); font-size: 16px; cursor: pointer; width: calc(100% - 40px); border-radius: 8px; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255,0,60,0.3); transition: 0.2s; display: none;}
-        .btn-cancel-q:active { background: var(--danger); }
-
-        /* ========================================================= */
-        /* SEMUA MODAL SISTEM (KEREN, ANTI-MERAH, TACTICAL)          */
-        /* ========================================================= */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s;}
-        
-        /* Modal Tactical Base */
-        .modal-tactical { 
-            background: var(--metal-dark); border: var(--border-metal); 
-            border-top: 4px solid var(--kc-lime); border-radius: 16px; 
-            width: 85%; max-width: 380px; padding: 25px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), 0 0 20px rgba(212,255,0,0.1); 
-            position: relative; overflow: hidden; display: flex; flex-direction: column;
+        .slot-card {
+            background: var(--metal-dark); border: var(--border-metal); border-radius: 12px;
+            padding: 15px; position: relative; overflow: hidden; min-height: 220px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            box-shadow: var(--shadow-3d);
         }
-        .modal-tactical::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(212,255,0,0.02) 1px, transparent 1px); background-size: 100% 3px; pointer-events: none; z-index: 0; }
         
-        .close-x { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 24px; font-weight: bold; cursor: pointer; transition: 0.2s; z-index: 10;}
-        .close-x:hover { color: #fff; }
+        /* BACKGROUND PUZZLE (Versi Statis untuk Mockup) */
+        /* Slot Aktif: Menyala & Jelas */
+        .slot-card.active::before {
+            content: ''; position: absolute; inset: 0; z-index: 0; opacity: 0.15;
+            background-image: url("logo2.png"); /* Menggunakan logo2.png sebagai background */
+            background-repeat: no-repeat; background-position: center; background-size: 150%;
+            filter: drop-shadow(0 0 10px var(--kc-lime)); mix-blend-mode: lighten;
+        }
+        /* Slot Kosong/Maintenance: Redup & Hitam Putih */
+        .slot-card.empty::before, .slot-card.maintenance::before {
+            content: ''; position: absolute; inset: 0; z-index: 0; opacity: 0.05;
+            background-image: url("logo2.png"); 
+            background-repeat: no-repeat; background-position: center; background-size: 150%;
+            filter: grayscale(100%);
+        }
 
-        /* MODAL PENGUMUMAN CERDAS (ADMIN) - PAKAI MANAF.PNG */
-        .announcement-box { border-top-color: var(--kc-lime); box-shadow: 0 0 40px rgba(212, 255, 0, 0.2); text-align: center;}
-        .announcement-box h2 { font-family: var(--font-logo); font-style: italic; color: #fff; font-size: 22px; margin: 0 0 15px 0; letter-spacing: 2px; position: relative; z-index: 2;}
-        .announcement-box p { font-family: var(--font-data); font-weight: 600; color: #ccc; font-size: 16px; margin-bottom: 20px; line-height: 1.5; position: relative; z-index: 2;}
-
-        /* MODAL CONFIRM (CUSTOM) */
-        .confirm-modal-box { text-align: center; }
-        #modalTitle { font-family: var(--font-logo); font-style: italic; color: var(--kc-lime); font-size: 20px; margin-bottom: 10px; position: relative; z-index: 2;}
-        #modalMsg { font-family: var(--font-data); color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; position: relative; z-index: 2;}
-        .modal-btns { display: flex; gap: 10px; position: relative; z-index: 2; }
-        .btn-yes { flex: 1; background: var(--kc-lime); color: #000; padding: 12px; border-radius: 8px; font-family: var(--font-data); font-weight: 900; font-size: 16px; border: none; cursor: pointer; }
-        .btn-no { flex: 1; background: transparent; color: #fff; border: 1px solid #555; padding: 12px; border-radius: 8px; font-family: var(--font-data); font-weight: 900; font-size: 16px; cursor: pointer; }
-
-        /* MODAL LIST ANTRIAN */
-        #queueListModal { align-items:flex-end; }
-        .ql-container { background: var(--metal-dark); width:100%; height:70vh; border-top:2px solid var(--kc-lime); border-radius:20px 20px 0 0; display:flex; flex-direction:column; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); padding-bottom: env(safe-area-inset-bottom); position: relative; overflow: hidden;}
-        .ql-container::after { content: ''; position: absolute; inset: 0; background: linear-gradient(rgba(212,255,0,0.02) 1px, transparent 1px); background-size: 100% 3px; pointer-events: none; z-index: 0; }
-        .ql-header { padding:20px; text-align:center; font-family:var(--font-logo); font-style: italic; font-size:20px; font-weight:900; color:var(--kc-lime); border-bottom:1px solid rgba(255,255,255,0.05); letter-spacing: 1px; position: relative; z-index: 2;}
-        .ql-body { flex:1; overflow-y:auto; padding:15px; display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 2;}
+        .slot-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
         
-        .q-item { background: #0A0C0E; padding: 15px; border-left: 4px solid var(--kc-lime); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
-        .q-plat { font-family: var(--font-num); font-size: 26px; color: #fff; line-height: 1; letter-spacing: 1px;}
-        .q-name { color: #8892B0; font-family: var(--font-tech); font-size: 13px; font-weight: 800; text-transform: uppercase; margin-top: 4px;}
-        .q-num { font-weight: 600; color: var(--kc-lime); font-size: 32px; font-family: var(--font-num); line-height: 0.8;}
-        
-        .btn-close-ql { padding:18px; background:#000; color:#fff; border:none; font-family:var(--font-tech); font-weight:900; font-size:16px; letter-spacing:2px; cursor: pointer; border-top: 1px solid #333; position: relative; z-index: 2;}
+        /* HEADER SLOT */
+        .slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .slot-id { font-family: var(--font-logo); font-size: 12px; color: #888; }
+        .slot-status { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; letter-spacing: 1px; }
+        .st-charging { background: rgba(212, 255, 0, 0.1); color: var(--kc-lime); border: 1px solid var(--kc-lime); animation: pulse 1.5s infinite; }
+        .st-avail { background: rgba(255,255,255,0.1); color: #fff; }
+        .st-maint { background: rgba(255,0,0,0.1); color: #ff003c; border: 1px solid #ff003c; }
 
-        /* --- DOCK NAV BAWAH --- */
-        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 1px solid rgba(212, 255, 0, 0.3); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 10000; box-shadow: 0 -5px 20px rgba(212, 255, 0, 0.05);}
-        .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; height: 100%; }
-        .nav-item.active { opacity: 1; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.4); }
-        .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
-        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--kc-lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--kc-lime); position: relative; box-shadow: 0 0 15px rgba(212, 255, 0, 0.3);}
-        .nav-text { font-family: var(--font-head); font-style: italic; font-size: 10px; font-weight: 900; letter-spacing: 1.5px; margin-top: 6px; text-transform: uppercase;}
+        /* DATA USER (DUMMY) */
+        .user-data { text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .plat-no { font-family: var(--font-num); font-size: 32px; line-height: 1; color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); margin-bottom: 5px; }
+        .user-name { font-size: 12px; font-weight: 800; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* BADGE ROLE (DUMMY DESAIN) */
+        .role-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 900; text-transform: uppercase; margin: 10px auto 0; box-shadow: 0 5px 10px rgba(0,0,0,0.3); }
+        .rb-ketum { background: linear-gradient(135deg, #FFD700, #FFA500); color: #000; border: 1px solid #FFD700; }
+        .rb-urc { background: linear-gradient(135deg, #FF003C, #8B0000); color: #fff; border: 1px solid #FF003C; }
+        .rb-member { background: linear-gradient(135deg, #BBB, #888); color: #000; border: 1px solid #DDD; }
+
+        /* EMPTY & MAINTENANCE STATE */
+        .empty-state { text-align: center; color: #555; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+        .empty-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
+        .empty-text { font-family: var(--font-logo); font-size: 14px; letter-spacing: 2px; }
+        
+        /* FOOTER SLOT (TOMBOL/TIMER DUMMY) */
+        .slot-footer { margin-top: 15px; }
+        .timer-box { text-align: center; font-family: var(--font-num); font-size: 24px; color: var(--kc-lime); text-shadow: 0 0 5px var(--kc-lime); margin-bottom: 10px; }
+        .btn-slot { width: 100%; padding: 10px; border: none; border-radius: 6px; font-family: var(--font-data); font-weight: 900; font-size: 14px; cursor: not-allowed; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-stop { background: rgba(255,0,0,0.1); color: #ff003c; border: 1px solid #ff003c; }
+        .btn-pilih { background: var(--kc-lime); color: #000; box-shadow: 0 0 10px rgba(212,255,0,0.3); cursor: pointer; } /* Ceritanya bisa diklik */
+        .btn-wait { background: #333; color: #888; border: 1px solid #555; }
+
+        /* ANTRIAN SECTION (DUMMY) */
+        .queue-section { background: var(--metal-dark); border: var(--border-metal); border-radius: 12px; padding: 20px; }
+        .qs-title { font-family: var(--font-logo); font-size: 16px; color: #fff; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .q-list { display: flex; flex-direction: column; gap: 10px; }
+        .q-item { display: flex; align-items: center; background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border-left: 3px solid var(--kc-lime); }
+        .q-no { font-family: var(--font-num); font-size: 24px; color: var(--kc-lime); margin-right: 15px; min-width: 30px; }
+        .q-data { flex: 1; }
+        .q-plat { font-weight: 800; font-size: 16px; }
+        .q-info { font-size: 11px; color: #888; }
+
+        /* FOOTER IMAGE (SORE.PNG) DENGAN ANIMASI KEREN */
+        .footer-branding {
+            text-align: center; padding: 30px 20px; margin-top: auto;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+        }
+        
+        /* KELAS UNTUK GAMBAR SORE.PNG */
+        .sore-img-effect {
+            width: 80%; max-width: 280px; height: auto;
+            /* Efek awal: sedikit glow */
+            filter: drop-shadow(0 0 5px var(--kc-lime));
+            /* Animasi: Cyberpunk Float & Glow */
+            animation: cyber-breathe 4s ease-in-out infinite;
+        }
+
+        /* DEFINISI ANIMASI KEREN */
+        @keyframes cyber-breathe {
+            0%, 100% {
+                transform: translateY(0) scale(1); /* Posisi normal */
+                filter: drop-shadow(0 0 5px var(--kc-lime)) brightness(1); /* Glow standar */
+            }
+            50% {
+                transform: translateY(-8px) scale(1.02); /* Melayang sedikit ke atas & membesar dikit */
+                filter: drop-shadow(0 0 20px var(--kc-lime)) brightness(1.15); /* Glow makin terang & menyebar */
+            }
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
     </style>
 </head>
 <body>
 
-    <div id="announcementModal" class="modal-overlay">
-        <div class="modal-tactical announcement-box">
-            <button class="close-x" onclick="tutupPengumuman()">✕</button>
-            <div style="margin-bottom: 15px; position: relative; z-index: 2;">
-                <img src="manaf.png" alt="Admin" style="width: 100px; height: auto; filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.4)); border-radius: 8px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
-            </div>
-            <h2>PENGUMUMAN</h2>
-            <p id="annTextPopup">Teks pengumuman di sini...</p>
-        </div>
+    <div class="sys-header">
+        <img src="logo2.png" class="sys-logo" alt="Logo"> 
+        <div class="sys-title">CHARGING SYSTEM</div>
+        <button class="btn-back"><i class="fas fa-arrow-left"></i></button>
     </div>
 
-    <div id="customModal" class="modal-overlay">
-        <div class="modal-tactical confirm-modal-box">
-            <h2 id="modalTitle">TITLE</h2>
-            <div id="modalMsg">Msg</div>
-            <div id="modalBtns" class="modal-btns"></div>
-        </div>
-    </div>
-
-    <div id="queueListModal" class="modal-overlay">
-        <div class="ql-container">
-            <div class="ql-header">DAFTAR TUNGGU</div>
-            <div id="qlBody" class="ql-body"></div>
-            <button onclick="closeQueueModal()" class="btn-close-ql">TUTUP PENGAMATAN</button>
-        </div>
-    </div>
-
-    <div class="header">
-        <h1 class="main-title" ondblclick="toggleAdmin()">FC KARTIKA CHANDRA</h1>
-        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
-    </div>
-
-    <div class="queue-bar-wrapper" onclick="openQueueModal()">
-        <div class="queue-bar">
-            <div class="qb-left"><div class="qb-lbl">ANTRIAN BERIKUTNYA</div><div class="qb-val" id="nextQDisplay">--</div></div>
-            <div class="qb-right"><div class="qb-tot" id="totalQDisplay">00</div></div>
-        </div>
-    </div>
-
-    <div class="sorefalto-widget">
-        <div class="sf-header">
-            <div class="sf-wing left"><span></span><span></span><span></span></div>
-            <div class="sf-content">
-                <i class="fas fa-shield-alt"></i>
-                <span class="sf-text" data-text="SOREFALTO">SOREFALTO</span>
-            </div>
-            <div class="sf-wing right"><span></span><span></span><span></span></div>
-        </div>
-        <div class="sf-motto" id="typingMottoContainer"></div>
-    </div>
-
-    <div class="slot-container" id="slotsContainer"></div>
-
-    <button id="btnCancelQ" class="btn-cancel-q" onclick="cancelQueue()">❌ BATAL ANTRIAN</button>
-
-    <div class="dock-container">
-        <a href="lokasifc.html" class="nav-item">
-            <i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">PETA FC</span>
-        </a>
-        <div class="nav-item center-btn active">
-            <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
-            <span class="nav-text" style="color:var(--kc-lime);">SYSTEM</span>
-        </div>
-        <a href="plan.html" class="nav-item">
-            <i class="fas fa-route" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">TRIP PLAN</span>
-        </a>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = { apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk", authDomain: "kartikachandrafc.firebaseapp.com", projectId: "kartikachandrafc", storageBucket: "kartikachandrafc.firebasestorage.app", messagingSenderId: "677704449500", appId: "1:677704449500:web:671df8ae5cf6e66d0b6319" };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-        const mainRef = doc(db, "antrian", "utama"); const historyRef = collection(db, "riwayatCharging");
-
-        const $ = (id) => document.getElementById(id);
-        const myPlat = localStorage.getItem('myPlat');
-        
-        // Pengecekan Kunci Sesi (Supervisor Mode & Antrian Normal)
-        if(!myPlat && !localStorage.getItem('sa_sess_v2') && !localStorage.getItem('super_admin_kc')) {
-            window.location.href = 'antrian.html';
-        }
-
-        // --- SISTEM PEMBERSIH SESSION LAMA SECARA PAKSA ---
-        if(localStorage.getItem('sa_sess')) { localStorage.removeItem('sa_sess'); }
-
-        // --- TRIGGER ADMIN (KLIK JUDUL 2X) ---
-        window.toggleAdmin = () => { 
-            const pass = prompt("KODE AKSES TACTICAL:"); 
-            if (pass === "250585") { 
-                if(localStorage.getItem('super_admin_kc') || localStorage.getItem('sa_sess_v2')) { 
-                    localStorage.removeItem('super_admin_kc'); 
-                    localStorage.removeItem('sa_sess_v2'); 
-                    alert("SUPERVISOR MODE OFFLINE."); 
-                } else { 
-                    localStorage.setItem('super_admin_kc', '1'); 
-                    localStorage.setItem('sa_sess_v2', '1'); 
-                    alert("SUPERVISOR MODE ONLINE."); 
-                }
-                location.reload();
-            } else if(pass === "5588" || pass === "9999") {
-                window.location.href = "admin.html";
-            } else if(pass) {
-                alert("ACCESS DENIED!"); 
-            }
-        };
-
-        // --- SISTEM TYPING EFFECT SOREFALTO ---
-        const mottoWords = ["Solidarity", "Respect", "Familyar", "Togetherness"];
-        const mottoContainer = $('typingMottoContainer');
-        
-        async function runTypingEffect() {
-            mottoContainer.innerHTML = '<span id="mottoTextData"></span><span class="type-cursor"></span>';
-            const textData = $('mottoTextData');
+    <div class="main-content">
+        <div class="slot-container">
             
-            for (let i = 0; i < mottoWords.length; i++) {
-                if (i > 0) {
-                    textData.innerHTML += ' <span style="color:var(--kc-lime); margin:0 5px;">&bull;</span> ';
-                    await new Promise(r => setTimeout(r, 400)); // Jeda sebelum ngetik kata baru
-                }
-                
-                const word = mottoWords[i];
-                for (let j = 0; j < word.length; j++) {
-                    textData.innerHTML += word[j];
-                    await new Promise(r => setTimeout(r, 60)); // Kecepatan ngetik per huruf
-                }
-            }
-            
-            // Diam 5 menit (300.000 ms) sebelum dihapus dan diulang
-            setTimeout(runTypingEffect, 300000);
-        }
-        // Mulai ngetik setelah 1 detik halaman diload
-        setTimeout(runTypingEffect, 1000);
-
-        // UI MODALS HELPER
-        window.closeCustomModal = () => { $('customModal').style.opacity = '0'; setTimeout(() => { $('customModal').style.display='none'; }, 300); };
-        window.showConfirm = (msg, cb) => { 
-            $('modalTitle').innerText="SYSTEM ALERT"; 
-            $('modalMsg').innerText=msg; 
-            $('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes">LAKSANAKAN</button><button class="btn-no" onclick="closeCustomModal()">BATAL</button>`; 
-            $('btnYes').onclick=()=>{closeCustomModal();cb();}; 
-            $('customModal').style.display='flex'; setTimeout(() => { $('customModal').style.opacity = '1'; }, 10);
-        };
-
-        window.openQueueModal = () => { $('queueListModal').style.display='flex'; setTimeout(() => { $('queueListModal').style.opacity = '1'; }, 10); };
-        window.closeQueueModal = () => { $('queueListModal').style.opacity='0'; setTimeout(() => { $('queueListModal').style.display = 'none'; }, 300); };
-
-        function cleanStr(s) { return s ? s.replace(/[^A-Z0-9]/gi, '').toUpperCase() : ''; }
-
-        // --- SISTEM POP-UP CERDAS ---
-        let currentAnnId = "";
-        window.tutupPengumuman = () => {
-            $('announcementModal').style.opacity = '0';
-            setTimeout(() => { $('announcementModal').style.display = 'none'; }, 300);
-            localStorage.setItem('lastAnnId', currentAnnId);
-        };
-
-        onSnapshot(mainRef, (snap) => {
-            if (!snap.exists()) return; const d = snap.data();
-            
-            // 1. CEK POP-UP PENGUMUMAN CERDAS
-            if(d.announcement && d.announcement.active && d.announcement.text) {
-                currentAnnId = d.announcement.id;
-                const showOnce = d.announcement.showOnce !== undefined ? d.announcement.showOnce : true;
-                if(!showOnce || localStorage.getItem('lastAnnId') !== currentAnnId) {
-                    $('annTextPopup').innerText = d.announcement.text;
-                    $('announcementModal').style.display = 'flex';
-                    setTimeout(() => { $('announcementModal').style.opacity = '1'; }, 10);
-                }
-            } else {
-                $('announcementModal').style.opacity = '0';
-                setTimeout(() => { $('announcementModal').style.display = 'none'; }, 300);
-            }
-
-            // 2. RENDER SLOT
-            let slots = d.chargingSlots || [null,null,null,null,null]; while(slots.length<5) slots.push(null);
-            let queue = d.waitingQueue || []; let dis = d.disabledSlots || [false,false,false,false,false];
-            
-            const container = $('slotsContainer'); container.innerHTML = '';
-            let myQIndex = -1; if(myPlat && queue.length>0) myQIndex = queue.findIndex(q => cleanStr(q.plat) === cleanStr(myPlat));
-            $('btnCancelQ').style.display = myQIndex > -1 ? 'block' : 'none';
-            if(myQIndex > -1) $('btnCancelQ').innerHTML = `❌ BATAL ANTRIAN (#${myQIndex+1})`;
-
-            slots.forEach((s, i) => {
-                const isOff = dis[i]; const div = document.createElement('div');
-                
-                if (isOff) {
-                    div.className = "slot-card maintenance";
-                    div.innerHTML = `
-                        <div class="sc-head"><span class="sc-no">0${i+1}</span></div>
-                        <div class="sc-body"><div class="sc-plat" style="color:#aaa;">MAINTENANCE</div><div class="sc-name" style="color:#aaa;">OFFLINE</div></div>
-                        <div class="sc-badge-zone"></div>
-                        <div class="sc-action-zone"><button class="btn-action btn-disabled">OFFLINE</button></div>
-                    `;
-                } 
-                else if (s) { 
-                    div.className = "slot-card active";
-                    const isMe = (cleanStr(s.plat) === cleanStr(myPlat));
-                    let actBtn = isMe ? `<button onclick="window.stopCharging(${i})" class="btn-action btn-stop">STOP CHARGING</button>` : `<button class="btn-action btn-disabled">IN PROGRESS...</button>`;
-                    div.innerHTML = `
-                        <div class="sc-head"><span class="sc-no">0${i+1}</span></div>
-                        <div class="sc-body"><div class="sc-plat">${s.plat}</div><div class="sc-name">${s.userName}</div></div>
-                        <div class="sc-badge-zone">${getBadgeHTML(s.role)}</div>
-                        <div class="sc-action-zone">${actBtn}</div>
-                    `;
-                } 
-                else { 
-                    div.className = "slot-card";
-                    let bHtml = '';
-                    if(queue.length===0 || myQIndex===0) bHtml = `<button class="btn-action btn-pilih" onclick="window.selectSlot(${i})">PILIH SLOT ⚡</button>`;
-                    else if(myQIndex>0) bHtml = `<button class="btn-action btn-disabled" style="background:var(--kc-lime); color:#000;">ANTRIAN ${myQIndex+1}</button>`;
-                    else bHtml = `<button class="btn-action btn-disabled">LOCKED</button>`;
-                    
-                    div.innerHTML = `
-                        <div class="sc-head"><span class="sc-no">0${i+1}</span></div>
-                        <div class="sc-body"><div class="sc-plat" style="color:#aaa;">AVAILABLE</div><div class="sc-name" style="color:#fff;">TERSEDIA</div></div>
-                        <div class="sc-badge-zone"></div>
-                        <div class="sc-action-zone">${bHtml}</div>
-                    `;
-                }
-                container.appendChild(div);
-            });
-
-            // UPDATE QUEUE BAR
-            $('totalQDisplay').innerText = String(queue.length).padStart(2, '0'); 
-            $('nextQDisplay').innerText = queue.length > 0 ? queue[0].userName : "--";
-
-            // RENDER QUEUE MODAL
-            const qb = $('qlBody'); qb.innerHTML = '';
-            if(queue.length===0) qb.innerHTML = `<div style="text-align:center; color:#666; font-family:var(--font-tech); font-size:18px;">KOSONG</div>`;
-            else queue.forEach((q,i) => { 
-                qb.innerHTML += `
-                <div class="q-item">
-                    <div>
-                        <div class="q-plat">${q.plat}</div>
-                        <div class="q-name">${q.userName}</div>
-                        ${getBadgeHTML(q.role)}
+            <div class="slot-card active">
+                <div class="slot-content">
+                    <div class="slot-header">
+                        <span class="slot-id">SLOT 01</span>
+                        <span class="slot-status st-charging"><i class="fas fa-bolt"></i> CHARGING</span>
                     </div>
-                    <div class="q-num">0${i+1}</div>
-                </div>`; 
-            });
-        });
+                    <div class="user-data">
+                        <div class="plat-no">B 1234 KET</div>
+                        <div class="user-name">RIZKY ADITYA</div>
+                        <div class="role-badge rb-ketum"><i class="fas fa-crown"></i> KETUM</div>
+                    </div>
+                    <div class="slot-footer">
+                        <div class="timer-box">00:45:22</div>
+                        <button class="btn-slot btn-stop">STOP CHARGING</button>
+                    </div>
+                </div>
+            </div>
 
-        // === FUNGSI BADGE LENGKAP ===
-        function getBadgeHTML(r) {
-            if (!r || r === "GUEST") return ""; 
-            
-            let css = "b-member"; let icon = "fa-user"; let txt = "MEMBER"; 
-            const ru = r.toUpperCase();
-            
-            if(ru.includes("PRESIDEN MCU")) { css = "b-presiden"; icon = "fa-globe"; txt = "PRESIDEN MCU"; }
-            else if(ru.includes("WAKETUM")) { css = "b-waketum"; icon = "fa-star"; txt = "WAKETUM"; }
-            else if(ru.includes("KETUM")) { css = "b-ketum"; icon = "fa-crown"; txt = "KETUM"; }
-            else if(ru.includes("SEKERTARIS") || ru.includes("SEKRETARIS")) { css = "b-sekretaris"; icon = "fa-pen-nib"; txt = "SEKRETARIS"; }
-            else if(ru.includes("BENDAHARA")) { css = "b-bendahara"; icon = "fa-wallet"; txt = "BENDAHARA"; }
-            else if(ru.includes("HUMAS")) { css = "b-humas"; icon = "fa-bullhorn"; txt = "HUMAS"; }
-            else if(ru.includes("KREATIF")) { css = "b-kreatif"; icon = "fa-camera"; txt = "TIM KREATIF"; }
-            else if(ru.includes("URC")) { css = "b-urc"; icon = "fa-ambulance"; txt = "URC"; }
-            
-            return `<div class="glamour-badge ${css}"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
-        }
+            <div class="slot-card maintenance">
+                <div class="slot-content">
+                    <div class="slot-header">
+                        <span class="slot-id">SLOT 02</span>
+                        <span class="slot-status st-maint"><i class="fas fa-tools"></i> RUSAK</span>
+                    </div>
+                    <div class="empty-state">
+                        <i class="fas fa-ban empty-icon" style="color:#ff003c"></i>
+                        <div class="empty-text" style="color:#ff003c">MAINTENANCE</div>
+                    </div>
+                    <div class="slot-footer">
+                        <button class="btn-slot btn-wait" style="border-color:#ff003c; color:#ff003c; opacity:0.5;">OFFLINE</button>
+                    </div>
+                </div>
+            </div>
 
-        window.selectSlot = async (i) => { showConfirm(`MASUK SLOT 0${i+1}?`, () => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); if((d.disabledSlots||[])[i]) throw "SLOT DALAM PERBAIKAN!"; if(d.chargingSlots[i]) throw "SLOT PENUH!"; let q = d.waitingQueue; const idx = q.findIndex(x => cleanStr(x.plat) === cleanStr(myPlat)); if(idx === -1) throw "DATA ANTRIAN HILANG!"; const me = q[idx]; q.splice(idx, 1); me.startTime = Date.now(); d.chargingSlots[i] = me; t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: q }); }).catch(e => alert(e)); }); };
-        window.stopCharging = (i) => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); const u = d.chargingSlots[i]; if(u) addDoc(historyRef, {...u, finishTime: new Date(), action: "STOP"}); d.chargingSlots[i] = null; t.update(mainRef, {chargingSlots: d.chargingSlots}); }).then(() => { localStorage.removeItem('myPlat'); window.location.href = 'antrian.html'; }); };
-        window.cancelQueue = () => { showConfirm("BATAL ANTRI?", () => { runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); t.update(mainRef, { waitingQueue: d.waitingQueue.filter(q => cleanStr(q.plat) !== cleanStr(myPlat)) }); }).then(() => { localStorage.removeItem('myPlat'); window.location.href = 'antrian.html'; }); }); };
-    </script>
-</body>
+            <div class="slot-card empty">
+                <div class="slot-content">
+                    <div class="slot-header">
+                        <span class="slot-id">SLOT 03</span>
+                        <span class="slot-status st-avail">AVAILABLE</span>
+                    </div>
+                    <div class="empty-state">
+                        <i class="fas fa-plug empty-icon"></i>
+                        <div class="empty-text">TERSEDIA</div>
+                    </div>
+                    <div class="slot-footer">
+                        <button class="btn-slot btn-pilih">PILIH SLOT ⚡</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slot-card active">
+                <div class="slot-content">
+                    <div class="slot-header">
+                        <span class="slot-id">SLOT 04</span>
+                        <span class="slot-status st-charging"><i class="fas fa-bolt"></i> CHARGING</span>
+                    </div>
+                    <div class="user-data">
+                        <div class="plat-no">B 555 URC</div>
+                        <div class="user-name">URC SQUAD</div>
+                        <div class="role-badge rb-urc"><i class="fas fa-ambulance"></i> URC</div>
+                    </div>
+                    <div class="slot-footer">
+                        <div class="timer-box">01:10:05</div>
+                        <button class="btn-slot btn-stop">STOP CHARGING</button>
+                    </div>
+                </div>
+            </div>
+
+             <div class="slot-card active">
+                <div class="slot-content">
+                    <div class="slot-header">
+                        <span class="slot-id">SLOT 05</span>
+                        <span class="slot-status st-charging"><i class="fas fa-bolt"></i> CHARGING</span>
+                    </div>
+                    <div class="user-data">
+                        <div class="plat-no">B 9999 XYZ</div>
+                        <div class="user-name">MEMBER BARU</div>
+                        <div class="role-badge rb-member"><i class="fas fa-user"></i> MEMBER</div>
+                    </div>
+                    <div class="slot-footer">
+                        <div class="timer-box">00:05:10</div>
+                        <button class="btn-slot btn-stop">STOP CHARGING</button>
+                    </div>
+                </div>
+            </div>
+
+        </div> <div class="queue-section">
+            <div class="qs-title">DAFTAR TUNGGU <span style="color:var(--kc-lime)">2 UNIT</span></div>
+            <div class="q-list">
+                <div class="q-item" style="border-color: var(--kc-lime);">
+                    <div class="q-no">01</div>
+                    <div class="q-data">
+                        <div class="q-plat">B 8888 GUE</div>
+                        <div class="q-info">ANTRIAN SAYA (GUEST)</div>
+                    </div>
+                    <div style="font-size:10px; color:var(--kc-lime); font-weight:800;">GILIRAN ANDA!</div>
+                </div>
+                <div class="q-item" style="border-color: #555; opacity:0.7;">
+                    <div class="q-no" style="color:#888;">02</div>
+                    <div class="q-data">
+                        <div class="q-plat">D 4545 BB</div>
+                        <div class="q-info">MEMBER LAIN</div>
+                    </div>
+                    <i class="fas fa-clock" style="color:#888;"></i>
+                </div>
+            </div>
+        </div>
+
+    </div> <div class="footer-branding">
+        <img src="sore.png" alt="SOREFALTO" class="sore-img-effect" onerror="this.style.display='none'; alert('File sore.png tidak ditemukan! Simpan gambar di folder project.');">
+    </div>
+
+    </body>
 </html>
