@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FC KARTIKA CHANDRA - SYSTEM FINAL MOCKUP</title>
+    <title>FC KARTIKA CHANDRA - SYSTEM CONTROL</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:ital,wght@0,700;0,900;1,700;1,900&family=Rajdhani:wght@500;600;700;800;900&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* === TEMA ASLI KARTIKA CHANDRA (DARK NEON LIME) === */
         :root { 
             --kc-lime: #D4FF00;  
             --bg-dark: #050505; 
@@ -30,137 +29,58 @@
             color: #fff; margin: 0; padding: 0 0 110px 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; 
         }
 
-        /* --- HEADER --- */
         .header { text-align: center; padding-top: 35px; margin-bottom: 20px; position: relative; z-index: 5; } 
         .main-title { font-family: var(--font-head); font-style: italic; font-weight: 900; font-size: clamp(24px, 8vw, 34px); white-space: nowrap; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1; margin: 0; text-shadow: 0 0 15px rgba(212, 255, 0, 0.3); }
         .sub-title { font-family: var(--font-head); font-style: italic; font-size: 10px; color: var(--kc-lime); letter-spacing: 3px; font-weight: 900; text-transform: uppercase; margin-top: 10px; background: rgba(212, 255, 0, 0.05); padding: 5px 15px; border: 1px solid rgba(212, 255, 0, 0.2); border-radius: 20px; display: inline-block; }
 
-        /* --- QUEUE BAR --- */
         .queue-bar-wrapper { padding: 0 20px; margin-bottom: 15px; }
         .queue-bar { background: #000; border: 1px solid rgba(212, 255, 0, 0.3); border-left: 8px solid var(--kc-lime); padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 5px 20px rgba(0,0,0,0.6); border-radius: 6px; }
         .qb-lbl { font-size: 10px; color: var(--kc-lime); letter-spacing: 2px; text-transform: uppercase; font-weight: 900; font-family: var(--font-head); font-style: italic; margin-bottom: 2px;}
         .qb-val { font-family: var(--font-tech); font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1;}
         .qb-tot { font-family: var(--font-num); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.5); }
 
+        /* --- EFEK REVEAL SCAN & GLITCH --- */
+        .logo-fx-container { margin: 5px auto 25px; position: relative; width: 70%; max-width: 220px; z-index: 10; }
+        .logo-fx-container img { width: 100%; height: auto; display: block; }
+        .logo-base-dark { filter: brightness(0.1) grayscale(100%); }
+        .logo-sweep-wrapper { position: absolute; top: 0; left: 0; width: 100%; height: 100%; animation: sweep-reveal-anim 8s infinite; }
+        .logo-bright { filter: brightness(1.2) drop-shadow(0 0 10px var(--kc-lime)); }
+        .sweep-bar { position: absolute; top: -5%; bottom: -5%; left: 0; width: 6px; background: #fff; box-shadow: 0 0 15px 10px var(--kc-lime), 0 0 30px 15px var(--kc-lime); animation: sweep-bar-anim 8s infinite; }
+        .logo-glitch-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; filter: brightness(1.5) drop-shadow(0 0 15px var(--kc-lime)); animation: glitch-anim 8s infinite; }
 
-        /* ========================================================= */
-        /* --- EFEK ANIMASI LOGO (SCAN BAR LALU GLITCH GARIS)    --- */
-        /* ========================================================= */
-        
-        .logo-fx-container {
-            margin: 5px auto 25px; 
-            position: relative; 
-            width: 70%;
-            max-width: 220px;
-            z-index: 10;
-        }
-        
-        .logo-fx-container img {
-            width: 100%; height: auto; display: block;
-        }
-
-        /* Lapis 1: Logo Gelap (Diam di belakang terus) */
-        .logo-base-dark {
-            filter: brightness(0.1) grayscale(100%);
-        }
-
-        /* Lapis 2: Wrapper untuk Bar Cahaya & Reveal Logo */
-        .logo-sweep-wrapper {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            animation: sweep-reveal-anim 8s infinite;
-        }
-        
-        .logo-bright {
-            filter: brightness(1.2) drop-shadow(0 0 10px var(--kc-lime));
-        }
-
-        /* Bar Cahaya Besar yang menyapu */
-        .sweep-bar {
-            position: absolute; top: -5%; bottom: -5%; left: 0; width: 6px;
-            background: #fff;
-            box-shadow: 0 0 15px 10px var(--kc-lime), 0 0 30px 15px var(--kc-lime);
-            animation: sweep-bar-anim 8s infinite;
-        }
-
-        /* Lapis 3: Efek Nyala + Glitch Garis (Muncul setelah gelap) */
-        .logo-glitch-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; /* Mulai dengan sembunyi */
-            filter: brightness(1.5) drop-shadow(0 0 15px var(--kc-lime));
-            animation: glitch-anim 8s infinite;
-        }
-
-        /* Keyframes: 
-           0-5%: Gelap 
-           5-30%: Tersapu bar terang dari kiri ke kanan 
-           35-40%: Gelap lagi (mati)
-           45-90%: Nyala terang + glitch garis-garis patah 
-        */
-
-        @keyframes sweep-reveal-anim {
-            0%, 5% { clip-path: inset(0 100% 0 0); opacity: 1; } /* Sembunyi di kiri */
-            30%, 35% { clip-path: inset(0 0 0 0); opacity: 1; }  /* Kelihatan utuh */
-            36%, 100% { opacity: 0; clip-path: inset(0 0 0 0); } /* Mati */
-        }
-
-        @keyframes sweep-bar-anim {
-            0%, 5% { left: 0%; opacity: 0; }
-            6% { opacity: 1; }
-            30% { left: 100%; opacity: 1; }
-            31%, 100% { left: 100%; opacity: 0; }
-        }
-
+        @keyframes sweep-reveal-anim { 0%, 5% { clip-path: inset(0 100% 0 0); opacity: 1; } 30%, 35% { clip-path: inset(0 0 0 0); opacity: 1; } 36%, 100% { opacity: 0; clip-path: inset(0 0 0 0); } }
+        @keyframes sweep-bar-anim { 0%, 5% { left: 0%; opacity: 0; } 6% { opacity: 1; } 30% { left: 100%; opacity: 1; } 31%, 100% { left: 100%; opacity: 0; } }
         @keyframes glitch-anim {
             0%, 40% { opacity: 0; transform: translate(0); clip-path: inset(0 0 0 0); }
-            
-            /* Nyala Normal */
             41%, 50% { opacity: 1; transform: translate(0); clip-path: inset(0 0 0 0); }
-            
-            /* Glitch Garis 1 (Patah horizontal) */
             51% { opacity: 1; clip-path: inset(10% 0 70% 0); transform: translate(-8px, 2px); }
             52% { opacity: 1; clip-path: inset(50% 0 30% 0); transform: translate(8px, -2px); filter: hue-rotate(45deg); }
             53%, 65% { opacity: 1; clip-path: inset(0 0 0 0); transform: translate(0); filter: hue-rotate(0deg); }
-            
-            /* Glitch Garis 2 (Blink patah) */
             66% { opacity: 1; clip-path: inset(80% 0 5% 0); transform: translate(-5px, 0); }
             67% { opacity: 0.2; }
             68%, 80% { opacity: 1; clip-path: inset(0 0 0 0); transform: translate(0); }
-            
-            /* Glitch Garis 3 */
             81% { opacity: 1; clip-path: inset(30% 0 60% 0); transform: translate(5px, 1px); }
             82% { opacity: 1; clip-path: inset(0 0 0 0); transform: translate(0); }
-            
-            /* Kembali redup dan mati pelan */
             85% { opacity: 1; }
             90%, 100% { opacity: 0; }
         }
-        /* ========================================================= */
 
-
-        /* --- SLOT CONTAINER --- */
+        /* --- SLOT CARDS --- */
         .slot-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; }
         .slot-card:nth-child(5) { grid-column: 1 / -1; }
-
-        /* --- KARTU SLOT --- */
         .slot-card { 
-            width: 100%; height: 160px; 
-            background-color: var(--glass-panel);
+            width: 100%; height: 160px; background-color: var(--glass-panel);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; 
             box-shadow: 0 8px 20px rgba(0,0,0,0.6); display: flex; flex-direction: column; padding: 12px;
             position: relative; overflow: hidden;
         }
-        
         .slot-card.active { border-color: var(--kc-lime); box-shadow: 0 0 15px rgba(212, 255, 0, 0.2); }
-
-        /* BACKGROUND PUZZLE LOGO RAKSASA */
         .slot-card::before {
             content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 300'%3E%3Cpolygon points='100,20 180,60 180,200 100,280 20,200 20,60' fill='none' stroke='%23D4FF00' stroke-width='4' opacity='0.5'/%3E%3Cpolygon points='110,80 70,160 100,160 90,220 140,140 110,140' fill='%23D4FF00'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            opacity: 0.03; filter: grayscale(100%); transition: all 0.5s ease;
+            background-repeat: no-repeat; opacity: 0.03; transition: all 0.5s ease;
         }
-        .slot-card.active::before { opacity: 0.5; filter: grayscale(0%); }
-        
+        .slot-card.active::before { opacity: 0.5; }
         .slot-card:nth-child(1)::before { background-size: 220% 320%; background-position: 0% 0%; } 
         .slot-card:nth-child(2)::before { background-size: 220% 320%; background-position: 100% 0%; } 
         .slot-card:nth-child(3)::before { background-size: 220% 320%; background-position: 0% 45%; } 
@@ -170,30 +90,24 @@
         .sc-head, .sc-body, .sc-badge-zone, .sc-action-zone { position: relative; z-index: 2; }
         .sc-head { display: flex; justify-content: space-between; align-items: flex-start; height: 28px; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .sc-no { font-family: var(--font-num); font-size: 28px; font-weight: 600; color: #aaa; line-height: 0.8;}
-        .slot-card.active .sc-no { color: var(--kc-lime); text-shadow: 0 0 10px rgba(212,255,0,0.4);}
-
+        .slot-card.active .sc-no { color: var(--kc-lime); }
         .sc-body { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; width: 100%; overflow: hidden; }
-        .sc-plat { font-family: var(--font-num); font-size: clamp(20px, 6vw, 26px); font-weight: 600; color: #FFF; line-height: 1; letter-spacing: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .sc-name { font-family: var(--font-tech); font-size: 14px; font-weight: 900; color: #FFF; text-transform: uppercase; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 2px 4px rgba(0,0,0,0.8);}
-
+        .sc-plat { font-family: var(--font-num); font-size: clamp(20px, 6vw, 26px); font-weight: 600; color: #FFF; line-height: 1; letter-spacing: 1px; }
+        .sc-name { font-family: var(--font-tech); font-size: 14px; font-weight: 900; color: #FFF; text-transform: uppercase; margin-top: 4px; }
         .sc-badge-zone { height: 26px; display: flex; justify-content: center; align-items: center; width: 100%; margin-bottom: 6px; }
         .glamour-badge { background: #fff; color: #000; border-radius: 4px; padding: 2px 8px; display: flex; align-items: center; gap: 4px; font-family: var(--font-tech); font-weight: 900; font-size: 10px; letter-spacing: 1px; height: 100%; }
-        .gb-icon { color: #000; font-size: 10px; }
-
         .sc-action-zone { height: 32px; width: 100%; }
-        .btn-action { width: 100%; height: 100%; border: none; border-radius: 6px; font-weight: 900; font-family: var(--font-tech); font-size: 13px; cursor: pointer; letter-spacing: 1px; position: relative; z-index: 10; }
-        .btn-stop { background: linear-gradient(135deg, #FF003C 0%, #aa0000 100%); color: #fff; box-shadow: 0 2px 5px rgba(255,0,60,0.4); }
-        .btn-pilih { background: linear-gradient(135deg, var(--kc-lime) 0%, #7A9900 100%); color: #000; box-shadow: 0 2px 5px rgba(212,255,0,0.3); }
-        .btn-disabled { background: rgba(255,255,255,0.1); color: #aaa; text-transform: uppercase; backdrop-filter: blur(2px); }
+        .btn-action { width: 100%; height: 100%; border: none; border-radius: 6px; font-weight: 900; font-family: var(--font-tech); font-size: 13px; cursor: pointer; letter-spacing: 1px; }
+        .btn-stop { background: linear-gradient(135deg, #FF003C 0%, #aa0000 100%); color: #fff; }
+        .btn-pilih { background: linear-gradient(135deg, var(--kc-lime) 0%, #7A9900 100%); color: #000; }
+        .btn-disabled { background: rgba(255,255,255,0.1); color: #aaa; text-transform: uppercase; }
 
-        /* --- DOCK NAV BAWAH --- */
-        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 1px solid rgba(212, 255, 0, 0.3); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 99999; box-shadow: 0 -5px 20px rgba(212, 255, 0, 0.05);}
+        .dock-container { position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; background: rgba(5, 5, 5, 0.98); border-top: 1px solid rgba(212, 255, 0, 0.3); display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; z-index: 99999; }
         .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; opacity: 0.5; height: 100%; }
-        .nav-item.active { opacity: 1; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.4); }
+        .nav-item.active { opacity: 1; color: var(--kc-lime); }
         .nav-item.center-btn { transform: translateY(-30px); opacity: 1; }
-        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--kc-lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--kc-lime); position: relative; box-shadow: 0 0 15px rgba(212, 255, 0, 0.3);}
+        .center-icon-box { width: 65px; height: 65px; background: #000; border: 2px solid var(--kc-lime); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--kc-lime); position: relative; }
         .nav-text { font-family: var(--font-head); font-style: italic; font-size: 10px; font-weight: 900; letter-spacing: 1.5px; margin-top: 6px; text-transform: uppercase;}
-
     </style>
 </head>
 <body>
@@ -205,66 +119,88 @@
 
     <div class="queue-bar-wrapper">
         <div class="queue-bar">
-            <div class="qb-left"><div class="qb-lbl">ANTRIAN BERIKUTNYA</div><div class="qb-val">BAMBANG</div></div>
-            <div class="qb-right"><div class="qb-tot">03</div></div>
+            <div class="qb-left"><div class="qb-lbl">ANTRIAN BERIKUTNYA</div><div class="qb-val" id="nextName">MEMUAT...</div></div>
+            <div class="qb-right"><div class="qb-tot" id="queueTotal">00</div></div>
         </div>
     </div>
 
     <div class="logo-fx-container">
-        <img src="logo2.png" class="logo-base-dark" alt="SYSTEM LOGO">
-        
+        <img src="logo2.png" class="logo-base-dark">
         <div class="logo-sweep-wrapper">
-            <img src="logo2.png" class="logo-bright" alt="SYSTEM LOGO">
+            <img src="logo2.png" class="logo-bright">
             <div class="sweep-bar"></div>
         </div>
-
-        <img src="logo2.png" class="logo-glitch-layer" alt="SYSTEM LOGO" onerror="this.style.display='none'; alert('Pastikan ada file logo2.png di folder yang sama ya, Pak.');">
+        <img src="logo2.png" class="logo-glitch-layer">
     </div>
 
-    <div class="slot-container">
-        
-        <div class="slot-card active">
-            <div class="sc-head"><span class="sc-no">01</span></div>
-            <div class="sc-body"><div class="sc-plat">B 4248 SWF</div><div class="sc-name">RIZKY ⚡</div></div>
-            <div class="sc-badge-zone"><div class="glamour-badge"><div class="gb-icon"><i class="fas fa-user-ninja"></i></div><div class="gb-text">PASUKAN SENYAP</div></div></div>
-            <div class="sc-action-zone"><button class="btn-action btn-stop">STOP CHARGING</button></div>
-        </div>
-
-        <div class="slot-card active">
-            <div class="sc-head"><span class="sc-no">02</span></div>
-            <div class="sc-body"><div class="sc-plat">B 4961 SWF</div><div class="sc-name">DZILAN 👑</div></div>
-            <div class="sc-badge-zone"><div class="glamour-badge"><div class="gb-icon"><i class="fas fa-crown"></i></div><div class="gb-text">MEMBER KUDETA</div></div></div>
-            <div class="sc-action-zone"><button class="btn-action btn-disabled">IN PROGRESS...</button></div>
-        </div>
-
-        <div class="slot-card active">
-            <div class="sc-head"><span class="sc-no">03</span></div>
-            <div class="sc-body"><div class="sc-plat">B 1234 XYZ</div><div class="sc-name">SYAHRIZAL</div></div>
-            <div class="sc-badge-zone"><div class="glamour-badge"><div class="gb-icon"><i class="fas fa-user"></i></div><div class="gb-text">MEMBER</div></div></div>
-            <div class="sc-action-zone"><button class="btn-action btn-disabled">IN PROGRESS...</button></div>
-        </div>
-
-        <div class="slot-card active">
-            <div class="sc-head"><span class="sc-no">04</span></div>
-            <div class="sc-body"><div class="sc-plat">B 9999 BOS</div><div class="sc-name">ANTO</div></div>
-            <div class="sc-badge-zone"><div class="glamour-badge" style="border-color:#E5E4E2"><div class="gb-icon" style="background:#E5E4E2; color:#000;"><i class="fas fa-star"></i></div><div class="gb-text" style="color:#E5E4E2">WAKETUM</div></div></div>
-            <div class="sc-action-zone"><button class="btn-action btn-disabled">IN PROGRESS...</button></div>
-        </div>
-
-        <div class="slot-card active">
-            <div class="sc-head"><span class="sc-no">05</span></div>
-            <div class="sc-body"><div class="sc-plat">B 5555 JKL</div><div class="sc-name">CITRA</div></div>
-            <div class="sc-badge-zone"><div class="glamour-badge"><div class="gb-icon"><i class="fas fa-user"></i></div><div class="gb-text">MEMBER</div></div></div>
-            <div class="sc-action-zone"><button class="btn-action btn-disabled">IN PROGRESS...</button></div>
-        </div>
-
-    </div>
+    <div class="slot-container" id="slotList"></div>
 
     <div class="dock-container">
-        <div class="nav-item"><i class="fas fa-map-marked-alt" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">PETA FC</span></div>
-        <div class="nav-item center-btn active"><div class="center-icon-box"><i class="fas fa-charging-station"></i></div><span class="nav-text" style="color:var(--kc-lime);">SYSTEM</span></div>
-        <div class="nav-item"><i class="fas fa-route" style="font-size:20px; margin-bottom:2px;"></i><span class="nav-text">TRIP PLAN</span></div>
+        <a href="lokasifc.html" class="nav-item"><i class="fas fa-map-marked-alt"></i><span class="nav-text">PETA FC</span></a>
+        <a href="system.html" class="nav-item center-btn active"><div class="center-icon-box"><i class="fas fa-charging-station"></i></div><span class="nav-text">SYSTEM</span></a>
+        <a href="plan.html" class="nav-item"><i class="fas fa-route"></i><span class="nav-text">TRIP PLAN</span></a>
     </div>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = { apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk", authDomain: "kartikachandrafc.firebaseapp.com", projectId: "kartikachandrafc", storageBucket: "kartikachandrafc.firebasestorage.app", messagingSenderId: "677704449500", appId: "1:677704449500:web:671df8ae5cf6e66d0b6319" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const mainRef = doc(db, "antrian", "utama");
+
+        onSnapshot(mainRef, (snap) => {
+            if (!snap.exists()) return;
+            const d = snap.data();
+            const slots = d.chargingSlots || [null,null,null,null,null];
+            const queue = d.waitingQueue || [];
+            const disabled = d.disabledSlots || [false,false,false,false,false];
+
+            document.getElementById('nextName').innerText = queue.length > 0 ? queue[0].userName : "KOSONG";
+            document.getElementById('queueTotal').innerText = String(queue.length).padStart(2, '0');
+
+            let html = "";
+            slots.forEach((s, i) => {
+                const isOff = disabled[i];
+                const isActive = s !== null;
+                html += `
+                <div class="slot-card ${isActive ? 'active' : ''}">
+                    <div class="sc-head"><span class="sc-no">${String(i+1).padStart(2,'0')}</span></div>
+                    <div class="sc-body">
+                        <div class="sc-plat">${isOff ? 'OFFLINE' : (isActive ? s.plat : '-------')}</div>
+                        <div class="sc-name">${isOff ? 'MAINTENANCE' : (isActive ? s.userName : 'TERSEDIA')}</div>
+                    </div>
+                    <div class="sc-badge-zone">${isActive ? `<div class="glamour-badge"><i class="fas ${s.role==='WAKETUM'?'fa-star':'fa-user-ninja'}"></i><span>${s.role}</span></div>` : ''}</div>
+                    <div class="sc-action-zone">
+                        ${isOff ? `<button class="btn-action btn-disabled">LOGOUT</button>` : 
+                          (isActive ? `<button class="btn-action btn-stop" onclick="handleStop(${i})">STOP CHARGING</button>` : 
+                          `<button class="btn-action btn-pilih" onclick="handlePilih(${i})">PILIH UNIT</button>`)}
+                    </div>
+                </div>`;
+            });
+            document.getElementById('slotList').innerHTML = html;
+        });
+
+        window.handleStop = async (idx) => {
+            const snap = await getDoc(mainRef);
+            const slots = snap.data().chargingSlots;
+            slots[idx] = null;
+            await updateDoc(mainRef, { chargingSlots: slots });
+        };
+
+        window.handlePilih = async (idx) => {
+            const snap = await getDoc(mainRef);
+            const d = snap.data();
+            const queue = d.waitingQueue || [];
+            if (queue.length === 0) return alert("Antrian Kosong!");
+            
+            const user = queue.shift();
+            const slots = d.chargingSlots;
+            user.startTime = Date.now();
+            slots[idx] = user;
+            await updateDoc(mainRef, { chargingSlots: slots, waitingQueue: queue });
+        };
+    </script>
 </body>
 </html>
