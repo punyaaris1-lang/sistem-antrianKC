@@ -42,7 +42,7 @@
         .qb-val { font-family: var(--font-tech); font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1;}
         .qb-tot { font-family: var(--font-num); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.5); }
 
-        /* --- EFEK ANIMASI LOGO REVEAL SCAN (GELAP TOTAL LALU CAHAYA) --- */
+        /* --- EFEK ANIMASI LOGO REVEAL & HOLD (Tahan Nyala) --- */
         .sore-img-wrapper {
             margin: 5px auto 25px; 
             text-align: center; 
@@ -52,44 +52,58 @@
             z-index: 10;
         }
         
-        /* Lapis 1: Logo Gelap Total (Bayangan mati) */
+        /* Lapis 1: Logo Gelap (Diam di belakang) */
         .logo-dark {
             width: 100%; 
             height: auto;
             display: block;
-            filter: brightness(0.05) grayscale(100%); /* Membuat logo hampir hitam pekat */
+            filter: brightness(0.1) grayscale(100%);
         }
 
-        /* Lapis 2: Logo Menyala (Ditutupi Masking) */
+        /* Lapis 2: Logo Nyala (Bersembunyi lalu muncul dari kiri ke kanan) */
         .logo-light {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             display: block;
-            filter: brightness(1.2) drop-shadow(0 0 15px var(--kc-lime));
+            filter: brightness(1.2) drop-shadow(0 0 10px var(--kc-lime));
             
-            /* Teknik Masking untuk cahaya menyapu */
-            -webkit-mask-image: linear-gradient(
-                115deg, 
-                transparent 0%, 
-                transparent 40%, 
-                rgba(0,0,0,0.5) 47%, 
-                rgba(0,0,0,1) 50%, 
-                rgba(0,0,0,0.5) 53%, 
-                transparent 60%, 
-                transparent 100%
-            );
-            -webkit-mask-size: 300% 100%;
-            -webkit-mask-repeat: no-repeat;
-            
-            /* Animasi maju-mundur cahaya */
-            animation: scan-reveal 4s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+            /* Animasi Muncul & Tahan */
+            -webkit-clip-path: inset(0 100% 0 0);
+            clip-path: inset(0 100% 0 0);
+            animation: reveal-hold 6s infinite;
         }
 
-        /* Keyframes agar diam gelap -> tersapu cahaya -> diam gelap lagi */
-        @keyframes scan-reveal {
-            0%, 15% { -webkit-mask-position: 100% 0; } /* Di luar kiri (gelap total) */
-            85%, 100% { -webkit-mask-position: 0% 0; }   /* Di luar kanan (gelap total) */
+        /* Garis Laser Scanner */
+        .scan-line {
+            position: absolute;
+            top: 0; bottom: 0; left: 0;
+            width: 3px;
+            background: #fff;
+            box-shadow: 0 0 15px 5px var(--kc-lime), 0 0 30px var(--kc-lime);
+            animation: scan-move 6s infinite;
+            z-index: 3;
+            opacity: 0;
+        }
+
+        /* Siklus Waktu: 
+           0-10%: Gelap 
+           10-35%: Tersapu (Reveal)
+           35-80%: TAHAN MENYALA (Hold)
+           80-90%: Memudar pelan (Fade out)
+           90-100%: Kembali Gelap */
+        @keyframes reveal-hold {
+            0%, 10% { -webkit-clip-path: inset(0 100% 0 0); clip-path: inset(0 100% 0 0); opacity: 1; }
+            35% { -webkit-clip-path: inset(0 0 0 0); clip-path: inset(0 0 0 0); opacity: 1; }
+            80% { -webkit-clip-path: inset(0 0 0 0); clip-path: inset(0 0 0 0); opacity: 1; } 
+            90%, 100% { -webkit-clip-path: inset(0 0 0 0); clip-path: inset(0 0 0 0); opacity: 0; }
+        }
+
+        @keyframes scan-move {
+            0%, 9% { left: 0%; opacity: 0; }
+            10% { left: 0%; opacity: 1; }
+            35% { left: 100%; opacity: 1; }
+            36%, 100% { left: 100%; opacity: 0; }
         }
 
         /* --- SLOT CONTAINER --- */
@@ -167,7 +181,8 @@
 
     <div class="sore-img-wrapper">
         <img src="logo2.png" alt="SYSTEM LOGO" class="logo-dark">
-        <img src="logo2.png" alt="SYSTEM LOGO" class="logo-light" onerror="this.style.display='none'; alert('Pastikan ada file logo2.png di folder yang sama ya, Pak.');">
+        <img src="logo2.png" alt="SYSTEM LOGO" class="logo-light" onerror="this.style.display='none'; alert('Pastikan ada file logo2.png di folder yang sama.');">
+        <div class="scan-line"></div>
     </div>
 
     <div class="slot-container">
