@@ -42,75 +42,100 @@
         .qb-val { font-family: var(--font-tech); font-weight: 900; font-size: 24px; color: #fff; letter-spacing: 1px; text-transform: uppercase; line-height: 1;}
         .qb-tot { font-family: var(--font-num); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.5); }
 
-        /* ======================================================== */
-        /* --- EFEK BARU: PREMIUM FLARE REVEAL & HOLD GLOW      --- */
-        /* ======================================================== */
-        .sore-img-wrapper {
+
+        /* ========================================================= */
+        /* --- EFEK ANIMASI LOGO (SCAN BAR LALU GLITCH GARIS)    --- */
+        /* ========================================================= */
+        
+        .logo-fx-container {
             margin: 5px auto 25px; 
-            text-align: center; 
             position: relative; 
             width: 70%;
             max-width: 220px;
             z-index: 10;
-            overflow: hidden; /* Wajib agar kilapan cahayanya gak tembus keluar */
-            border-radius: 12px;
+        }
+        
+        .logo-fx-container img {
+            width: 100%; height: auto; display: block;
         }
 
-        /* Logonya punya siklus: Gelap -> Terang Benderang -> Tahan -> Gelap lagi */
-        .logo-dynamic {
-            width: 100%; 
-            height: auto;
-            display: block;
-            animation: logo-glow-cycle 6s ease-in-out infinite;
+        /* Lapis 1: Logo Gelap (Diam di belakang terus) */
+        .logo-base-dark {
+            filter: brightness(0.1) grayscale(100%);
         }
 
-        /* Membuat elemen Kilapan Cahaya (Flare) yang menyapu dari kiri ke kanan */
-        .sore-img-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; /* Mulai dari luar kiri */
-            width: 60%; height: 100%;
+        /* Lapis 2: Wrapper untuk Bar Cahaya & Reveal Logo */
+        .logo-sweep-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            animation: sweep-reveal-anim 8s infinite;
+        }
+        
+        .logo-bright {
+            filter: brightness(1.2) drop-shadow(0 0 10px var(--kc-lime));
+        }
+
+        /* Bar Cahaya Besar yang menyapu */
+        .sweep-bar {
+            position: absolute; top: -5%; bottom: -5%; left: 0; width: 6px;
+            background: #fff;
+            box-shadow: 0 0 15px 10px var(--kc-lime), 0 0 30px 15px var(--kc-lime);
+            animation: sweep-bar-anim 8s infinite;
+        }
+
+        /* Lapis 3: Efek Nyala + Glitch Garis (Muncul setelah gelap) */
+        .logo-glitch-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; /* Mulai dengan sembunyi */
+            filter: brightness(1.5) drop-shadow(0 0 15px var(--kc-lime));
+            animation: glitch-anim 8s infinite;
+        }
+
+        /* Keyframes: 
+           0-5%: Gelap 
+           5-30%: Tersapu bar terang dari kiri ke kanan 
+           35-40%: Gelap lagi (mati)
+           45-90%: Nyala terang + glitch garis-garis patah 
+        */
+
+        @keyframes sweep-reveal-anim {
+            0%, 5% { clip-path: inset(0 100% 0 0); opacity: 1; } /* Sembunyi di kiri */
+            30%, 35% { clip-path: inset(0 0 0 0); opacity: 1; }  /* Kelihatan utuh */
+            36%, 100% { opacity: 0; clip-path: inset(0 0 0 0); } /* Mati */
+        }
+
+        @keyframes sweep-bar-anim {
+            0%, 5% { left: 0%; opacity: 0; }
+            6% { opacity: 1; }
+            30% { left: 100%; opacity: 1; }
+            31%, 100% { left: 100%; opacity: 0; }
+        }
+
+        @keyframes glitch-anim {
+            0%, 40% { opacity: 0; transform: translate(0); clip-path: inset(0 0 0 0); }
             
-            /* Gradasi kilapan ala kaca/metal */
-            background: linear-gradient(
-                to right, 
-                rgba(255,255,255,0) 0%, 
-                rgba(212,255,0,0.4) 40%, 
-                rgba(255,255,255,0.8) 50%, 
-                rgba(212,255,0,0.4) 60%, 
-                rgba(255,255,255,0) 100%
-            );
-            transform: skewX(-25deg); /* Dimiringkan biar dinamis */
-            mix-blend-mode: overlay; /* Supaya warnanya menyatu dengan logo */
-            z-index: 2;
+            /* Nyala Normal */
+            41%, 50% { opacity: 1; transform: translate(0); clip-path: inset(0 0 0 0); }
             
-            animation: light-flare 6s ease-in-out infinite;
+            /* Glitch Garis 1 (Patah horizontal) */
+            51% { opacity: 1; clip-path: inset(10% 0 70% 0); transform: translate(-8px, 2px); }
+            52% { opacity: 1; clip-path: inset(50% 0 30% 0); transform: translate(8px, -2px); filter: hue-rotate(45deg); }
+            53%, 65% { opacity: 1; clip-path: inset(0 0 0 0); transform: translate(0); filter: hue-rotate(0deg); }
+            
+            /* Glitch Garis 2 (Blink patah) */
+            66% { opacity: 1; clip-path: inset(80% 0 5% 0); transform: translate(-5px, 0); }
+            67% { opacity: 0.2; }
+            68%, 80% { opacity: 1; clip-path: inset(0 0 0 0); transform: translate(0); }
+            
+            /* Glitch Garis 3 */
+            81% { opacity: 1; clip-path: inset(30% 0 60% 0); transform: translate(5px, 1px); }
+            82% { opacity: 1; clip-path: inset(0 0 0 0); transform: translate(0); }
+            
+            /* Kembali redup dan mati pelan */
+            85% { opacity: 1; }
+            90%, 100% { opacity: 0; }
         }
+        /* ========================================================= */
 
-        /* 1. Animasi Siklus Gelap ke Terang (Pada gambar logo) */
-        @keyframes logo-glow-cycle {
-            0%, 5% { 
-                filter: brightness(0.1) grayscale(80%); 
-                opacity: 0.5; /* Awalnya redup dan gelap */
-            } 
-            15%, 80% { 
-                filter: brightness(1.2) drop-shadow(0 0 15px rgba(212,255,0,0.6)) grayscale(0%); 
-                opacity: 1; /* Nyala terang benderang dan TAHAN LAMA */
-            } 
-            90%, 100% { 
-                filter: brightness(0.1) grayscale(80%); 
-                opacity: 0.5; /* Balik redup pelan-pelan */
-            } 
-        }
-
-        /* 2. Animasi Sapuan Kilapan Cahaya (Maju kencang pas logo mulai nyala) */
-        @keyframes light-flare {
-            0%, 10% { left: -100%; opacity: 0; }
-            15% { opacity: 1; }
-            35% { left: 200%; opacity: 0; } /* Nyapu cepat ke kanan lalu ngilang */
-            100% { left: 200%; opacity: 0; }
-        }
-        /* ======================================================== */
 
         /* --- SLOT CONTAINER --- */
         .slot-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; }
@@ -185,8 +210,15 @@
         </div>
     </div>
 
-    <div class="sore-img-wrapper">
-        <img src="logo2.png" alt="SYSTEM LOGO" class="logo-dynamic" onerror="this.style.display='none'; alert('Pastikan ada file logo2.png di folder yang sama ya, Pak.');">
+    <div class="logo-fx-container">
+        <img src="logo2.png" class="logo-base-dark" alt="SYSTEM LOGO">
+        
+        <div class="logo-sweep-wrapper">
+            <img src="logo2.png" class="logo-bright" alt="SYSTEM LOGO">
+            <div class="sweep-bar"></div>
+        </div>
+
+        <img src="logo2.png" class="logo-glitch-layer" alt="SYSTEM LOGO" onerror="this.style.display='none'; alert('Pastikan ada file logo2.png di folder yang sama ya, Pak.');">
     </div>
 
     <div class="slot-container">
