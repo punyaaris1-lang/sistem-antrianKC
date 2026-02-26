@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "4.6_Detail_and_Floating_Fix"; 
+        const CURRENT_VERSION = "4.7_Final_CustomGPS_Floating"; 
         if (localStorage.getItem("app_version") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -193,6 +193,32 @@
         <div style="color:var(--kc-lime); margin-top:20px; font-family:var(--font-logo); font-style:italic; font-size:14px; letter-spacing:3px;">VERIFYING GPS...</div>
     </div>
 
+    <div id="announcementModal" class="modal-overlay" style="z-index: 99999;">
+        <div class="modal-tactical" style="text-align: center; border-top-color: var(--kc-lime); box-shadow: 0 0 40px rgba(212, 255, 0, 0.2);">
+            <button class="close-x" onclick="tutupPengumuman()" style="position: absolute; top: 15px; right: 15px;">✕</button>
+            <div style="margin-bottom: 15px; position: relative; z-index: 2;">
+                <img src="manaf.png" alt="Admin" style="width: 100px; height: auto; filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.4)); border-radius: 8px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
+            </div>
+            <h2 style="font-family: var(--font-logo); font-style: italic; color: #fff; font-size: 22px; margin: 0 0 15px 0; letter-spacing: 2px;">PENGUMUMAN</h2>
+            <p id="annTextPopup" style="font-family: var(--font-data); font-weight: 600; color: #ccc; font-size: 16px; margin-bottom: 20px; line-height: 1.5;"></p>
+        </div>
+    </div>
+
+    <div id="gpsErrorModal" class="modal-overlay" style="z-index: 99999;">
+        <div class="modal-tactical" style="text-align: center; align-items: center; border-top-color: var(--kc-lime); box-shadow: 0 0 60px rgba(212, 255, 0, 0.2);">
+            <img src="gps-error.png" alt="GPS Jauh" style="width: 120px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(212,255,0,0.4)); position: relative; z-index: 2;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
+            <div style="font-family: var(--font-logo); font-style: italic; font-size: 22px; color: var(--kc-lime); font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 0 0 10px rgba(212,255,0,0.3); position: relative; z-index: 2;">
+                MASIH JAUH BROOO
+            </div>
+            <div id="gpsDistanceVal" style="font-family: var(--font-data); color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; position: relative; z-index: 2;">
+                Harap aktifkan GPS & pastikan Anda di Lokasi FC.
+            </div>
+            <button onclick="closeModal('gpsErrorModal')" style="width: 100%; background: var(--kc-silver); color: #000; padding: 15px; border: none; border-radius: 8px; font-family: var(--font-logo); font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); position:relative; z-index:2;">
+                SAYA MENGERTI
+            </button>
+        </div>
+    </div>
+
     <div class="header-panel">
         <div class="logo-ring"><img src="logo2.png"></div>
         <h1 class="brand-title" ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
@@ -267,14 +293,6 @@
             <h2 style="font-family:var(--font-logo); font-style:italic; color:var(--kc-lime); margin-bottom:15px;">BERHASIL!</h2>
             <div id="succMsg" style="line-height:1.6; font-size:16px; color:#fff; font-weight:600; margin-bottom:20px;"></div>
             <button onclick="window.location.href='system.html'" style="width:100%; padding:15px; background:var(--kc-lime); border:none; border-radius:8px; font-weight:900; font-family:var(--font-logo); font-size:16px;">SIAP LAKSANAKAN</button>
-        </div>
-    </div>
-
-    <div id="gpsErrorModal" class="modal-overlay">
-        <div class="modal-tactical" style="text-align:center;">
-            <h2 style="font-family:var(--font-logo); font-style:italic; color:var(--kc-lime); margin-bottom:15px;">AKSES DITOLAK</h2>
-            <div id="gpsDistanceVal" style="color:#fff; font-size:16px; font-weight:800; margin-bottom:25px;"></div>
-            <button onclick="closeModal('gpsErrorModal')" style="width:100%; background:#E2E8F0; color:#000; padding:15px; border:none; border-radius:8px; font-family:var(--font-logo); font-weight:900; font-size:16px;">SAYA MENGERTI</button>
         </div>
     </div>
 
@@ -492,6 +510,26 @@
             if (!snap.exists()) return;
             const d = snap.data();
             
+            let currentAnnId = "";
+            window.tutupPengumuman = () => {
+                document.getElementById('announcementModal').classList.remove('open');
+                setTimeout(() => document.getElementById('announcementModal').style.display = 'none', 300);
+                localStorage.setItem('lastAnnId', currentAnnId);
+            };
+
+            if(d.announcement && d.announcement.active && d.announcement.text) {
+                currentAnnId = d.announcement.id;
+                const showOnce = d.announcement.showOnce !== undefined ? d.announcement.showOnce : true; 
+                if(!showOnce || localStorage.getItem('lastAnnId') !== currentAnnId) {
+                    document.getElementById('annTextPopup').innerText = d.announcement.text;
+                    document.getElementById('announcementModal').style.display = 'flex';
+                    setTimeout(() => document.getElementById('announcementModal').classList.add('open'), 10);
+                }
+            } else { 
+                document.getElementById('announcementModal').classList.remove('open');
+                setTimeout(() => { document.getElementById('announcementModal').style.display = 'none'; }, 300);
+            }
+
             globalSlots = d.chargingSlots || [null, null, null, null, null];
             globalQueue = d.waitingQueue || [];
             globalDisabled = d.disabledSlots || [false, false, false, false, false];
