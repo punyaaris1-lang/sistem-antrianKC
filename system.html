@@ -194,137 +194,75 @@
 </head>
 <body>
 
-    <div class="hud-top">
-        <div class="live-tag"><span id="liveClock">SYNC...</span> <i class="fas fa-circle"></i></div>
-    </div>
-
-    <div id="loading-screen" style="position:fixed; inset:0; background:#030405; z-index:99999; display:none; flex-direction:column; align-items:center; justify-content:center;">
-        <img src="logo2.png" style="width:80px; animation: blink 1s infinite;">
-        <div style="color:var(--kc-lime); margin-top:20px; font-family:var(--font-logo); font-style:italic; font-size:14px; letter-spacing:3px;">VERIFYING GPS...</div>
-    </div>
-
-    <div id="announcementModal" class="modal-overlay" style="z-index: 99999;">
-        <div class="modal-tactical" style="text-align: center; border-top-color: var(--kc-lime); box-shadow: 0 0 40px rgba(212, 255, 0, 0.2);">
-            <button class="close-x" onclick="tutupPengumuman()" style="position: absolute; top: 15px; right: 15px;">✕</button>
-            <div style="margin-bottom: 15px; position: relative; z-index: 2;">
-                <img src="manaf.png" alt="Admin" style="width: 100px; height: auto; filter: drop-shadow(0 0 15px rgba(212, 255, 0, 0.4)); border-radius: 8px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
-            </div>
-            <h2 style="font-family: var(--font-logo); font-style: italic; color: #fff; font-size: 22px; margin: 0 0 15px 0; letter-spacing: 2px;">PENGUMUMAN</h2>
-            <p id="annTextPopup" style="font-family: var(--font-data); font-weight: 600; color: #ccc; font-size: 16px; margin-bottom: 20px; line-height: 1.5;"></p>
-        </div>
-    </div>
-
-    <div id="gpsErrorModal" class="modal-overlay" style="z-index: 99999;">
-        <div class="modal-tactical" style="text-align: center; align-items: center; border-top-color: var(--kc-lime); box-shadow: 0 0 60px rgba(212, 255, 0, 0.2);">
-            <img src="gps-error.png" alt="GPS Jauh" style="width: 120px; height: auto; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(212,255,0,0.4)); position: relative; z-index: 2;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/854/854878.png'; this.style.filter='invert(88%) sepia(85%) saturate(1210%) hue-rotate(24deg) brightness(109%) contrast(106%) drop-shadow(0 0 10px rgba(212,255,0,0.5))';">
-            <div style="font-family: var(--font-logo); font-style: italic; font-size: 22px; color: var(--kc-lime); font-weight: 900; letter-spacing: 2px; margin-bottom: 10px; text-shadow: 0 0 10px rgba(212,255,0,0.3); position: relative; z-index: 2;">
-                MASIH JAUH BROOO
-            </div>
-            <div id="gpsDistanceVal" style="font-family: var(--font-data); color: #fff; font-size: 16px; font-weight: 800; margin-bottom: 25px; position: relative; z-index: 2;">
-                Harap aktifkan GPS & pastikan Anda di Lokasi FC.
-            </div>
-            <button onclick="closeModal('gpsErrorModal')" style="width: 100%; background: var(--kc-silver); color: #000; padding: 15px; border: none; border-radius: 8px; font-family: var(--font-logo); font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 5px 15px rgba(255,255,255,0.2); position:relative; z-index:2;">
-                SAYA MENGERTI
-            </button>
-        </div>
-    </div>
-
-    <div class="header-panel">
-        <div class="logo-ring"><img src="logo2.png"></div>
-        <h1 class="brand-title" ondblclick="window.toggleAdmin()">FC KARTIKA CHANDRA</h1>
-        <div class="brand-subtitle">MAKA LINTAS KARTIKA CHANDRA</div>
-    </div>
-
-    <div class="dashboard-container">
-        <div class="gauge-card" onclick="openModal('slot')">
-            <div class="gauge-lbl"><i class="fas fa-microchip"></i> SLOT SYSTEM</div>
-            <div class="gauge-val-container"><div class="gauge-val" id="slotVal">00</div><div class="gauge-max">/05</div></div>
-            <div class="progress-track"><div class="progress-fill" id="slotProgress"></div></div>
-            <div class="gauge-desc" id="slotDesc">TERSEDIA (KLIK DETAIL)</div>
-        </div>
-        
-        <div class="gauge-card" onclick="openModal('queue')">
-            <div class="gauge-lbl"><i class="fas fa-users"></i> ANTRIAN</div>
-            <div class="gauge-val-container"><div class="gauge-val" id="queueVal">00</div><div class="gauge-max">UNIT</div></div>
-            <div class="progress-track"><div class="progress-fill" style="width:30%; background:#fff; box-shadow:none;"></div></div>
-            <div class="gauge-desc">MENUNGGU (KLIK DETAIL)</div>
-        </div>
-    </div>
-
-    <div class="action-area">
-        <div class="btn-wrapper">
-            <button id="btnDaftar" class="btn-tactical" onclick="checkLocationAndOpenForm()">DAFTAR ANTRIAN</button>
-        </div>
-        <button id="btnMonitor" class="btn-monitor" onclick="window.location.href='system.html'"><i class="fas fa-desktop"></i> SUPERVISI SYSTEM</button>
-        <button id="btnAdminPanel" class="btn-admin" onclick="window.location.href='admin.html'"><i class="fas fa-user-shield"></i> SUPERVISI ADMIN</button>
-    </div>
-
-    <div class="info-panel">
-        <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
-        <div class="info-text">
-            <div class="it-title">SECURE CONNECTION</div>
-            <div class="it-desc">GPS Tracking Active. Pendaftaran hanya dapat dilakukan dalam radius maksimum 70m dari Stasiun.</div>
-        </div>
-    </div>
-
-    <div class="floating-branding">
-        <img src="sore.png" class="float-img" alt="Branding SORE">
-    </div>
-
-    <div id="detailModal" class="modal-overlay">
+    <div id="announcementModal" class="modal-overlay">
         <div class="modal-tactical">
-            <div class="modal-head">
-                <div class="modal-h-title" id="mTitle">STATUS SLOT</div>
-                <button class="close-x" onclick="closeModal('detailModal')">✕</button>
+            <button class="close-x" onclick="tutupPengumuman()">✕</button>
+            <div style="text-align:center; margin-bottom: 15px;">
+                <img src="manaf.png" style="width: 100px; filter: drop-shadow(0 0 15px var(--kc-lime)); border-radius: 8px;" onerror="this.style.display='none'">
             </div>
-            <div id="mContent" class="slot-list-box"></div>
-        </div>
-    </div>
-
-    <div id="formModal" class="modal-overlay">
-        <div class="modal-tactical">
-            <div class="modal-head">
-                <div class="modal-h-title">DATA PROTOKOL</div>
-                <button class="close-x" onclick="closeModal('formModal')">✕</button>
-            </div>
-            <div style="position: relative; z-index: 2;">
-                <input type="text" id="inpNama" class="inp-box" placeholder="NAMA PANGGILAN">
-                <input type="text" id="inpPlat" class="inp-box" placeholder="B 1234 XYZ" style="text-transform:uppercase;">
-                <input type="number" id="inpBatre" class="inp-box" placeholder="SISA BATERE (%)">
-                <button onclick="submitData()" id="btnSubmitForm" style="width:100%; padding:15px; background:var(--kc-lime); border:none; border-radius:8px; font-weight:900; font-family:var(--font-logo); font-style:italic; font-size:18px;">AMBIL TIKET</button>
-                <button onclick="closeModal('formModal')" style="width:100%; margin-top:10px; background:transparent; border:1px solid #555; color:#aaa; padding:12px; border-radius:8px; font-family:var(--font-data); font-weight:800; font-size:16px;">BATAL</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="successModal" class="modal-overlay">
-        <div class="modal-tactical" style="text-align:center;">
-            <i class="fas fa-check-circle" style="font-size:50px; color:var(--kc-lime); margin-bottom:20px; filter: drop-shadow(0 0 15px var(--kc-lime));"></i>
-            <h2 style="font-family:var(--font-logo); font-style:italic; color:var(--kc-lime); margin-bottom:15px;">BERHASIL!</h2>
-            <div id="succMsg" style="line-height:1.6; font-size:16px; color:#fff; font-weight:600; margin-bottom:20px;"></div>
-            <button onclick="window.location.href='system.html'" style="width:100%; padding:15px; background:var(--kc-lime); border:none; border-radius:8px; font-weight:900; font-family:var(--font-logo); font-size:16px;">SIAP LAKSANAKAN</button>
+            <h2 style="text-align:center; color:#fff; font-family:var(--font-head); font-style:italic;">PENGUMUMAN</h2>
+            <p id="annTextPopup" style="text-align:center; color:#ccc; font-weight:600;"></p>
         </div>
     </div>
 
     <div id="customModal" class="modal-overlay">
-        <div class="modal-tactical" style="text-align:center;">
-            <h2 id="modalTitle" style="font-family:var(--font-logo); font-style:italic; color:var(--kc-lime); margin-bottom:10px;">TITLE</h2>
-            <div id="modalMsg" style="color:#fff; font-size:16px; font-weight:800; margin-bottom:25px;">Msg</div>
+        <div class="modal-tactical">
+            <h2 id="modalTitle" style="text-align:center; color:var(--kc-lime); font-family:var(--font-head); font-style:italic;"></h2>
+            <div id="modalMsg" style="text-align:center; color:#fff; font-weight:800; margin-bottom:25px;"></div>
             <div id="modalBtns" style="display:flex; gap:10px;"></div>
         </div>
     </div>
 
+    <div id="queueListModal" class="modal-overlay">
+        <div class="ql-container">
+            <div class="ql-header">DAFTAR TUNGGU</div>
+            <div id="qlBody" class="ql-body"></div>
+            <button onclick="closeQueueModal()" class="btn-close-ql">TUTUP PENGAMATAN</button>
+        </div>
+    </div>
+
+    <div class="header">
+        <h1 class="main-title" ondblclick="toggleAdmin()">FC KARTIKA CHANDRA</h1>
+        <div class="sub-title">MAKA LINTAS KARTIKA CHANDRA</div>
+    </div>
+
+    <div class="queue-bar-wrapper" onclick="openQueueModal()">
+        <div class="queue-bar">
+            <div class="qb-left"><div class="qb-lbl">ANTRIAN BERIKUTNYA</div><div class="qb-val" id="nextQDisplay">--</div></div>
+            <div class="qb-right"><div class="qb-tot" id="totalQDisplay">00</div></div>
+        </div>
+    </div>
+
+    <div class="logo-fx-container">
+        <img src="logo2.png" class="logo-base-dark">
+        <div class="logo-sweep-wrapper">
+            <img src="logo2.png" class="logo-bright">
+            <div class="sweep-bar"></div>
+        </div>
+        <img src="logo2.png" class="logo-glitch-layer">
+    </div>
+
+    <div class="slot-container" id="slotsContainer"></div>
+
+    <button id="btnCancelQ" class="btn-cancel-q" onclick="cancelQueue()">❌ BATAL ANTRIAN</button>
+
     <div class="dock-container">
-        <a href="lokasifc.html" class="nav-item"><i class="fas fa-map-marked-alt" style="font-size:22px; margin-bottom:5px;"></i><span class="nav-text">PETA LOKASI</span></a>
-        <div class="nav-item center-btn active"><div class="center-icon-box"><i class="fas fa-qrcode"></i></div><span class="nav-text">ANTRIAN</span></div>
-        <a href="plan.html" class="nav-item"><i class="fas fa-route" style="font-size:22px; margin-bottom:5px;"></i><span class="nav-text">TRIP PLAN</span></a>
+        <a href="lokasifc.html" class="nav-item">
+            <i class="fas fa-map-marked-alt"></i><span class="nav-text">PETA FC</span>
+        </a>
+        <div class="nav-item center-btn active">
+            <div class="center-icon-box"><i class="fas fa-charging-station"></i></div>
+            <span class="nav-text">SYSTEM</span>
+        </div>
+        <a href="plan.html" class="nav-item">
+            <i class="fas fa-route"></i><span class="nav-text">TRIP PLAN</span>
+        </a>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // MENGGUNAKAN KONFIGURASI DATABASE BARU: antriankcnew
         const firebaseConfig = {
             apiKey: "AIzaSyDfsTAGclYUSRe6YhiljS-xb-v-9RBYVEM",
             authDomain: "antriankcnew.firebaseapp.com",
@@ -333,257 +271,90 @@
             messagingSenderId: "348986439499",
             appId: "1:348986439499:web:99578753dc9547d727dace"
         };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const mainRef = doc(db, "antrian", "utama");
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+        const mainRef = doc(db, "antrian", "utama"); const historyRef = collection(db, "riwayatCharging");
 
-        // Variabel Global untuk Modal Detail
-        let globalSlots = [null, null, null, null, null];
-        let globalQueue = [];
-        let globalDisabled = [false, false, false, false, false];
-        let blockedPlates = [];
-
-        // FUNGSI BUKA MODAL DETAIL SLOT & ANTRIAN
-        window.openModal = (type) => {
-            const c = document.getElementById('mContent'); 
-            c.innerHTML = ""; 
-            
-            if(type === 'slot') {
-                document.getElementById('mTitle').innerText = "STATUS SLOT"; 
-                c.className = "slot-list-box"; 
-                
-                globalSlots.forEach((s, i) => {
-                    const isOff = globalDisabled[i];
-                    if(isOff) {
-                        c.innerHTML += `<div class="slot-row maintenance"><div class="sr-left"><span class="sr-plat" style="color:#aaa;">SLOT 0${i+1}</span><span class="sr-name" style="color:#aaa;">MAINTENANCE</span></div><div class="sr-right"><span class="sr-time" style="color:#aaa;">OFFLINE</span></div></div>`;
-                    } else if (s) {
-                        c.innerHTML += `<div class="slot-row active"><div class="sr-left"><span class="sr-plat">${s.plat}</span><span class="sr-name">${s.userName}</span></div><div class="sr-right"><span class="sr-time" style="color:var(--kc-lime)">ISI</span></div></div>`;
-                    } else {
-                        c.innerHTML += `<div class="slot-row empty"><div class="sr-left"><span class="sr-plat" style="color:#aaa;">SLOT 0${i+1}</span><span class="sr-name" style="color:#fff">TERSEDIA</span></div><div class="sr-right"><span class="sr-time" style="color:#aaa;">OPEN</span></div></div>`;
-                    }
-                });
-            } else {
-                document.getElementById('mTitle').innerText = "DAFTAR TUNGGU"; 
-                c.className = "queue-table"; 
-                
-                if(globalQueue.length === 0) {
-                    c.innerHTML = "<div style='text-align:center;padding:20px;color:#888;font-family:var(--font-data);'>TIDAK ADA ANTRIAN</div>";
-                } else {
-                    globalQueue.forEach((q, i) => { 
-                        c.innerHTML += `<div class="q-row"><div class="q-num">#${i+1}</div><div class="q-data"><span class="q-plat">${q.plat}</span><span class="q-name">${q.userName}</span></div></div>`; 
-                    });
-                }
-            }
-            
-            document.getElementById('detailModal').style.display = 'flex';
-            setTimeout(() => document.getElementById('detailModal').classList.add('open'), 10);
-        };
-
-        // FUNGSI TUTUP SEMUA MODAL
-        window.closeModal = (id) => { 
-            document.getElementById(id).classList.remove('open'); 
-            setTimeout(() => document.getElementById(id).style.display = 'none', 300); 
-        };
-
-        window.showConfirm = (msg, cb) => { 
-            document.getElementById('modalTitle').innerText="SYSTEM ALERT"; 
-            document.getElementById('modalMsg').innerText=msg; 
-            document.getElementById('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes">LAKSANAKAN</button><button class="btn-no" onclick="closeModal('customModal')">BATAL</button>`; 
-            document.getElementById('btnYes').onclick=()=>{closeModal('customModal'); cb();}; 
-            document.getElementById('customModal').style.display = 'flex';
-            setTimeout(() => { document.getElementById('customModal').classList.add('open'); }, 10);
-        };
-
-        // CEK GOD MODE
-        if(localStorage.getItem('super_admin_kc') || localStorage.getItem('sa_sess_v2')) {
-            document.getElementById('btnMonitor').style.display = 'block';
-            document.getElementById('btnAdminPanel').style.display = 'block';
-        }
+        const myPlat = localStorage.getItem('myPlat');
+        if(!myPlat && !localStorage.getItem('sa_sess_v2') && !localStorage.getItem('super_admin_kc')) window.location.href = 'antrian.html';
 
         window.toggleAdmin = () => { 
             const pass = prompt("KODE AKSES TACTICAL:"); 
             if (pass === "250585") { 
-                if(localStorage.getItem('super_admin_kc')) { 
-                    localStorage.removeItem('super_admin_kc'); 
-                    localStorage.removeItem('sa_sess_v2'); 
-                    alert("SUPERVISOR MODE OFFLINE."); 
-                } else { 
-                    localStorage.setItem('super_admin_kc', '1'); 
-                    localStorage.setItem('sa_sess_v2', '1'); 
-                    alert("SUPERVISOR MODE ONLINE."); 
-                }
+                if(localStorage.getItem('super_admin_kc')) { localStorage.removeItem('super_admin_kc'); localStorage.removeItem('sa_sess_v2'); alert("OFFLINE"); } 
+                else { localStorage.setItem('super_admin_kc', '1'); localStorage.setItem('sa_sess_v2', '1'); alert("ONLINE"); }
                 location.reload();
-            } else if(pass === "5588" || pass === "9999") {
-                window.location.href = "admin.html";
-            } else if(pass) alert("ACCESS DENIED!"); 
+            } else if(pass === "5588" || pass === "9999") window.location.href = "admin.html";
         };
 
-        // LOGIKA PENDAFTARAN & LOKASI GPS
-        window.checkLocationAndOpenForm = () => {
-            const btn = document.getElementById('btnDaftar');
-            if(btn.innerHTML.includes('SYSTEM')) { window.location.href = 'system.html'; return; }
-            if(localStorage.getItem('super_admin_kc')) { 
-                document.getElementById('formModal').style.display = 'flex'; 
-                setTimeout(() => document.getElementById('formModal').classList.add('open'), 10);
-                return; 
-            } 
-            
-            if (!navigator.geolocation) { 
-                document.getElementById('gpsDistanceVal').innerText = "Mohon aktifkan GPS & Izinkan Akses Lokasi Browser!";
-                document.getElementById('gpsErrorModal').style.display = 'flex';
-                setTimeout(() => document.getElementById('gpsErrorModal').classList.add('open'), 10);
-                return; 
-            }
-            
-            const screen = document.getElementById('loading-screen');
-            screen.style.display = 'flex';
-            screen.classList.add('scanning-active');
-            
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const dist = calculateDistance(-6.2285953, 106.819502, pos.coords.latitude, pos.coords.longitude);
-                screen.classList.remove('scanning-active');
-                screen.style.display = 'none';
-                
-                if (dist <= 0.07) { 
-                    document.getElementById('formModal').style.display = 'flex'; 
-                    setTimeout(() => document.getElementById('formModal').classList.add('open'), 10);
-                } else { 
-                    document.getElementById('gpsDistanceVal').innerText = `Jarak Terdeteksi: ${(dist*1000).toFixed(0)} Meter (Max 70m)`;
-                    document.getElementById('gpsErrorModal').style.display = 'flex';
-                    setTimeout(() => document.getElementById('gpsErrorModal').classList.add('open'), 10);
-                }
-            }, () => { 
-                screen.classList.remove('scanning-active');
-                screen.style.display = 'none';
-                document.getElementById('gpsDistanceVal').innerText = "Mohon aktifkan GPS & Izinkan Akses Lokasi Browser!";
-                document.getElementById('gpsErrorModal').style.display = 'flex';
-                setTimeout(() => document.getElementById('gpsErrorModal').classList.add('open'), 10);
-            }, { enableHighAccuracy: true });
-        };
+        const $ = (id) => document.getElementById(id);
+        window.tutupPengumuman = () => { $('announcementModal').style.display = 'none'; localStorage.setItem('lastAnnId', currentAnnId); };
+        window.closeQueueModal = () => { $('queueListModal').style.display = 'none'; };
+        window.openQueueModal = () => { $('queueListModal').style.display = 'flex'; $('queueListModal').style.opacity = '1'; };
+        window.closeCustomModal = () => { $('customModal').style.display='none'; };
+        window.showConfirm = (msg, cb) => { $('modalTitle').innerText="SYSTEM ALERT"; $('modalMsg').innerText=msg; $('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes" style="background:var(--kc-lime); color:#000; border:none; padding:10px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">LAKSANAKAN</button><button class="btn-no" onclick="closeCustomModal()" style="background:#333; color:#fff; border:none; padding:10px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">BATAL</button>`; $('btnYes').onclick=()=>{closeCustomModal();cb();}; $('customModal').style.display='flex'; $('customModal').style.opacity = '1'; };
 
-        window.submitData = async () => {
-            const name = document.getElementById('inpNama').value;
-            const plat = document.getElementById('inpPlat').value.toUpperCase();
-            const bat = document.getElementById('inpBatre').value;
-            
-            if(!name || !plat || !bat) return showConfirm("MOHON LENGKAPI DATA PROTOKOL!", () => {});
-            if(blockedPlates.includes(plat)) return showConfirm("AKSES DITOLAK!\nPlat ini telah diblokir.", () => {});
+        let currentAnnId = "";
+        function cleanStr(s) { return s ? s.replace(/[^A-Z0-9]/gi, '').toUpperCase() : ''; }
 
-            document.getElementById('btnSubmitForm').innerText = "PROSES SINKRONISASI...";
-            
-            try {
-                const mSnap = await getDoc(doc(db, "members", plat.replace(/\s/g,'')));
-                let role = "GUEST"; let realName = name.toUpperCase();
-                if(mSnap.exists()) { role = mSnap.data().role; realName = mSnap.data().nama; }
-
-                const result = await runTransaction(db, async (t) => {
-                    const d = (await t.get(mainRef)).data();
-                    
-                    if([...(d.chargingSlots||[]), ...(d.waitingQueue||[])].some(u => u && u.plat === plat)) {
-                        return { status: 'DUPLICATE' };
-                    }
-
-                    let isSlotAvailable = false;
-                    let slots = d.chargingSlots || [null,null,null,null,null];
-                    let dis = d.disabledSlots || [false,false,false,false,false];
-                    for(let i=0; i<5; i++) {
-                        if(slots[i] === null && !dis[i]) { isSlotAvailable = true; break; }
-                    }
-
-                    const newTicket = (d.lastTicket || 0) + 1;
-                    const newUser = { userName: realName, plat: plat, role: role, batreSisa: bat, timestamp: Date.now(), qNo: newTicket };
-
-                    let q = d.waitingQueue || [];
-                    q.push(newUser);
-                    t.update(mainRef, { waitingQueue: q, lastTicket: newTicket });
-
-                    return { status: 'SUCCESS', isSlot: isSlotAvailable, qNo: newTicket, role: role, name: realName };
-                });
-
-                if(result.status === 'DUPLICATE') { 
-                    localStorage.setItem('myPlat', plat);
-                    window.location.href = 'system.html'; 
-                } else if (result.status === 'SUCCESS') {
-                    localStorage.setItem('myPlat', plat);
-                    const h = new Date().getHours();
-                    const time = (h<10)?"Pagi":(h<15)?"Siang":(h<18)?"Sore":"Malam";
-                    const ramadan = (h>4 && h<18) ? "Puasa ngga hari ini? Semoga lancar ya!" : "Sudah buka kan? Jangan lupa sahur nanti.";
-                    const sapaanNama = (role && role !== "GUEST" && role !== "MEMBER") ? `${time} ${role}, Bang ${realName}` : `Halo Bro ${name.toUpperCase()}`;
-                    const statusText = result.isSlot ? "Mantap, ada slot kosong tuh. Setelah ini langsung klik <b>PILIH SLOT</b> sendiri ya." : `Mohon maaf slot penuh. Anda masuk ANTRIAN nomor <b>#${result.qNo}</b>.`;
-                    
-                    document.getElementById('succMsg').innerHTML = `${sapaanNama}.<br><span style="font-size:12px;color:#aaa;">${ramadan}</span><br><br>${statusText}`;
-                    closeModal('formModal');
-                    
-                    document.getElementById('successModal').style.display='flex';
-                    setTimeout(() => document.getElementById('successModal').classList.add('open'), 10);
-                }
-            } catch(e) { 
-                alert("SYSTEM ERROR: " + (e.message || e)); 
-                document.getElementById('btnSubmitForm').innerText = "AMBIL TIKET"; 
-            }
-        };
-
-        // SINKRONISASI DATA REALTIME
         onSnapshot(mainRef, (snap) => {
-            if (!snap.exists()) return;
+            if (!snap.exists()) { 
+                setDoc(mainRef, { 
+                    chargingSlots: [null,null,null,null,null], 
+                    waitingQueue: [], 
+                    disabledSlots: [false,false,false,false,false], 
+                    lastTicket: 0, 
+                    blockedPlates: [] 
+                }); 
+                return; 
+            }
             const d = snap.data();
-            
-            let currentAnnId = "";
-            window.tutupPengumuman = () => {
-                document.getElementById('announcementModal').classList.remove('open');
-                setTimeout(() => document.getElementById('announcementModal').style.display = 'none', 300);
-                localStorage.setItem('lastAnnId', currentAnnId);
-            };
-
             if(d.announcement && d.announcement.active && d.announcement.text) {
                 currentAnnId = d.announcement.id;
-                const showOnce = d.announcement.showOnce !== undefined ? d.announcement.showOnce : true; 
-                if(!showOnce || localStorage.getItem('lastAnnId') !== currentAnnId) {
-                    document.getElementById('annTextPopup').innerText = d.announcement.text;
-                    document.getElementById('announcementModal').style.display = 'flex';
-                    setTimeout(() => document.getElementById('announcementModal').classList.add('open'), 10);
+                if(localStorage.getItem('lastAnnId') !== currentAnnId) { $('annTextPopup').innerText = d.announcement.text; $('announcementModal').style.display = 'flex'; $('announcementModal').style.opacity = '1'; }
+            }
+            let slots = d.chargingSlots || [null,null,null,null,null];
+            let queue = d.waitingQueue || []; let dis = d.disabledSlots || [false,false,false,false,false];
+            const container = $('slotsContainer'); container.innerHTML = '';
+            let myQIndex = -1; if(myPlat) myQIndex = queue.findIndex(q => cleanStr(q.plat) === cleanStr(myPlat));
+            $('btnCancelQ').style.display = myQIndex > -1 ? 'block' : 'none';
+
+            slots.forEach((s, i) => {
+                const isOff = dis[i]; const div = document.createElement('div');
+                if (isOff) {
+                    div.className = "slot-card maintenance";
+                    div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat">OFFLINE</div><div class="sc-name">MAINTENANCE</div></div><div class="sc-action-zone"><button class="btn-action btn-disabled">RUSAK</button></div>`;
+                } else if (s) { 
+                    div.className = "slot-card active";
+                    const isMe = (cleanStr(s.plat) === cleanStr(myPlat));
+                    div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat">${s.plat}</div><div class="sc-name">${s.userName}</div></div><div class="sc-badge-zone">${getBadgeHTML(s.role)}</div><div class="sc-action-zone">${isMe ? `<button onclick="window.stopCharging(${i})" class="btn-action btn-stop">STOP</button>` : `<button class="btn-action btn-disabled">CHARGING</button>`}</div>`;
+                } else { 
+                    div.className = "slot-card";
+                    let bHtml = (queue.length===0 || myQIndex===0) ? `<button class="btn-action btn-pilih" onclick="window.selectSlot(${i})">PILIH SLOT ⚡</button>` : `<button class="btn-action btn-disabled">TUNGGU</button>`;
+                    div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat"></div><div class="sc-name">TERSEDIA</div></div><div class="sc-action-zone">${bHtml}</div>`;
                 }
-            } else { 
-                document.getElementById('announcementModal').classList.remove('open');
-                setTimeout(() => { document.getElementById('announcementModal').style.display = 'none'; }, 300);
-            }
-
-            globalSlots = d.chargingSlots || [null, null, null, null, null];
-            globalQueue = d.waitingQueue || [];
-            globalDisabled = d.disabledSlots || [false, false, false, false, false];
-            blockedPlates = d.blockedPlates || [];
-
-            let usedCount = 0; let availableCount = 0;
-            for(let i=0; i<5; i++) { 
-                if(globalSlots[i] === null && !globalDisabled[i]) availableCount++; 
-                else usedCount++;
-            }
-            
-            document.getElementById('slotVal').innerHTML = `0${usedCount}`;
-            document.getElementById('slotProgress').style.width = `${(usedCount/5)*100}%`;
-            document.getElementById('slotDesc').innerText = `${availableCount} TERSEDIA (KLIK DETAIL)`;
-            document.getElementById('queueVal').innerText = String(globalQueue.length).padStart(2, '0');
-            
-            const myPlat = localStorage.getItem('myPlat'); const btn = document.getElementById('btnDaftar');
-            if(myPlat && (globalQueue.find(q=>q.plat===myPlat) || globalSlots.find(s=>s&&s.plat===myPlat))) { 
-                btn.innerHTML = 'AKSES SYSTEM'; 
-                btn.style.background="#E2E8F0"; 
-                btn.style.color="#000"; 
-            } else { 
-                localStorage.removeItem('myPlat'); 
-                btn.innerHTML = 'DAFTAR ANTRIAN'; 
-                btn.style.background="linear-gradient(180deg, #D4FF00 0%, #8DAA00 100%)"; 
-            }
+                container.appendChild(div);
+            });
+            $('totalQDisplay').innerText = String(queue.length).padStart(2, '0'); 
+            $('nextQDisplay').innerText = queue.length > 0 ? queue[0].userName : "--";
+            const qb = $('qlBody'); qb.innerHTML = '';
+            queue.forEach((q,i) => { qb.innerHTML += `<div class="q-item"><div><div class="q-plat">${q.plat}</div><div class="q-name">${q.userName}</div>${getBadgeHTML(q.role)}</div><div class="q-num">0${i+1}</div></div>`; });
         });
 
-        // UTILITAS LAINNYA
-        function calculateDistance(lat1,lon1,lat2,lon2){const p=0.017453292519943295,c=Math.cos,a=0.5-c((lat2-lat1)*p)/2+c(lat1*p)*c(lat2*p)*(1-c((lon2-lon1)*p))/2;return 12742*Math.asin(Math.sqrt(a))}
-        setInterval(() => { const d = new Date(); document.getElementById('liveClock').innerText = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }, 1000);
-        
-        const platInput = document.getElementById('inpPlat'); 
-        if(platInput) platInput.addEventListener('input', function(e) { let v = this.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); let f = ""; if (v.length > 0) { let m = v.match(/^([A-Z]{1,2})(\d{0,4})([A-Z]*)$/); if (m) { f = m[1]; if (m[2]) f += " " + m[2]; if (m[3]) f += " " + m[3]; } else f = v; } this.value = f; });
-        const batInput = document.getElementById('inpBatre'); 
-        if(batInput) batInput.addEventListener('input', function(e) { let v = this.value.replace(/[^0-9]/g, ''); if(parseInt(v) > 100) v = "100"; this.value = v; });
+        function getBadgeHTML(r) {
+            if (!r || r === "GUEST") return ""; 
+            let css = "b-member", icon = "fa-user", txt = "MEMBER", ru = r.toUpperCase();
+            if(ru.includes("PRESIDEN")) { css = "b-presiden"; icon = "fa-globe"; txt = "PRESIDEN MCU"; }
+            else if(ru.includes("WAKETUM")) { css = "b-waketum"; icon = "fa-star"; txt = "WAKETUM"; }
+            else if(ru.includes("KETUM")) { css = "b-ketum"; icon = "fa-crown"; txt = "KETUM"; }
+            else if(ru.includes("SEKRETARIS")) { css = "b-sekretaris"; icon = "fa-pen-nib"; txt = "SEKRETARIS"; }
+            else if(ru.includes("BENDAHARA")) { css = "b-bendahara"; icon = "fa-wallet"; txt = "BENDAHARA"; }
+            else if(ru.includes("URC")) { css = "b-urc"; icon = "fa-ambulance"; txt = "URC"; }
+            return `<div class="glamour-badge ${css}"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
+        }
+
+        window.selectSlot = async (i) => { showConfirm(`MASUK SLOT 0${i+1}?`, () => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); let q = d.waitingQueue; const idx = q.findIndex(x => cleanStr(x.plat) === cleanStr(myPlat)); if(idx === -1) throw "ERROR"; const me = q.splice(idx, 1)[0]; me.startTime = Date.now(); d.chargingSlots[i] = me; t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: q }); }).catch(e => alert(e)); }); };
+        window.stopCharging = (i) => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); const u = d.chargingSlots[i]; if(u) addDoc(historyRef, {...u, finishTime: new Date()}); d.chargingSlots[i] = null; t.update(mainRef, {chargingSlots: d.chargingSlots}); }).then(() => { localStorage.removeItem('myPlat'); window.location.href = 'antrian.html'; }); };
+        window.cancelQueue = () => { showConfirm("BATAL ANTRI?", () => { runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); t.update(mainRef, { waitingQueue: d.waitingQueue.filter(q => cleanStr(q.plat) !== cleanStr(myPlat)) }); }).then(() => { localStorage.removeItem('myPlat'); window.location.href = 'antrian.html'; }); }); };
     </script>
 </body>
 </html>
