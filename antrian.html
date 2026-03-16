@@ -314,12 +314,20 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk", authDomain: "kartikachandrafc.firebaseapp.com", projectId: "kartikachandrafc", storageBucket: "kartikachandrafc.firebasestorage.app", messagingSenderId: "677704449500", appId: "1:677704449500:web:671df8ae5cf6e66d0b6319" };
+        // MENGGUNAKAN KONFIGURASI DATABASE BARU: antriankcnew
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfsTAGclYUSRe6YhiljS-xb-v-9RBYVEM",
+            authDomain: "antriankcnew.firebaseapp.com",
+            projectId: "antriankcnew",
+            storageBucket: "antriankcnew.firebasestorage.app",
+            messagingSenderId: "348986439499",
+            appId: "1:348986439499:web:99578753dc9547d727dace"
+        };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const mainRef = doc(db, "antrian", "utama");
 
-        // Variabel Global untuk Modal Detail
+        // Variabel Global untuk Modal Detail (DIBUAT 5 SLOT SESUAI KC)
         let globalSlots = [null, null, null, null, null];
         let globalQueue = [];
         let globalDisabled = [false, false, false, false, false];
@@ -400,7 +408,7 @@
             } else if(pass) alert("ACCESS DENIED!"); 
         };
 
-        // LOGIKA PENDAFTARAN & LOKASI GPS
+        // LOGIKA PENDAFTARAN & LOKASI GPS (TITIK KC)
         window.checkLocationAndOpenForm = () => {
             const btn = document.getElementById('btnDaftar');
             if(btn.innerHTML.includes('SYSTEM')) { window.location.href = 'system.html'; return; }
@@ -422,6 +430,7 @@
             screen.classList.add('scanning-active');
             
             navigator.geolocation.getCurrentPosition((pos) => {
+                // MENGGUNAKAN KOORDINAT LOKASI KARTIKA CHANDRA
                 const dist = calculateDistance(-6.2285953, 106.819502, pos.coords.latitude, pos.coords.longitude);
                 screen.classList.remove('scanning-active');
                 screen.style.display = 'none';
@@ -459,7 +468,7 @@
                 if(mSnap.exists()) { role = mSnap.data().role; realName = mSnap.data().nama; }
 
                 const result = await runTransaction(db, async (t) => {
-                    const d = (await t.get(mainRef)).data();
+                    const d = (await t.get(mainRef)).data() || {};
                     
                     if([...(d.chargingSlots||[]), ...(d.waitingQueue||[])].some(u => u && u.plat === plat)) {
                         return { status: 'DUPLICATE' };
@@ -477,7 +486,7 @@
 
                     let q = d.waitingQueue || [];
                     q.push(newUser);
-                    t.update(mainRef, { waitingQueue: q, lastTicket: newTicket });
+                    t.update(mainRef, { waitingQueue: q, lastTicket: newTicket, chargingSlots: slots, disabledSlots: dis });
 
                     return { status: 'SUCCESS', isSlot: isSlotAvailable, qNo: newTicket, role: role, name: realName };
                 });
@@ -489,11 +498,10 @@
                     localStorage.setItem('myPlat', plat);
                     const h = new Date().getHours();
                     const time = (h<10)?"Pagi":(h<15)?"Siang":(h<18)?"Sore":"Malam";
-                    const ramadan = (h>4 && h<18) ? "Puasa ngga hari ini? Semoga lancar ya!" : "Sudah buka kan? Jangan lupa sahur nanti.";
                     const sapaanNama = (role && role !== "GUEST" && role !== "MEMBER") ? `${time} ${role}, Bang ${realName}` : `Halo Bro ${name.toUpperCase()}`;
                     const statusText = result.isSlot ? "Mantap, ada slot kosong tuh. Setelah ini langsung klik <b>PILIH SLOT</b> sendiri ya." : `Mohon maaf slot penuh. Anda masuk ANTRIAN nomor <b>#${result.qNo}</b>.`;
                     
-                    document.getElementById('succMsg').innerHTML = `${sapaanNama}.<br><span style="font-size:12px;color:#aaa;">${ramadan}</span><br><br>${statusText}`;
+                    document.getElementById('succMsg').innerHTML = `${sapaanNama}.<br><br>${statusText}`;
                     closeModal('formModal');
                     
                     document.getElementById('successModal').style.display='flex';
@@ -507,9 +515,6 @@
 
         // SINKRONISASI DATA REALTIME
         onSnapshot(mainRef, (snap) => {
-            if (!snap.exists()) return;
-            const d = snap.data();
-            
             let currentAnnId = "";
             window.tutupPengumuman = () => {
                 document.getElementById('announcementModal').classList.remove('open');
@@ -517,6 +522,9 @@
                 localStorage.setItem('lastAnnId', currentAnnId);
             };
 
+            if (!snap.exists()) return;
+            const d = snap.data();
+            
             if(d.announcement && d.announcement.active && d.announcement.text) {
                 currentAnnId = d.announcement.id;
                 const showOnce = d.announcement.showOnce !== undefined ? d.announcement.showOnce : true; 
@@ -530,9 +538,15 @@
                 setTimeout(() => { document.getElementById('announcementModal').style.display = 'none'; }, 300);
             }
 
+            // PASTIKAN DIBACA SEBAGAI 5 SLOT
             globalSlots = d.chargingSlots || [null, null, null, null, null];
+            while(globalSlots.length < 5) globalSlots.push(null);
+            
             globalQueue = d.waitingQueue || [];
+            
             globalDisabled = d.disabledSlots || [false, false, false, false, false];
+            while(globalDisabled.length < 5) globalDisabled.push(false);
+            
             blockedPlates = d.blockedPlates || [];
 
             let usedCount = 0; let availableCount = 0;
@@ -549,12 +563,13 @@
             const myPlat = localStorage.getItem('myPlat'); const btn = document.getElementById('btnDaftar');
             if(myPlat && (globalQueue.find(q=>q.plat===myPlat) || globalSlots.find(s=>s&&s.plat===myPlat))) { 
                 btn.innerHTML = 'AKSES SYSTEM'; 
-                btn.style.background="#E2E8F0"; 
-                btn.style.color="#000"; 
+                btn.style.background="#1E2229"; 
+                btn.style.color="#fff"; 
             } else { 
                 localStorage.removeItem('myPlat'); 
                 btn.innerHTML = 'DAFTAR ANTRIAN'; 
                 btn.style.background="linear-gradient(180deg, #D4FF00 0%, #8DAA00 100%)"; 
+                btn.style.color="#000";
             }
         });
 
