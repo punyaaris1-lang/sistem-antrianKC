@@ -234,10 +234,20 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, runTransaction, collection, setDoc, getDoc, getDocs, deleteDoc, query, where, orderBy, limit, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const firebaseConfig = { apiKey: "AIzaSyDDVYQSjmJEn_RvIUotSxbh8L-ysJMCthk", authDomain: "kartikachandrafc.firebaseapp.com", projectId: "kartikachandrafc", storageBucket: "kartikachandrafc.firebasestorage.app", messagingSenderId: "677704449500", appId: "1:677704449500:web:671df8ae5cf6e66d0b6319" };
+        // MENGGUNAKAN DATABASE KC YANG BARU
+        const firebaseConfig = {
+            apiKey: "AIzaSyDfsTAGclYUSRe6YhiljS-xb-v-9RBYVEM",
+            authDomain: "antriankcnew.firebaseapp.com",
+            projectId: "antriankcnew",
+            storageBucket: "antriankcnew.firebasestorage.app",
+            messagingSenderId: "348986439499",
+            appId: "1:348986439499:web:99578753dc9547d727dace"
+        };
         const app = initializeApp(firebaseConfig); const db = getFirestore(app);
         const mainRef = doc(db, "antrian", "utama"); 
-        const membersRef = collection(db, "members");
+        
+        // MENGGANTI 'members' MENJADI 'anggota' SESUAI STRUKTUR DATABASE KC YANG BARU
+        const membersRef = collection(db, "anggota");
         const historyRef = collection(db, "riwayatCharging");
         const adminLogRef = collection(db, "adminLogs");
 
@@ -307,7 +317,6 @@
             
             if(d.announcement) {
                 document.getElementById('annInput').value = d.announcement.text || "";
-                // Set status dropdown dari Firebase
                 if(d.announcement.showOnce === false) {
                     document.getElementById('annShowOption').value = "always";
                 } else {
@@ -451,7 +460,7 @@
             
             const annId = Date.now().toString(); 
             const showOption = document.getElementById('annShowOption').value;
-            const isShowOnce = (showOption === 'once'); // true jika 1x, false jika selalu
+            const isShowOnce = (showOption === 'once'); 
             
             runTransaction(db, async(t) => { 
                 t.update(mainRef, { 
@@ -501,7 +510,7 @@
         window.manualAdd = async (target) => {
             const p = document.getElementById('newPlat').value.trim().toUpperCase(); const n = document.getElementById('newNama').value.trim().toUpperCase();
             if(!p) return alert("Plat Nomor Wajib!");
-            let userRole = "GUEST"; try { let m = await getDoc(doc(db, "members", cleanStr(p))); if(m.exists()) userRole = m.data().role || "MEMBER"; } catch(e) {}
+            let userRole = "GUEST"; try { let m = await getDoc(doc(db, "anggota", cleanStr(p))); if(m.exists()) userRole = m.data().role || "MEMBER"; } catch(e) {}
             runTransaction(db, async(t) => {
                 const d = (await t.get(mainRef)).data();
                 if([...(d.chargingSlots||[]), ...(d.waitingQueue||[])].some(u => u && u.plat === p)) throw "User sudah ada!";
@@ -529,11 +538,11 @@
         }
         window.saveMember = async () => {
             const p=document.getElementById('dbPlat').value.toUpperCase(); const n=document.getElementById('dbNama').value.toUpperCase(); const r=document.getElementById('dbRole').value;
-            if(!p||!n)return alert("Isi data!"); await setDoc(doc(db,"members",cleanStr(p)),{plat:p,nama:n,role:r}); 
+            if(!p||!n)return alert("Isi data!"); await setDoc(doc(db,"anggota",cleanStr(p)),{plat:p,nama:n,role:r}, { merge: true }); 
             runTransaction(db, async(t)=>{ const d=(await t.get(mainRef)).data(); let u=0; if(d.chargingSlots)d.chargingSlots.forEach(s=>{if(s&&cleanStr(s.plat)===cleanStr(p)){s.role=r;u=1;}}); if(d.waitingQueue)d.waitingQueue.forEach(q=>{if(q&&cleanStr(q.plat)===cleanStr(p)){q.role=r;u=1;}}); if(u)t.update(mainRef,{chargingSlots:d.chargingSlots,waitingQueue:d.waitingQueue}); });
             alert("Disimpan!"); document.getElementById('dbPlat').value=''; document.getElementById('dbNama').value=''; loadMembers(); logAdminAction(`Update Jabatan: Plat ${p} -> ${r}`);
         };
-        window.deleteMember = async (id) => { if(confirm("Hapus?")) { await deleteDoc(doc(db,"members",id)); loadMembers(); logAdminAction(`Hapus Member Database: ${id}`); } };
+        window.deleteMember = async (id) => { if(confirm("Hapus?")) { await deleteDoc(doc(db,"anggota",id)); loadMembers(); logAdminAction(`Hapus Member Database: ${id}`); } };
     </script>
 </body>
 </html>

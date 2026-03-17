@@ -99,7 +99,7 @@
 
         @keyframes glitch-anim {
             0%, 40% { opacity: 0; transform: translate(0); }
-            41%, 50% { opacity: 1; clip-path: inset(0 0 0 0); } /* TAHAN NYALA */
+            41%, 50% { opacity: 1; clip-path: inset(0 0 0 0); } 
             51% { clip-path: inset(20% 0 50% 0); transform: translate(-10px, 0); }
             52% { clip-path: inset(60% 0 10% 0); transform: translate(10px, 0); filter: hue-rotate(45deg); }
             53%, 70% { clip-path: inset(0 0 0 0); transform: translate(0); filter: hue-rotate(0deg); }
@@ -166,7 +166,7 @@
         .btn-pilih { background: linear-gradient(135deg, var(--kc-lime) 0%, #8DAA00 100%); color: #000; box-shadow: 0 2px 5px rgba(212,255,0,0.3); }
         .btn-disabled { background: rgba(255,255,255,0.1); color: #aaa; text-transform: uppercase; backdrop-filter: blur(2px); pointer-events: none;}
 
-        .btn-cancel-q { margin: 0 20px 20px; background: rgba(255,0,60,0.1); border: 2px solid var(--danger); color: #FFF; padding: 15px 30px; font-weight: 900; font-family: var(--font-tech); font-size: 16px; cursor: pointer; width: calc(100% - 40px); border-radius: 8px; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255,0,60,0.3); transition: 0.2s; display: none;}
+        .btn-cancel-q { margin: 0 20px 20px; background: rgba(255,0,60,0.1); border: 2px solid var(--danger); color: #FFF; padding: 15px 30px; font-weight: 900; font-family: var(--font-tech); font-size: 16px; cursor: pointer; width: calc(100% - 40px); border-radius: 8px; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255,0,60,0.3); transition: 0.2s;}
 
         /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s;}
@@ -176,7 +176,7 @@
         /* LIST ANTRIAN */
         #queueListModal { align-items:flex-end; }
         .ql-container { background: var(--metal-dark); width:100%; height:70vh; border-top:2px solid var(--kc-lime); border-radius:20px 20px 0 0; display:flex; flex-direction:column; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); }
-        .ql-header { padding:20px; text-align:center; font-family:var(--font-logo); font-style: italic; font-size:20px; font-weight:900; color:var(--kc-lime); border-bottom:1px solid rgba(255,255,255,0.05); }
+        .ql-header { padding:20px; text-align:center; font-family:var(--font-head); font-style: italic; font-size:20px; font-weight:900; color:var(--kc-lime); border-bottom:1px solid rgba(255,255,255,0.05); }
         .ql-body { flex:1; overflow-y:auto; padding:15px; display: flex; flex-direction: column; gap: 10px; }
         .q-item { background: #0A0C0E; padding: 15px; border-left: 4px solid var(--kc-lime); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
         .q-plat { font-family: var(--font-num); font-size: 26px; color: #fff; line-height: 1;}
@@ -202,14 +202,6 @@
             </div>
             <h2 style="text-align:center; color:#fff; font-family:var(--font-head); font-style:italic;">PENGUMUMAN</h2>
             <p id="annTextPopup" style="text-align:center; color:#ccc; font-weight:600;"></p>
-        </div>
-    </div>
-
-    <div id="customModal" class="modal-overlay">
-        <div class="modal-tactical">
-            <h2 id="modalTitle" style="text-align:center; color:var(--kc-lime); font-family:var(--font-head); font-style:italic;"></h2>
-            <div id="modalMsg" style="text-align:center; color:#fff; font-weight:800; margin-bottom:25px;"></div>
-            <div id="modalBtns" style="display:flex; gap:10px;"></div>
         </div>
     </div>
 
@@ -244,7 +236,7 @@
 
     <div class="slot-container" id="slotsContainer"></div>
 
-    <button id="btnCancelQ" class="btn-cancel-q" onclick="cancelQueue()">❌ BATAL ANTRIAN</button>
+    <button id="btnCancelQ" class="btn-cancel-q" onclick="batalAntrianAction()" style="display:none;">❌ BATAL ANTRIAN</button>
 
     <div class="dock-container">
         <a href="lokasifc.html" class="nav-item">
@@ -263,6 +255,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // === TETAP PAKAI DATABASE KC BARU SESUAI INSTRUKSI LU ===
         const firebaseConfig = {
             apiKey: "AIzaSyDfsTAGclYUSRe6YhiljS-xb-v-9RBYVEM",
             authDomain: "antriankcnew.firebaseapp.com",
@@ -271,8 +264,10 @@
             messagingSenderId: "348986439499",
             appId: "1:348986439499:web:99578753dc9547d727dace"
         };
-        const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-        const mainRef = doc(db, "antrian", "utama"); const historyRef = collection(db, "riwayatCharging");
+        const app = initializeApp(firebaseConfig); 
+        const db = getFirestore(app);
+        const mainRef = doc(db, "antrian", "utama"); 
+        const historyRef = collection(db, "riwayatCharging");
 
         const myPlat = localStorage.getItem('myPlat');
         if(!myPlat && !localStorage.getItem('sa_sess_v2') && !localStorage.getItem('super_admin_kc')) window.location.href = 'antrian.html';
@@ -290,8 +285,6 @@
         window.tutupPengumuman = () => { $('announcementModal').style.display = 'none'; localStorage.setItem('lastAnnId', currentAnnId); };
         window.closeQueueModal = () => { $('queueListModal').style.display = 'none'; };
         window.openQueueModal = () => { $('queueListModal').style.display = 'flex'; $('queueListModal').style.opacity = '1'; };
-        window.closeCustomModal = () => { $('customModal').style.display='none'; };
-        window.showConfirm = (msg, cb) => { $('modalTitle').innerText="SYSTEM ALERT"; $('modalMsg').innerText=msg; $('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes" style="background:var(--kc-lime); color:#000; border:none; padding:10px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">LAKSANAKAN</button><button class="btn-no" onclick="closeCustomModal()" style="background:#333; color:#fff; border:none; padding:10px 15px; border-radius:6px; font-weight:bold; cursor:pointer;">BATAL</button>`; $('btnYes').onclick=()=>{closeCustomModal();cb();}; $('customModal').style.display='flex'; $('customModal').style.opacity = '1'; };
 
         let currentAnnId = "";
         function cleanStr(s) { return s ? s.replace(/[^A-Z0-9]/gi, '').toUpperCase() : ''; }
@@ -313,10 +306,23 @@
                 if(localStorage.getItem('lastAnnId') !== currentAnnId) { $('annTextPopup').innerText = d.announcement.text; $('announcementModal').style.display = 'flex'; $('announcementModal').style.opacity = '1'; }
             }
             let slots = d.chargingSlots || [null,null,null,null,null];
-            let queue = d.waitingQueue || []; let dis = d.disabledSlots || [false,false,false,false,false];
-            const container = $('slotsContainer'); container.innerHTML = '';
-            let myQIndex = -1; if(myPlat) myQIndex = queue.findIndex(q => cleanStr(q.plat) === cleanStr(myPlat));
-            $('btnCancelQ').style.display = myQIndex > -1 ? 'block' : 'none';
+            let queue = d.waitingQueue || []; 
+            let dis = d.disabledSlots || [false,false,false,false,false];
+            const container = $('slotsContainer'); 
+            container.innerHTML = '';
+            
+            // CEK APAKAH USER SEDANG ANTRI
+            let myQIndex = -1; 
+            if(myPlat) {
+                myQIndex = queue.findIndex(q => cleanStr(q.plat) === cleanStr(myPlat));
+            }
+            
+            // JIKA ANTRI, MUNCULKAN TOMBOL BATAL ANTRIAN
+            if(myQIndex > -1) {
+                $('btnCancelQ').style.display = 'block';
+            } else {
+                $('btnCancelQ').style.display = 'none';
+            }
 
             slots.forEach((s, i) => {
                 const isOff = dis[i]; const div = document.createElement('div');
@@ -326,10 +332,17 @@
                 } else if (s) { 
                     div.className = "slot-card active";
                     const isMe = (cleanStr(s.plat) === cleanStr(myPlat));
-                    div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat">${s.plat}</div><div class="sc-name">${s.userName}</div></div><div class="sc-badge-zone">${getBadgeHTML(s.role)}</div><div class="sc-action-zone">${isMe ? `<button onclick="window.stopCharging(${i})" class="btn-action btn-stop">STOP</button>` : `<button class="btn-action btn-disabled">CHARGING</button>`}</div>`;
+                    
+                    // TOMBOL STOP (YANG ERROR KEMARIN UDAH GW PERBAIKI DI SINI)
+                    let btnHTML = isMe ? `<button onclick="stopChargingAction(${i})" class="btn-action btn-stop">STOP</button>` : `<button class="btn-action btn-disabled">CHARGING</button>`;
+                    
+                    div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat">${s.plat}</div><div class="sc-name">${s.userName}</div></div><div class="sc-badge-zone">${getBadgeHTML(s.role)}</div><div class="sc-action-zone">${btnHTML}</div>`;
                 } else { 
                     div.className = "slot-card";
-                    let bHtml = (queue.length===0 || myQIndex===0) ? `<button class="btn-action btn-pilih" onclick="window.selectSlot(${i})">PILIH SLOT ⚡</button>` : `<button class="btn-action btn-disabled">TUNGGU</button>`;
+                    
+                    // TOMBOL PILIH SLOT (YANG ERROR KEMARIN UDAH GW PERBAIKI DI SINI)
+                    let bHtml = (queue.length===0 || myQIndex===0) ? `<button class="btn-action btn-pilih" onclick="pilihSlotAction(${i})">PILIH SLOT ⚡</button>` : `<button class="btn-action btn-disabled">TUNGGU</button>`;
+                    
                     div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat"></div><div class="sc-name">TERSEDIA</div></div><div class="sc-action-zone">${bHtml}</div>`;
                 }
                 container.appendChild(div);
@@ -352,9 +365,74 @@
             return `<div class="glamour-badge ${css}"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
         }
 
-        window.selectSlot = async (i) => { showConfirm(`MASUK SLOT 0${i+1}?`, () => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); let q = d.waitingQueue; const idx = q.findIndex(x => cleanStr(x.plat) === cleanStr(myPlat)); if(idx === -1) throw "ERROR"; const me = q.splice(idx, 1)[0]; me.startTime = Date.now(); d.chargingSlots[i] = me; t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: q }); }).catch(e => alert(e)); }); };
-        window.stopCharging = (i) => { runTransaction(db, async(t)=>{ const d = (await t.get(mainRef)).data(); const u = d.chargingSlots[i]; if(u) addDoc(historyRef, {...u, finishTime: new Date()}); d.chargingSlots[i] = null; t.update(mainRef, {chargingSlots: d.chargingSlots}); }).then(() => { localStorage.removeItem('myPlat'); window.location.href = 'antrian.html'; }); };
-        window.cancelQueue = () => { showConfirm("BATAL ANTRI?", () => { runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); t.update(mainRef, { waitingQueue: d.waitingQueue.filter(q => cleanStr(q.plat) !== cleanStr(myPlat)) }); }).then(() => { localStorage.removeItem('myPlat'); window.location.href = 'antrian.html'; }); }); };
+        // =========================================================================
+        // FUNGSI TRANSAKSI YANG UDAH DI-PERBAIKI (PASTI RESPONSIVE DI HP)
+        // =========================================================================
+
+        window.pilihSlotAction = async (i) => {
+            if(confirm(`MASUK SLOT 0${i+1}?`)) {
+                try {
+                    await runTransaction(db, async (t) => { 
+                        const d = (await t.get(mainRef)).data(); 
+                        let q = d.waitingQueue || []; 
+                        const idx = q.findIndex(x => cleanStr(x.plat) === cleanStr(myPlat)); 
+                        
+                        if(idx === -1) throw "Kamu tidak ada dalam antrean."; 
+                        if(d.chargingSlots[i] !== null) throw "Slot sudah terisi orang lain.";
+                        
+                        const me = q.splice(idx, 1)[0]; 
+                        me.startTime = Date.now(); 
+                        d.chargingSlots[i] = me; 
+                        
+                        t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: q }); 
+                    });
+                } catch (e) {
+                    alert("Gagal masuk slot: " + e);
+                }
+            }
+        };
+
+        window.stopChargingAction = async (i) => {
+            if(confirm(`SELESAI CHARGING? Kamu akan diarahkan keluar.`)) {
+                try {
+                    await runTransaction(db, async (t) => { 
+                        const d = (await t.get(mainRef)).data(); 
+                        const u = d.chargingSlots[i]; 
+                        
+                        if(u) {
+                            // Simpan ke history
+                            addDoc(historyRef, {...u, finishTime: new Date()}); 
+                        }
+                        
+                        d.chargingSlots[i] = null; 
+                        t.update(mainRef, {chargingSlots: d.chargingSlots}); 
+                    });
+                    
+                    localStorage.removeItem('myPlat'); 
+                    window.location.href = 'antrian.html';
+                } catch(e) {
+                    alert("Gagal stop: " + e);
+                }
+            }
+        };
+
+        window.batalAntrianAction = async () => {
+            if(confirm("YAKIN BATAL ANTRI? Kamu akan kehilangan nomor antrean.")) {
+                try {
+                    await runTransaction(db, async (t) => { 
+                        const d = (await t.get(mainRef)).data(); 
+                        const antreanBaru = d.waitingQueue.filter(q => cleanStr(q.plat) !== cleanStr(myPlat));
+                        t.update(mainRef, { waitingQueue: antreanBaru }); 
+                    });
+                    
+                    localStorage.removeItem('myPlat'); 
+                    window.location.href = 'antrian.html';
+                } catch(e) {
+                    alert("Gagal membatalkan: " + e);
+                }
+            }
+        };
+
     </script>
 </body>
 </html>
