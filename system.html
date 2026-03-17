@@ -66,7 +66,7 @@
         .qb-tot { font-family: var(--font-num); font-weight: 800; font-size: 42px; line-height: 0.8; color: var(--kc-lime); text-shadow: 0 0 15px rgba(212, 255, 0, 0.5); }
 
         /* ========================================================= */
-        /* --- EFEK REVEAL SCAN & GLITCH (PENGGANTI SOREFALTO)   --- */
+        /* --- EFEK REVEAL SCAN & GLITCH                         --- */
         /* ========================================================= */
         .logo-fx-container { margin: 5px auto 25px; position: relative; width: 75%; max-width: 240px; z-index: 10; }
         .logo-fx-container img { width: 100%; height: auto; display: block; }
@@ -166,7 +166,7 @@
         .btn-pilih { background: linear-gradient(135deg, var(--kc-lime) 0%, #8DAA00 100%); color: #000; box-shadow: 0 2px 5px rgba(212,255,0,0.3); }
         .btn-disabled { background: rgba(255,255,255,0.1); color: #aaa; text-transform: uppercase; backdrop-filter: blur(2px); pointer-events: none;}
 
-        .btn-cancel-q { margin: 0 20px 20px; background: rgba(255,0,60,0.1); border: 2px solid var(--danger); color: #FFF; padding: 15px 30px; font-weight: 900; font-family: var(--font-tech); font-size: 16px; cursor: pointer; width: calc(100% - 40px); border-radius: 8px; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255,0,60,0.3); transition: 0.2s;}
+        .btn-cancel-q { margin: 0 20px 20px; background: rgba(255,0,60,0.1); border: 2px solid var(--danger); color: #FFF; padding: 15px 30px; font-weight: 900; font-family: var(--font-tech); font-size: 16px; cursor: pointer; width: calc(100% - 40px); border-radius: 8px; letter-spacing: 1px; box-shadow: 0 0 15px rgba(255,0,60,0.3); transition: 0.2s; display: none;}
 
         /* MODALS */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s;}
@@ -255,7 +255,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, onSnapshot, runTransaction, collection, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // === TETAP PAKAI DATABASE KC BARU SESUAI INSTRUKSI LU ===
+        // KONEKSI DATABASE KC
         const firebaseConfig = {
             apiKey: "AIzaSyDfsTAGclYUSRe6YhiljS-xb-v-9RBYVEM",
             authDomain: "antriankcnew.firebaseapp.com",
@@ -311,13 +311,13 @@
             const container = $('slotsContainer'); 
             container.innerHTML = '';
             
-            // CEK APAKAH USER SEDANG ANTRI
+            // CEK POSISI USER (LAGI ANTRI ATAU NGGAK)
             let myQIndex = -1; 
             if(myPlat) {
                 myQIndex = queue.findIndex(q => cleanStr(q.plat) === cleanStr(myPlat));
             }
             
-            // JIKA ANTRI, MUNCULKAN TOMBOL BATAL ANTRIAN
+            // TAMPILKAN TOMBOL BATAL JIKA LAGI ANTRI
             if(myQIndex > -1) {
                 $('btnCancelQ').style.display = 'block';
             } else {
@@ -333,14 +333,14 @@
                     div.className = "slot-card active";
                     const isMe = (cleanStr(s.plat) === cleanStr(myPlat));
                     
-                    // TOMBOL STOP (YANG ERROR KEMARIN UDAH GW PERBAIKI DI SINI)
+                    // TOMBOL STOP YANG SUDAH DIPERBAIKI LOGIKANYA
                     let btnHTML = isMe ? `<button onclick="stopChargingAction(${i})" class="btn-action btn-stop">STOP</button>` : `<button class="btn-action btn-disabled">CHARGING</button>`;
                     
                     div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat">${s.plat}</div><div class="sc-name">${s.userName}</div></div><div class="sc-badge-zone">${getBadgeHTML(s.role)}</div><div class="sc-action-zone">${btnHTML}</div>`;
                 } else { 
                     div.className = "slot-card";
                     
-                    // TOMBOL PILIH SLOT (YANG ERROR KEMARIN UDAH GW PERBAIKI DI SINI)
+                    // TOMBOL PILIH SLOT YANG SUDAH DIPERBAIKI LOGIKANYA
                     let bHtml = (queue.length===0 || myQIndex===0) ? `<button class="btn-action btn-pilih" onclick="pilihSlotAction(${i})">PILIH SLOT ⚡</button>` : `<button class="btn-action btn-disabled">TUNGGU</button>`;
                     
                     div.innerHTML = `<div class="sc-head"><span class="sc-no">0${i+1}</span></div><div class="sc-body"><div class="sc-plat"></div><div class="sc-name">TERSEDIA</div></div><div class="sc-action-zone">${bHtml}</div>`;
@@ -365,9 +365,9 @@
             return `<div class="glamour-badge ${css}"><div class="gb-icon"><i class="fas ${icon}"></i></div><div class="gb-text">${txt}</div></div>`;
         }
 
-        // =========================================================================
-        // FUNGSI TRANSAKSI YANG UDAH DI-PERBAIKI (PASTI RESPONSIVE DI HP)
-        // =========================================================================
+        // ==============================================================================
+        // LOGIKA TRANSAKSI YANG SUDAH DIPERBAIKI (BEBAS HANG / NYANGKUT)
+        // ==============================================================================
 
         window.pilihSlotAction = async (i) => {
             if(confirm(`MASUK SLOT 0${i+1}?`)) {
@@ -395,19 +395,28 @@
         window.stopChargingAction = async (i) => {
             if(confirm(`SELESAI CHARGING? Kamu akan diarahkan keluar.`)) {
                 try {
+                    let userHistoryData = null;
+
+                    // 1. Kosongkan Slot Pakai Transaksi (Murni buat update status slot)
                     await runTransaction(db, async (t) => { 
                         const d = (await t.get(mainRef)).data(); 
                         const u = d.chargingSlots[i]; 
                         
                         if(u) {
-                            // Simpan ke history
-                            addDoc(historyRef, {...u, finishTime: new Date()}); 
+                            userHistoryData = {...u}; // Copy data user buat disimpen ke history nanti
                         }
                         
                         d.chargingSlots[i] = null; 
                         t.update(mainRef, {chargingSlots: d.chargingSlots}); 
                     });
                     
+                    // 2. Simpan ke History DI LUAR transaksi (Ini yang bikin sistem ga nyangkut lagi)
+                    if (userHistoryData) {
+                        userHistoryData.finishTime = Date.now();
+                        await addDoc(historyRef, userHistoryData); 
+                    }
+                    
+                    // 3. Clear memori HP dan balik ke halaman depan
                     localStorage.removeItem('myPlat'); 
                     window.location.href = 'antrian.html';
                 } catch(e) {
