@@ -155,6 +155,17 @@
                 </div>
             </div>
 
+            <div class="box" style="border-top: 2px solid var(--neon);">
+                <h3 style="color:var(--neon);"><i class="fas fa-comment-slash"></i> FILTER KATA TERLARANG</h3>
+                <div style="font-size:10px; color:#fff; margin-bottom:10px;">Tambahkan kata yang tidak boleh dipakai saat user mengambil antrean (Hanya untuk tambahan dari Kamus Default).</div>
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="inpBadWord" placeholder="Contoh: pante" style="flex:1; text-transform: lowercase;">
+                    <button onclick="addBadWord()" class="btn-blue">TAMBAH</button>
+                </div>
+                <div id="badWordListContainer" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; max-height: 150px; overflow-y: auto;">
+                    </div>
+            </div>
+
             <div class="box" style="border-top: 2px solid var(--cyan);">
                 <h3 style="color:var(--cyan);"><i class="fas fa-ban"></i> BLOKIR PLAT NOMOR</h3>
                 <div style="font-size:10px; color:#fff; margin-bottom:10px;">Plat yang diblokir tidak akan bisa daftar antrian selamanya.</div>
@@ -325,6 +336,54 @@
             }
             updateMonitor();
         });
+
+        // --- SISTEM FILTER KATA KOTOR ---
+        let currentBadWords = [];
+        onSnapshot(doc(db, "settings", "filter_nama"), (snap) => {
+            if (snap.exists() && snap.data().blacklist) {
+                currentBadWords = snap.data().blacklist;
+            } else {
+                currentBadWords = [];
+            }
+            renderBadWords();
+        });
+
+        function renderBadWords() {
+            const container = document.getElementById('badWordListContainer');
+            let html = '';
+            if (currentBadWords.length === 0) {
+                html = '<div style="color:#aaa; font-size:10px; width:100%; text-align:center;">Belum ada kata tambahan. Kamus bawaan sistem masih aktif.</div>';
+            } else {
+                currentBadWords.forEach(word => {
+                    html += `<div style="background: #220000; border: 1px solid #f00; padding: 4px 8px; border-radius: 4px; display: flex; align-items: center; gap: 5px; font-size: 11px;">
+                        <span>${word}</span>
+                        <i class="fas fa-times" style="color: #f00; cursor: pointer;" onclick="askConfirm('Hapus kata ${word} dari Filter?', ()=>removeBadWord('${word}'))"></i>
+                    </div>`;
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        window.addBadWord = async () => {
+            let word = document.getElementById('inpBadWord').value.toLowerCase().trim();
+            if (!word) return alert("Isi kata terlarang dulu!");
+            if (currentBadWords.includes(word)) return alert("Kata ini sudah ada di daftar filter!");
+
+            let newArray = [...currentBadWords, word];
+            try {
+                await setDoc(doc(db, "settings", "filter_nama"), { blacklist: newArray }, { merge: true });
+                document.getElementById('inpBadWord').value = '';
+                logAdminAction(`Tambah Filter Kata: ${word}`);
+            } catch (e) { alert("Gagal menyimpan: " + e.message); }
+        };
+
+        window.removeBadWord = async (word) => {
+            let newArray = currentBadWords.filter(w => w !== word);
+            try {
+                await setDoc(doc(db, "settings", "filter_nama"), { blacklist: newArray }, { merge: true });
+                logAdminAction(`Hapus Filter Kata: ${word}`);
+            } catch (e) { alert("Gagal menghapus: " + e.message); }
+        };
 
         function updateMonitor() {
             let ctrlHtml = '';
@@ -524,7 +583,7 @@
         window.forceToSlot = (plat, slotIdx) => runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); if((d.disabledSlots||[])[slotIdx]) throw "SLOT RUSAK/MAINTENANCE!"; if(d.chargingSlots[slotIdx]) throw "SLOT TERISI!"; const qIdx = d.waitingQueue.findIndex(x => x.plat === plat); if(qIdx === -1) throw "Data hilang."; const u = d.waitingQueue.splice(qIdx, 1)[0]; u.startTime = Date.now(); d.chargingSlots[slotIdx] = u; t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue }); }).then(() => logAdminAction(`Force Plat ${plat} Masuk Slot 0${slotIdx+1}`)).catch(e => alert(e));
         window.forceStop = (i) => runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); const u = d.chargingSlots[i]; if(u) addDoc(historyRef, {...u, finishTime: new Date(), action: "STOP_BY_ADMIN"}); d.chargingSlots[i] = null; t.update(mainRef, { chargingSlots: d.chargingSlots }); }).then(() => { loadStatistikHarian(); logAdminAction(`Force Stop Slot 0${i+1}`); });
         window.kickToQueue = (i) => runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); const u = d.chargingSlots[i]; if(u) { d.chargingSlots[i] = null; delete u.startTime; d.waitingQueue.unshift(u); t.update(mainRef, { chargingSlots: d.chargingSlots, waitingQueue: d.waitingQueue }); } }).then(() => logAdminAction(`Keluarkan User di Slot 0${i+1} ke Antrian`));
-        window.resetTicketNumbers = () => runTransaction(db, async(t) => { const d=(await t.get(mainRef)).data(); d.waitingQueue.forEach((q,index)=>q.qNo=index+1); t.update(mainRef, {waitingQueue: d.waitingQueue, lastTicket: d.waitingQueue.length}); }).then(() => logAdminAction(`Reset Urutan Nomor Antrian`));
+        window.resetTicketNumbers = () => runTransaction(db, async(t) => { const d=(await t.get(mainRef)).data(); d.waitingQueue.forEach((q,index)=>q.qNo=index+1); t.update(mainRef, {waitingQueue: d.waitingQueue, lastTicket: d.waitingQueue.length}); }).then(() => logAdminAction(`Reset Ur Urutan Nomor Antrian`));
         window.switchQueue = (idx, dir) => runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); let q = d.waitingQueue; const tgt = idx + dir; if(tgt >= 0 && tgt < q.length) { [q[idx], q[tgt]] = [q[tgt], q[idx]]; t.update(mainRef, { waitingQueue: q }); } }).then(() => logAdminAction(`Tukar/Ubah Posisi Antrian (Idx: ${idx})`));
         window.delQueue = (p) => runTransaction(db, async(t) => { const d = (await t.get(mainRef)).data(); t.update(mainRef, { waitingQueue: d.waitingQueue.filter(x => x.plat !== p) }); }).then(() => logAdminAction(`Hapus Paksa Antrian: ${p}`));
         window.hardReset = () => runTransaction(db, async(t) => { t.update(mainRef, { chargingSlots: [null,null,null,null,null], waitingQueue: [], lastTicket: 0 }); }).then(() => logAdminAction(`⚠️ MELAKUKAN HARD RESET DATA!`));
