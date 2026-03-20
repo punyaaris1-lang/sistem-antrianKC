@@ -9,7 +9,7 @@
     <meta name="theme-color" content="#D4FF00">
 
     <script>
-        const CURRENT_VERSION = "4.7_Final_CustomGPS_Floating"; 
+        const CURRENT_VERSION = "4.8_Filter_Alay"; 
         if (localStorage.getItem("app_version") !== CURRENT_VERSION) {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -300,7 +300,7 @@
         <div class="modal-tactical" style="text-align:center;">
             <h2 id="modalTitle" style="font-family:var(--font-logo); font-style:italic; color:var(--kc-lime); margin-bottom:10px;">TITLE</h2>
             <div id="modalMsg" style="color:#fff; font-size:16px; font-weight:800; margin-bottom:25px;">Msg</div>
-            <div id="modalBtns" style="display:flex; gap:10px;"></div>
+            <div id="modalBtns" style="display:flex; gap:10px; flex-direction:column;"></div>
         </div>
     </div>
 
@@ -327,7 +327,26 @@
         const db = getFirestore(app);
         const mainRef = doc(db, "antrian", "utama");
 
-        // Variabel Global untuk Modal Detail (DIBUAT 5 SLOT SESUAI KC)
+        // DEFAULT KAMUS HITAM (KATA KOTOR/KASAR/ALAY)
+        let daftarKataTerlarang = [
+            'anjing', 'babi', 'monyet', 'bangsat', 'tolol', 'goblok', 'bego', 
+            'idiot', 'janda', 'memek', 'kontol', 'jembut', 'ngentot', 'peler', 
+            'pepek', 'kampret', 'lonte', 'pelacur', 'bajingan', 'asu', 'tai', 
+            'pantek', 'setan', 'iblis', 'perek', 'jablay', 'kimak', 'dancok',
+            'jancok', 'gila', 'sinting', 'sarap', 'ngehe', 'kntl', 'mmk', 'bgst',
+            'itil', 'henceut', 'pukimak', 'biji', 'ngewe', 'kentu'
+        ];
+
+        // AMBIL CUSTOM LIST DARI DATABASE (JIKA ADA SETTINGAN DARI ADMIN)
+        onSnapshot(doc(db, "settings", "filter_nama"), (snap) => {
+            if(snap.exists() && snap.data().blacklist) {
+                // Menggabungkan array default dengan array tambahan dari admin
+                let kataDariDatabase = snap.data().blacklist;
+                daftarKataTerlarang = [...new Set([...daftarKataTerlarang, ...kataDariDatabase])];
+            }
+        });
+
+        // Variabel Global untuk Modal Detail
         let globalSlots = [null, null, null, null, null];
         let globalQueue = [];
         let globalDisabled = [false, false, false, false, false];
@@ -378,8 +397,10 @@
         window.showConfirm = (msg, cb) => { 
             document.getElementById('modalTitle').innerText="SYSTEM ALERT"; 
             document.getElementById('modalMsg').innerText=msg; 
-            document.getElementById('modalBtns').innerHTML=`<button class="btn-yes" id="btnYes">LAKSANAKAN</button><button class="btn-no" onclick="closeModal('customModal')">BATAL</button>`; 
-            document.getElementById('btnYes').onclick=()=>{closeModal('customModal'); cb();}; 
+            document.getElementById('modalBtns').innerHTML=`
+                <button class="btn-yes" id="btnYes" style="width:100%; padding:15px; background:var(--kc-lime); border:none; border-radius:8px; font-weight:900; font-family:var(--font-logo); font-style:italic; font-size:16px;">SAYA MENGERTI</button>
+            `; 
+            document.getElementById('btnYes').onclick=()=>{closeModal('customModal'); if(cb) cb();}; 
             document.getElementById('customModal').style.display = 'flex';
             setTimeout(() => { document.getElementById('customModal').classList.add('open'); }, 10);
         };
@@ -408,7 +429,7 @@
             } else if(pass) alert("ACCESS DENIED!"); 
         };
 
-        // LOGIKA PENDAFTARAN & LOKASI GPS (TITIK KC)
+        // LOGIKA PENDAFTARAN & LOKASI GPS
         window.checkLocationAndOpenForm = () => {
             const btn = document.getElementById('btnDaftar');
             if(btn.innerHTML.includes('SYSTEM')) { window.location.href = 'system.html'; return; }
@@ -430,7 +451,6 @@
             screen.classList.add('scanning-active');
             
             navigator.geolocation.getCurrentPosition((pos) => {
-                // MENGGUNAKAN KOORDINAT LOKASI KARTIKA CHANDRA
                 const dist = calculateDistance(-6.2285953, 106.819502, pos.coords.latitude, pos.coords.longitude);
                 screen.classList.remove('scanning-active');
                 screen.style.display = 'none';
@@ -452,13 +472,40 @@
             }, { enableHighAccuracy: true });
         };
 
+        // FUNGSI FILTER NAMA
+        function validasiNama(nama) {
+            let text = nama.trim();
+            
+            if (text.length < 3) return { valid: false, pesan: "Nama terlalu pendek (Minimal 3 huruf)!" };
+            if (text.length > 20) return { valid: false, pesan: "Nama terlalu panjang (Maksimal 20 huruf)!" };
+            
+            let regexHuruf = /^[a-zA-Z\s]*$/;
+            if (!regexHuruf.test(text)) return { valid: false, pesan: "Nama hanya boleh berisi huruf abjad! (Dilarang pakai angka/simbol)" };
+
+            let namaKecil = text.toLowerCase().replace(/\s/g, ''); // Hapus semua spasi sementara untuk cek kata kotor yang diakali (cth: a n j i n g)
+
+            for (let i = 0; i < daftarKataTerlarang.length; i++) {
+                if (namaKecil.includes(daftarKataTerlarang[i])) {
+                    return { valid: false, pesan: "Woy! Gunakan nama yang sopan, Bro!" };
+                }
+            }
+            return { valid: true };
+        }
+
         window.submitData = async () => {
             const name = document.getElementById('inpNama').value;
             const plat = document.getElementById('inpPlat').value.toUpperCase();
             const bat = document.getElementById('inpBatre').value;
             
-            if(!name || !plat || !bat) return showConfirm("MOHON LENGKAPI DATA PROTOKOL!", () => {});
-            if(blockedPlates.includes(plat)) return showConfirm("AKSES DITOLAK!\nPlat ini telah diblokir.", () => {});
+            if(!name || !plat || !bat) return showConfirm("MOHON LENGKAPI DATA PROTOKOL!");
+            
+            // JALANKAN VALIDASI FILTER NAMA
+            const cekNama = validasiNama(name);
+            if (!cekNama.valid) {
+                return showConfirm("INPUT DITOLAK!\n\n" + cekNama.pesan);
+            }
+
+            if(blockedPlates.includes(plat)) return showConfirm("AKSES DITOLAK!\nPlat ini telah diblokir.");
 
             document.getElementById('btnSubmitForm').innerText = "PROSES SINKRONISASI...";
             
@@ -538,7 +585,6 @@
                 setTimeout(() => { document.getElementById('announcementModal').style.display = 'none'; }, 300);
             }
 
-            // PASTIKAN DIBACA SEBAGAI 5 SLOT
             globalSlots = d.chargingSlots || [null, null, null, null, null];
             while(globalSlots.length < 5) globalSlots.push(null);
             
